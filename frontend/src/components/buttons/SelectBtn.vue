@@ -1,0 +1,66 @@
+<template>
+  <div ref="dropdownRef" class="relative inline-block w-32 text-sm">
+    <button
+      class="w-full dark:bg-gray-700 border border-gray-300 dark:border-gray-500 rounded-md px-2 py-1 text-left cursor-pointer focus:outline-none focus:ring-1 focus:ring-pink-500"
+      @click="isOpen = !isOpen"
+    >
+    <span class="mdi mdi-sort-variant"></span>
+      {{ selected || 'Sort by:' }}
+      <span class="float-right">
+        <i class="mdi" :class="isOpen?'mdi-chevron-up':'mdi-chevron-down'"></i>
+      </span>
+    </button>
+
+    <ul
+      v-if="isOpen"
+      class="absolute z-10 mt-1 w-full bg-white/80 dark:bg-gray-700 border border-gray-300 dark:border-gray-500 rounded-lg overflow-hidden"
+    >
+      <li
+        v-for="option in options"
+        :key="option"
+        @click="selectOption(option)"
+        class="px-4 py-2 hover:bg-pink-100 dark:hover:bg-gray-600 cursor-pointer"
+      >
+        {{ option }}
+      </li>
+    </ul>
+  </div>
+</template>
+
+
+<script setup lang="ts">
+import { ref, onMounted, onUnmounted } from 'vue'
+
+const options = ['Option 1', 'Option 2', 'Option 3']
+const selected = ref<string | null>(null)
+const isOpen = ref(false)
+
+const dropdownRef = ref<HTMLElement | null>(null)
+
+const selectOption = (option: string) => {
+  selected.value = option
+  isOpen.value = false
+}
+
+const handleClickOutside = (event: MouseEvent) => {
+  if (dropdownRef.value && !dropdownRef.value.contains(event.target as Node)) {
+    isOpen.value = false
+  }
+}
+
+onMounted(() => {
+  document.addEventListener('click', handleClickOutside)
+})
+
+onUnmounted(() => {
+  document.removeEventListener('click', handleClickOutside)
+})
+</script>
+
+
+<style scoped>
+/* Optional: smooth dropdown */
+ul {
+  transition: all 0.2s ease-in-out;
+}
+</style>
