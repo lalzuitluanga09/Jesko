@@ -2,6 +2,10 @@
     <div class="flex flex-col justify-between">
         <div class="relative">
             <button
+                class="absolute right-12 md:right-10 cursor-pointer top-3 text-xl text-pink-500 bg-pink-100 hover:bg-pink-200 border border-pink-300 px-1 rounded-lg">
+                <span class="mdi mdi-heart"></span>
+            </button>
+            <button
                 class="absolute right-2 md:right-0 cursor-pointer top-3 text-xl text-pink-500 bg-pink-100 hover:bg-pink-200 border border-pink-300 px-1 rounded-lg">
                 <span class="mdi mdi-share-variant"></span>
             </button>
@@ -51,7 +55,7 @@
                 </div>
             </div>
             <div
-                class="mb-4 flex flex-row justify-between items-center md:items-start gap-4 fixed left-0 right-0 bottom-12 bg-white dark:bg-gray-700 p-4 md:p-2 md:static ">
+                class="mb-4 flex flex-row justify-between items-center md:items-start gap-4 fixed left-0 right-0 z-20 bottom-12 bg-white dark:bg-gray-700 p-4 md:p-2 md:static ">
                 <div class="flex flex-col">
                     <label class="block mb-2 font-medium">Quantity</label>
                     <div class="flex items-center rounded w-fit">

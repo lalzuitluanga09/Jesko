@@ -1,5 +1,5 @@
 <template>
-    <div @click="gotTo"
+    <div @click="goTo"
         class="flex justify-between items-center gap-3 border-gray-100 dark:border-white/10 border-2 px-4 py-2 rounded-lg hover:bg-gray-100 dark:hover:bg-gray-600 transition-colors cursor-pointer">
         <div class="flex gap-4 items-center">
             <i :class="icon" class="text-xl text-gray-500"></i>
@@ -25,12 +25,26 @@ const props = defineProps<{
 
 const { logout } = useAuth()
 
-const gotTo = () => {
-    if(props.to == 'logout')
-        logout()
-    else
-        router.push(props.to)
+const routeMap: Record<string, string | (() => void)> = {
+  logout: () => logout(),
+  orders: 'orders',
+  profile: 'profile',
+  address: 'addresses',
+  following: 'followings'
 }
+
+const goTo = () => {
+  const target = routeMap[props.to]
+
+  if (typeof target === 'function') {
+    target()
+  } else if (typeof target === 'string') {
+    router.push({ name: target })
+  } else {
+    router.push(props.to)
+  }
+}
+
 </script>
 
 <style scoped>

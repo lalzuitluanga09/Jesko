@@ -4,8 +4,8 @@
   </header>
   <main class="w-full max-w-7xl mx-auto">
     <RouterView />
+    <Footer />
   </main>
-  <Footer />
 </template>
 
 <script setup lang="ts">

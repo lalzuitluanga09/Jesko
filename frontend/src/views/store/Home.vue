@@ -2,7 +2,7 @@
     <div v-if="loadStoreData">
         <StoreLoading title="Store Name" content="Welcome"/>
     </div>
-    <div v-else class="flex flex-col gap-2">
+    <div v-else class="flex flex-col md:gap-2">
         <StoreHeader />
         <div class="flex flex-col md:flex-row md:justify-between">
             <div v-if="!isMobile"  class="h-fit sticky top-2">

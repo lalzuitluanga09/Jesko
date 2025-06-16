@@ -10,20 +10,20 @@
         </div>
         <div v-else>
             <CartItems />
-            <div class="flex flex-col justify-center mt-4 bg-white border border-gray-200 rounded-xl">
+            <div class="flex flex-col justify-center mt-4 border border-gray-200 rounded-xl">
                 <div class="text-lg font-semibold flex justify-center py-2">Order Summary</div>
                 <div class="flex flex-row justify-between items-start md:items-center p-4">
                     <div class="mb-2 md:mb-0">
-                        <div class="text-sm md:text-base text-gray-500">Subtotal (4 items):</div>
-                        <div class="text-sm md:text-base text-gray-500">Discount:</div>
-                        <div class="text-sm md:text-base text-gray-500">Tax:</div>
+                        <div class="text-sm md:text-base text-gray-500 dark:text-gray-300">Subtotal (4 items):</div>
+                        <div class="text-sm md:text-base text-gray-500 dark:text-gray-300">Discount:</div>
+                        <div class="text-sm md:text-base text-gray-500 dark:text-gray-300">Tax:</div>
                         <div class="text-base md:text-lg font-medium mt-2">Total:</div>
                     </div>
                     <div class="flex flex-col items-end">
-                        <div class="text-sm md:text-base font-bold text-green-700 mb-1">$120.00</div>
-                        <div class="text-sm md:text-base text-red-600">-$10.00</div>
-                        <div class="text-sm md:text-base text-gray-700">+$8.80</div>
-                        <div class="text-base md:text-lg font-bold text-green-800 mt-2">$118.80</div>
+                        <div class="text-sm md:text-base font-bold text-green-700 dark:text-green-500 mb-1">$120.00</div>
+                        <div class="text-sm md:text-base text-red-600 dark:text-red-400">-$10.00</div>
+                        <div class="text-sm md:text-base text-gray-700 dark:text-gray-400">+$8.80</div>
+                        <div class="text-base md:text-lg font-bold text-green-800 dark:text-green-600 mt-2">$118.80</div>
                     </div>
                 </div>
                 <SimpleBtn title="Checkout" type="primary"/>

@@ -1,15 +1,14 @@
 <template>
     <div class="w-full min-h-[600px] flex items-center justify-center px-4">
   <div class="p-8 flex flex-col items-center gap-4 max-w-md w-full transition-all">
-    <h2 class="text-3xl font-bold text-gray-800 text-center">
+    <h2 class="text-3xl font-bold text-center">
       {{ title }}
     </h2>
-    <p class="text-gray-600 text-center">
+    <p class="text-gray-600 dark:text-gray-400 text-center">
       You need to sign in to view this page.
     </p>
-    <p class="text-gray-500 text-sm text-center">
-      Don’t have an account? Please log in to continue,
-      or register if you don't have an account.
+    <p class="text-gray-500 dark:text-gray-400 text-sm text-center">
+      Don't have an account? Please log in to continue, or register to create a new one.
     </p>
 
     <div class="flex flex-col gap-4 mt-4 w-full">

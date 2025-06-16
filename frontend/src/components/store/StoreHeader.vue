@@ -1,5 +1,5 @@
 <template>
-  <div class="w-full border border-gray-300 rounded-2xl overflow-hidden shadow-sm bg-white dark:bg-gray-600 relative">
+  <div class="w-full border border-gray-300 rounded-t-2xl md:rounded-2xl overflow-hidden shadow-sm bg-white dark:bg-gray-600 relative">
     <div class="h-24 sm:h-32 bg-gray-300 dark:bg-gray-800 flex items-center justify-center text-white text-shadow-2xs text-lg font-semibold">
       Map Placeholder
     </div>

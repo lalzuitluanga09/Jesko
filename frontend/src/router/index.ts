@@ -7,6 +7,12 @@ import Account from '@/views/Account.vue'
 import Home from '@/views/store/Home.vue'
 import ProductDetail from '../views/store/ProductDetail.vue'
 import ItemDetail from '@/views/marketplace/ItemDetail.vue'
+import Orders from '@/views/account/Orders.vue'
+import Profile from '@/views/account/Profile.vue'
+import Address from '@/views/account/Address.vue'
+import Following from '@/views/account/Following.vue'
+import Favourite from '@/views/Favourite.vue'
+import Notification from '@/views/Notification.vue'
 
 const router = createRouter({
   history: createWebHistory(import.meta.env.BASE_URL),
@@ -37,6 +43,17 @@ const router = createRouter({
       component: Account,
     },
 
+    {
+      path: '/favourites',
+      name: 'favourite',
+      component: Favourite,
+    },
+    {
+      path: '/notifications',
+      name: 'notification',
+      component: Notification,
+    },
+
     //Store Pages
     {
       path: '/store/:slug',
@@ -55,7 +72,33 @@ const router = createRouter({
       name: 'item-detail',
       component: ItemDetail,
     },
+
+    //Account
+    {
+      path: '/account/orders',
+      name: 'orders',
+      component: Orders,
+    },
+    {
+      path: '/account/following',
+      name: 'followings',
+      component: Following,
+    },
+    {
+      path: '/account/profile',
+      name: 'profile',
+      component: Profile,
+    },
+    {
+      path: '/account/addresses',
+      name: 'addresses',
+      component: Address,
+    },
   ],
+    scrollBehavior(to, from, savedPosition) {
+    // Always scroll to top
+    return { left: 0, top: 0 }
+  }
 })
 
 export default router

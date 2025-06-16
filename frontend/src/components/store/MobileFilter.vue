@@ -14,7 +14,7 @@
       class="fixed inset-x-0 bottom-0 flex items-end justify-center bg-black/20 z-10 min-h-screen"
       @click.self="closeFilterDialog"
     >
-    <div class="bg-white/80 dark:bg-gray-700/80 backdrop-blur-sm rounded-lg shadow-lg p-6 w-full mb-16">
+    <div class="bg-white/80 dark:bg-gray-700/80 backdrop-blur-sm rounded-t-2xl shadow-lg p-6 w-full mb-16">
        <div class="flex justify-between">
          <h2 class="text-xl font-semibold mb-4">Filters</h2>
             <SelectBtn />
