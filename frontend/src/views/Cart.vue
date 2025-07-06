@@ -1,5 +1,5 @@
 <template>
-    <LoginMessage title="Your cart items show here" v-if="!isAuthenticated"/>
+    <LoginMessage title="Your cart items show here" v-if="!auth.isAuthenticated"/>
     <div v-else class="flex flex-col w-full max-w-4xl mx-auto">
         <div class="text-2xl font-bold flex justify-center py-2 md:py-4">My Cart</div>
         <div v-if="isEmpty" class="flex flex-col items-center justify-center py-12 bg-white border border-gray-200 rounded-xl my-8">
@@ -37,10 +37,11 @@
 import SimpleBtn from '@/components/buttons/SimpleBtn.vue';
 import CartItems from '@/components/CartItems.vue';
 import LoginMessage from '@/components/LoginMessage.vue';
-import { useAuth } from '@/composables/useAuth';
+import { useAuthStore } from '@/stores/auth';
 import { ref } from 'vue';
 
-const { isAuthenticated } = useAuth()
+const auth = useAuthStore()
+
 
 const isEmpty = ref<boolean>(false)
 

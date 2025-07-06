@@ -13,31 +13,26 @@
 
     <div class="flex flex-col gap-4 mt-4 w-full">
       <div class="flex flex-col sm:flex-row md:justify-center gap-4 w-full">
-        <SimpleBtn title="Login" type="primary" @click="openDialog" />
-        <SimpleBtn title="Register" type="outline" @click="openRegisterDialog" />
+        <SimpleBtn title="Login" type="primary" @click="auth.openDialog" />
+        <SimpleBtn title="Register" type="outline" @click="auth.openRegisterDialog" />
       </div>
     </div>
   </div>
 </div>
     <LoginDialog />
 
-
 </template>
 
 <script setup lang="ts">
 import SimpleBtn from './buttons/SimpleBtn.vue';
-import { useAuth } from '@/composables/useAuth';
 import LoginDialog from './dialogs/LoginDialog.vue';
+import { useAuthStore } from '@/stores/auth';
 
 const props = defineProps<{
   title: string,
 }>();
 
-const {
-    openDialog,
-    openRegisterDialog,
-    logout
-} = useAuth()
+const auth = useAuthStore()
 
 
 </script>

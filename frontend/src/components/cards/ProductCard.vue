@@ -1,5 +1,5 @@
 <template>
-    <div class="relative w-full max-w-sm rounded-2xl overflow-hidden bg-white/70 dark:bg-gray-600 cursor-pointer hover:bg-amber-50 dark:hover:bg-gray-500 shadow-md hover:shadow-lg  transition">
+    <div class="relative w-full max-w-sm rounded-2xl overflow-hidden bg-white/70 dark:bg-gray-600 cursor-pointer hover:bg-amber-50 dark:hover:bg-gray-500 border border-gray-300  transition">
         <div class="absolute top-2 right-2 bg-amber-50 hover:bg-amber-100 dark:bg-gray-600 dark:hover:bg-gray-500 rounded-full px-1 md:px-2 md:py-1 z-10 cursor-pointer">
             <span class="mdi mdi-heart-outline text-base md:text-xl text-amber-500 dark:text-gray-300"></span>
             <!-- <span class="mdi mdi-heart text-base md:text-xl text-amber-500 dark:text-gray-300"></span> -->

@@ -1,6 +1,9 @@
 import { ref, computed } from 'vue'
 
 const isOpen = ref<boolean>(false)
+const isView = ref<boolean>(false)
+const selected = ref<any>(null)
+
 const search = ref('')
 const status = ref('')
 const currentPage = ref(1)
@@ -25,6 +28,24 @@ const allOrders = ref([
     },
     // add more mock items here...
 ])
+
+
+const columns = [
+  'order id',
+  'date',
+  'customer',
+  'payment method',
+  'total',
+  'items'
+]
+
+const rows = [
+    { 'order id': 'ORD1234', date: '10 June 2025', customer: 'John Doe', 'payment method': 'COD', total: '$2499', items: 3, status: 'Pending' },
+    { 'order id': 'ORD1234', date: '10 June 2025', customer: 'John Doe', 'payment method': 'UPI', total: '$2499', items: 3, status: 'Completed' },
+    { 'order id': 'ORD1234', date: '10 June 2025', customer: 'John Doe', 'payment method': 'UPI', total: '$2499', items: 3, status: 'Completed' },
+    { 'order id': 'ORD1234', date: '10 June 2025', customer: 'John Doe', 'payment method': 'COD', total: '$2499', items: 3, status: 'Pending' },
+    { 'order id': 'ORD1234', date: '10 June 2025', customer: 'John Doe', 'payment method': 'Credit Card', total: '$2499', items: 3, status: 'Canceled' },
+]
 
 export function useOrder() {
 
@@ -56,8 +77,20 @@ export function useOrder() {
         isOpen.value = false
     }
 
+    const openViewDialog = (order: any) => {
+        selected.value = order
+        isView.value = true
+    }
+
+    const closeViewDialog = () => {
+        isView.value = false
+        selected.value = null
+    }
+
     return {
         isOpen,
+        isView,
+        selected,
         search,
         status,
         currentPage,
@@ -66,7 +99,11 @@ export function useOrder() {
         filteredOrders,
         totalPages,
         paginatedOrders,
+        columns,
+        rows,
         openDialog,
-        closeDialog
+        closeDialog,
+        openViewDialog,
+        closeViewDialog
     }
 }

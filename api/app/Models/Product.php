@@ -15,11 +15,15 @@ class Product extends Model
     use HasFactory, SoftDeletes;
 
     protected $fillable = [
+        'store_id',
         'name',
         'description',
         'price',
         'stock',
+        'sku',
         'parent_id',
+        'status',
+        'type'
     ];
 
     protected $casts = [
@@ -63,8 +67,18 @@ class Product extends Model
         return $this->belongsToMany(Tag::class, 'product_tags');
     }
 
-    public function attributeValues(): BelongsToMany
+    public function attributes(): HasMany
     {
-        return $this->belongsToMany(VariationValue::class, 'product_variant_values');
+        return $this->hasMany(ProductAttribute::class);
+    }
+
+    public function variations(): HasMany
+    {
+        return $this->hasMany(Product::class, 'parent_id');
+    }
+
+    public function variationAttributes()
+    {
+        return $this->hasMany(ProductVariationAttribute::class, 'product_id');
     }
 };

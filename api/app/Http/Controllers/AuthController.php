@@ -9,39 +9,34 @@ use Illuminate\Support\Facades\Validator;
 
 class AuthController extends Controller
 {
-        public function login(Request $request)
-    {
-        $validator = Validator::make($request->all(), [
-            'email' => 'required|email',
-            'password' => 'required'
-        ]);
+public function login(Request $request)
+{
+    $validator = Validator::make($request->all(), [
+        'email' => 'required|email',
+        'password' => 'required'
+    ]);
 
-        if ($validator->fails()) {
-            return response()->json([
-                'errors' => $validator->errors()
-            ], 422);
-        }
-
-        if (!Auth::attempt($request->only('email', 'password'))) {
-            return response()->json([
-                'message' => 'Invalid email or password.'
-            ], 401);
-        }
-
-        $user = Auth::user();
-
-        $token = $user->createToken('api-token')->plainTextToken;
-
+    if ($validator->fails()) {
         return response()->json([
-            'message' => 'Login successful.',
-            'user' => $user,
-            'token' => $token
-        ]);
+            'errors' => $validator->errors()
+        ], 422);
     }
+
+    if (!Auth::attempt($request->only('email', 'password'))) {
+        return response()->json([
+            'message' => 'Invalid email or password.'
+        ], 401);
+    }
+
+    return response()->json([
+        'message' => 'Login successful.',
+        'user' => Auth::user()
+    ]);
+}
 
     public function logout()
     {
-        Auth::logout();
+        Auth::guard('web')->logout();
         return response()->json([
             'message' => 'Logout successful.'
         ], 200);

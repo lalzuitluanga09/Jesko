@@ -27,7 +27,7 @@ const btnClass = ref('')
 const typeClassMap: Record<string, string> = {
     primary: "bg-pink-600 hover:bg-pink-700 text-white",
     negative: "bg-red-600 hover:bg-red-700 text-white",
-    outline: "border hover:bg-pink-100 dark:hover:bg-gray-600"
+    outline: "border hover:bg-pink-200 dark:hover:bg-gray-600"
 };
 
 onMounted(() => {

@@ -1,5 +1,5 @@
 <template>
-  <LoginMessage title="Welcome to Your Account" v-if="!isAuthenticated"/>
+  <LoginMessage title="Welcome to Your Account" v-if="!auth.isAuthenticated"/>
    <div v-else>
        <div class="flex justify-center">
           <h1 class="text-xl font-bold py-4">My Account</h1>
@@ -12,6 +12,12 @@
         <SettingLink title="Addresses" icon="mdi mdi-map-marker-outline" to="address"/>
         <SettingLink title="Logout" icon="mdi mdi-location-exit" to="logout"/>
       </div>
+      <div class="text-center mt-12">
+        <RouterLink :to="{name:'dashboard'}" class="bg-blue-100 dark:text-blue-700 px-4 py-2 rounded-2xl hover:bg-blue-200 hover:text-blue-800 transition-colors">
+          <span class="mdi mdi-shield-home text-xl"></span>
+          Go to Admin Panel 
+        </RouterLink>
+      </div>
    </div>
 </template>
 
@@ -19,10 +25,8 @@
 import ProfileImage from '@/components/account/ProfileImage.vue';
 import SettingLink from '@/components/account/SettingLink.vue';
 import LoginMessage from '@/components/LoginMessage.vue';
-import { useAuth } from '@/composables/useAuth';
+import { useAuthStore } from '@/stores/auth';
 
-const {
-  isAuthenticated
-} = useAuth()
+const auth = useAuthStore()
 
 </script>

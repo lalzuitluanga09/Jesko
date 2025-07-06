@@ -1,41 +1,34 @@
 <template>
-  <header class="w-full max-w-7xl mx-auto">
-    <Navbar />
-  </header>
-  <main class="w-full max-w-7xl mx-auto">
-    <RouterView />
-    <Footer />
-  </main>
+  <RouterView />
+  <Notify/>
 </template>
 
 <script setup lang="ts">
-import Navbar from './components/Navbar.vue'
 import { RouterView } from 'vue-router'
 import { useSetting } from './composables/useSetting';
-import Footer from './components/Footer.vue';
+import { onMounted } from 'vue';
+import { useAuthStore } from './stores/auth';
+import Notify from './components/notification/Notify.vue';
 
 const { checkScreenWidth } = useSetting()
 
 checkScreenWidth();
 window.addEventListener('resize', checkScreenWidth);
+
+const auth = useAuthStore()
+
+onMounted(() => {
+  auth.checkAuth()
+})
+
 </script>
 
 <style>
 
-body {
-  margin: 0 2%;
-}
-
-/* @media screen and (min-width: 1280px) {
+@media screen and (max-width: 530px) {
   body {
-    margin: 0 5%;
+    margin: 0 2%;
   }
 }
-
-@media screen and (min-width: 1440px) {
-  body {
-    margin: 0 10%;
-  }
-} */
 
 </style>

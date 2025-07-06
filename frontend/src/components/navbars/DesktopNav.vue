@@ -1,14 +1,15 @@
 <template>
-    <nav class="flex-1 flex justify-center">
-      <RouterLink class="py-2 px-4" to="/">Home</RouterLink>
-      <RouterLink class="py-2 px-4 ml-4" :to="{ name: 'explore' }">Explore</RouterLink>
-      <RouterLink class="py-2 px-4 ml-4" :to="{ name: 'marketplace' }">Marketplace</RouterLink>
-      <RouterLink class="py-2 px-4 ml-4" :to="{ name: 'account' }">Account</RouterLink>
-    </nav>
+  <nav class="flex-1 flex justify-center">
+    <RouterLink class="py-2 px-4" to="/">Home</RouterLink>
+    <RouterLink class="py-2 px-4 ml-4" to="/explore">Explore</RouterLink>
+    <RouterLink class="py-2 px-4 ml-4" to="/marketplace">Marketplace</RouterLink>
+    <RouterLink class="py-2 px-4 ml-4" to="/account">Account</RouterLink>
+  </nav>
 </template>
 
 <script setup lang="ts">
 import { RouterLink } from 'vue-router';
+
 
 </script>
 

@@ -14,7 +14,7 @@
 
 <script setup lang="ts">
 import router from '@/router';
-import { useAuth } from '@/composables/useAuth';
+import { useAuthStore } from '@/stores/auth';
 
 const props = defineProps<{
     title: string,
@@ -23,10 +23,10 @@ const props = defineProps<{
     to: string
 }>();
 
-const { logout } = useAuth()
+const auth = useAuthStore()
 
 const routeMap: Record<string, string | (() => void)> = {
-  logout: () => logout(),
+  logout: () => auth.logout(),
   orders: 'orders',
   profile: 'profile',
   address: 'addresses',

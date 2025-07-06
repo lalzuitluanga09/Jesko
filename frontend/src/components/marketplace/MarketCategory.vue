@@ -1,9 +1,9 @@
 <template>
-  <div class="mt-4 mb-8">
+  <div class="py-2">
     <Splide :options="sliderOptions" aria-label="Top Stores">
       <SplideSlide v-for="(item, index) in categories" :key="index" class="px-2">
         <div :class="selectedItems.includes(item) ? 'bg-amber-50 dark:bg-gray-500' : 'bg-gray-50 dark:bg-gray-700'"
-          class="px-4 py-2 hover:bg-amber-50 dark:hover:bg-gray-600 transition-colors border dark:border-gray-500 rounded text-sm md:text-base cursor-pointer"
+          class="px-4 py-2 hover:bg-amber-50 dark:hover:bg-gray-600 transition-colors border border-gray-300 dark:border-gray-500 rounded text-sm md:text-base cursor-pointer"
           @click="select(item as string)">
           {{ item }}
         </div>

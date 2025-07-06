@@ -7,6 +7,8 @@ import '@splidejs/splide/css/skyblue';
 
 import { createApp } from 'vue'
 import { createPinia } from 'pinia'
+import PrimeVue from 'primevue/config';
+
 // import VueSelect from "vue-select"
 
 // import VueSplide from '@splidejs/vue-splide'
@@ -17,6 +19,8 @@ import router from './router'
 const app = createApp(App)
 app.use(createPinia())
 app.use(router)
+app.use(PrimeVue)
+
 // app.use( VueSplide );
 // app.component("v-select", VueSelect)
 

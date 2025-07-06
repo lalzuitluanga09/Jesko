@@ -9,15 +9,42 @@
             </div>
             <ProductData />
         </div>
-        <div class="py-4 flex flex-col mx-1 px-1 md:mx-36 md:px-4  border-y border-y-gray-300">
-            <label class="block mb-2 font-medium">Description</label>
-            <div class="flex flex-wrap gap-2">
-                <span class="text-gray-500 text-sm pb-2">
-                    Description of the product
-                </span>
+        <div class="max-w-5xl mx-auto p-1 md:p-4">
+            <div class="border-b border-gray-300 mb-4">
+                <nav class="flex space-x-2 md:space-x-4">
+                    <button class="py-2 px-4 font-medium"
+                        :class="activeTab === 'description' ? 'border-b-2 border-pink-500 text-pink-600' : 'text-gray-500 dark:text-gray-300'"
+                        @click="activeTab = 'description'">
+                        Description
+                    </button>
+                    <button class="py-2 px-4 font-medium"
+                        :class="activeTab === 'details' ? 'border-b-2 border-pink-500 text-pink-600' : 'text-gray-500 dark:text-gray-300'"
+                        @click="activeTab = 'details'">
+                        Details
+                    </button>
+                    <button class="py-2 px-4 font-medium"
+                        :class="activeTab === 'reviews' ? 'border-b-2 border-pink-500 text-pink-600' : 'text-gray-500 dark:text-gray-300'"
+                        @click="activeTab = 'reviews'">
+                        Reviews
+                    </button>
+                </nav>
             </div>
-         </div>
-         <OtherProducts title="Similar Products"/>
+            <div class="px-2 md:p-4">
+                <div v-if="activeTab === 'description'"
+                    class="text-gray-500 dark:text-gray-300 text-sm md:text-base pb-2">
+                    Description of the product
+                </div>
+                <div v-else-if="activeTab === 'details'"
+                    class="text-gray-500 dark:text-gray-300 text-sm md:text-base pb-2">
+                    Product details go here.
+                </div>
+                <div v-else-if="activeTab === 'reviews'"
+                    class="text-gray-500 dark:text-gray-300 text-sm md:text-base pb-2">
+                    Product reviews go here.
+                </div>
+            </div>
+        </div>
+        <OtherProducts title="Similar Products" />
     </div>
 </template>
 
@@ -27,7 +54,7 @@ import ImageSlider from '@/components/product/ImageSlider.vue';
 import OtherProducts from '@/components/product/OtherProducts.vue';
 import ProductData from '@/components/product/ProductData.vue';
 import { useProduct } from '@/composables/useProduct';
-import { onMounted } from 'vue';
+import { onMounted, ref } from 'vue';
 
 const {
     loading,
@@ -37,12 +64,12 @@ onMounted(() => {
     let timeout: ReturnType<typeof setTimeout> | null = null
     loading.value = true
     if (timeout) clearTimeout(timeout)
-        timeout = setTimeout(() => {
+    timeout = setTimeout(() => {
         loading.value = false
     }, 500)
 })
+
+const activeTab = ref('description');
 </script>
 
-<style scoped>
-
-</style>
+<style scoped></style>

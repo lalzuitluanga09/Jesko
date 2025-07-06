@@ -55,25 +55,33 @@
                 </div>
             </div>
             <div
-                class="mb-4 flex flex-row justify-between items-center md:items-start gap-4 fixed left-0 right-0 z-20 bottom-12 bg-white dark:bg-gray-700 p-4 md:p-2 md:static ">
-                <div class="flex flex-col">
-                    <label class="block mb-2 font-medium">Quantity</label>
-                    <div class="flex items-center rounded w-fit">
-                        <button
-                            class="text-lg border border-gray-400 rounded-lg text-gray-500 cursor-pointer hover:bg-pink-100 hover:text-pink-600 px-3"
-                            @click="quantity > 1 && quantity--" type="button">-</button>
-                        <input disabled v-model.number="quantity" class="w-8 md:w-12 text-center" />
-                        <button
-                            class="text-lg border border-gray-400 rounded-lg text-gray-500 cursor-pointer hover:bg-pink-100 hover:text-pink-600 px-3"
-                            @click="quantity++" type="button">+</button>
+                class="mb-4 md:mb-0 flex flex-col md:flex-row md:justify-between md:items-center gap-4 fixed md:static left-0 right-0 z-20 bottom-0 bg-white/50 backdrop-blur-md dark:bg-gray-700/50 px-4 py-2 md:px-2 border-t border-t-gray-300 md:border-0 shadow md:shadow-none">
+                <div class="flex flex-row md:flex-col items-center md:items-start gap-4 md:gap-2 w-full md:w-auto">
+                    <div class="flex flex-col w-full md:w-auto">
+                        <label class="block mb-2 font-medium">Quantity</label>
+                        <div class="flex items-center rounded w-fit">
+                            <button
+                                class="text-lg border border-gray-400 rounded-lg text-gray-500 cursor-pointer hover:bg-pink-100 hover:text-pink-600 px-3"
+                                @click="quantity > 1 && quantity--" type="button">-</button>
+                            <input disabled v-model.number="quantity" class="w-8 md:w-12 text-center bg-transparent" />
+                            <button
+                                class="text-lg border border-gray-400 rounded-lg text-gray-500 cursor-pointer hover:bg-pink-100 hover:text-pink-600 px-3"
+                                @click="quantity++" type="button">+</button>
+                        </div>
                     </div>
                 </div>
-                <button
-                    class="self-end bg-pink-600 text-white px-8 py-2 rounded-xl font-semibold shadow hover:bg-pink-700 transition flex items-center gap-3 cursor-pointer">
-                    <span class="mdi mdi-shopping-outline"></span>
-                    Add to Cart
-                </button>
-
+                <div class="flex flex-row gap-4 mb-12 md:mb-0">
+                    <button
+                        class="w-full md:w-auto px-5 py-2 border border-gray-500 rounded-xl font-semibold shadow hover:text-white hover:bg-pink-600 transition-colors flex items-center justify-center gap-3 cursor-pointer">
+                        <span class="mdi mdi-shopping-outline"></span>
+                        Add to Cart
+                    </button>
+                    <button
+                        class="w-full md:w-auto bg-pink-600 text-white px-6 py-2 rounded-xl font-semibold shadow hover:bg-pink-700 transition-colors flex items-center justify-center gap-3 cursor-pointer">
+                        <span class="mdi mdi-cart-arrow-right"></span>
+                        Buy Now
+                    </button>
+                </div>
             </div>
         </div>
     </div>

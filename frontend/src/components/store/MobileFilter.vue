@@ -8,10 +8,13 @@
         </div>
     </div>
     <div>
+    <div v-if="filterOpen"
+        class="fixed inset-x-0 bottom-0 flex items-end justify-center bg-black/20 z-20 min-h-screen">
+    </div>
     <Transition name="slide">
     <div
       v-if="filterOpen"
-      class="fixed inset-x-0 bottom-0 flex items-end justify-center bg-black/20 z-10 min-h-screen"
+      class="fixed inset-x-0 bottom-0 flex items-end justify-center z-30 min-h-screen"
       @click.self="closeFilterDialog"
     >
     <div class="bg-white/80 dark:bg-gray-700/80 backdrop-blur-sm rounded-t-2xl shadow-lg p-6 w-full mb-16">
