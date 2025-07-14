@@ -73,7 +73,7 @@ const close = (key: string) => {
     closeEditDialog()
   } else if(key == 'self') {
     isDialogOpen.value = false
-  } else if ( key == ' cancel') {
+  } else if ( key == 'cancel') {
     closeAddDialog()
   }
 }

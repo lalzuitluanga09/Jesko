@@ -19,13 +19,10 @@
     </div>
   </div>
 </div>
-    <LoginDialog />
-
 </template>
 
 <script setup lang="ts">
 import SimpleBtn from './buttons/SimpleBtn.vue';
-import LoginDialog from './dialogs/LoginDialog.vue';
 import { useAuthStore } from '@/stores/auth';
 
 const props = defineProps<{

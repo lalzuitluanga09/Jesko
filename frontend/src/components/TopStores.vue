@@ -5,9 +5,12 @@
         </h1>
         <div class="lg:mx-8 lg:mt-10 md:mx-4 mx-2 pt-10">
             <Splide :options="bannerOptions" aria-label="Top Stores">
-                <SplideSlide v-for="n in 8" :key="n" class="px-2">
+              <div v-if="loadTopStore" class="flex w-full items-center justify-center min-h-42">
+                <Loading />
+              </div>
+                <SplideSlide v-for="(item, idx) in topStores" :key="idx" class="px-2" v-else>
                     <div class="pb-10">
-                        <StoreCard />
+                        <StoreCard :store="item"/>
                     </div>
                 </SplideSlide>
             </Splide>
@@ -18,8 +21,10 @@
 <script setup lang="ts">
 import { ref } from 'vue';
 import StoreCard from './cards/StoreCard.vue';
+import { useStore } from '@/composables/useStore';
 
 import { Splide, SplideSlide } from '@splidejs/vue-splide';
+import Loading from './others/Loading.vue';
 
 const bannerOptions = ref({ 
     type: 'slide',
@@ -34,7 +39,10 @@ const bannerOptions = ref({
     speed: 400,
 });
 
-const isMobile = ref(false);
+const {
+  loadTopStore,
+  topStores,
+} = useStore()
 
 const checkScreenWidth = () => {
   if (window.innerWidth <= 480) {

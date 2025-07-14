@@ -24,6 +24,7 @@ class Store extends Model
         'launch_at',
         'category_id',
         'theme_id',
+        'pin'
     ];
 
     protected $casts = [
@@ -49,10 +50,10 @@ class Store extends Model
         return $this->belongsToMany(User::class, 'store_followers');
     }
 
-    public function users(): HasMany
-    {
-        return $this->hasMany(StoreUser::class, 'store_id');
-    }
+    // public function users(): HasMany
+    // {
+    //     return $this->hasMany(StoreUser::class, 'store_id');
+    // }
 
     public function links(): HasMany
     {
@@ -66,11 +67,18 @@ class Store extends Model
 
     public function products(): HasMany
     {
-        return $this->hasMany(StoreProduct::class, 'store_id');
+        return $this->hasMany(Product::class, 'store_id')->whereNull('parent_id');
     }
 
     public function categories(): HasMany
     {
         return $this->hasMany(Category::class, 'store_id');
+    }
+
+    public function users(): BelongsToMany
+    {
+        return $this->belongsToMany(User::class, 'store_users')
+                    ->withPivot('role', 'status', 'joined_at')
+                    ->withTimestamps();
     }
 }

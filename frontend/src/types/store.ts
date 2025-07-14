@@ -8,14 +8,20 @@ interface Store {
     is_published: boolean,
     is_featured: boolean,
     launch_at: Date,
-    followers: number,
-    rating: number,
-    social_links: {
-        id: number,
-        name: string,
-        url: string
-    }[]
+    category_id: number
+    followers_count: number,
+    products_count: number,
+    ratings: number,
+}
+
+interface StoreCategory {
+    id: number,
+    name: string,
+    slug: string,
+    icon: string,
+    is_active: boolean,
+    parent_id: number
 }
 
 
-export type { Store };
+export type { Store, StoreCategory };

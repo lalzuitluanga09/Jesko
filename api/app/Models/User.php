@@ -74,4 +74,37 @@ class User extends Authenticatable
     {
         return $this->hasMany(MarketplaceProduct::class, 'user_id');
     }
-}
+
+    public function stores(): BelongsToMany
+    {
+        return $this->belongsToMany(Store::class, 'store_users');
+    }
+
+    public function storeUsers(): HasMany
+    {
+        return $this->hasMany(StoreUser::class);
+    }
+
+    public function getStoreUsersWithStore(): HasMany
+    {
+        return $this->hasMany(StoreUser::class)->with([
+            'store:id,name,slug,logo'
+        ]);
+    }
+
+    public function carts(): HasMany
+    {
+        return $this->hasMany(Cart::class);
+    }
+
+    public function getActiveCartAttribute()
+    {
+        return $this->carts()->where('status', 'active')->first();
+    }
+
+    public function wishlistProducts(): BelongsToMany 
+    {
+        return $this->belongsToMany(Product::class, 'wishlists');
+    }
+
+}      

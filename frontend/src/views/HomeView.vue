@@ -2,7 +2,7 @@
   <div>
     <Banner />
     <TopStores />
-    <StoreProducts />
+    <!-- <StoreProducts /> -->
   </div>
 </template>
 
@@ -11,5 +11,16 @@
 import Banner from '@/components/Banner.vue';
 import StoreProducts from '@/components/StoreProducts.vue';
 import TopStores from '@/components/TopStores.vue';
+import { useStore } from '@/composables/useStore';
+import { onMounted } from 'vue';
+
+const {
+  topStores,
+  getTopStores
+} = useStore()
+
+onMounted(async() => {
+  await getTopStores()
+})
 
 </script>

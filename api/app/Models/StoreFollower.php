@@ -13,6 +13,7 @@ class StoreFollower extends Model
         'store_id',
         'user_id',
     ];
+    
     protected $casts = [
         'store_id' => 'integer',
         'user_id' => 'integer',

@@ -1,11 +1,11 @@
 <template>
-  <div ref="dropdownRef" class="relative inline-block w-32 text-sm">
+  <div ref="dropdownRef" class="relative inline-block w-42 text-sm">
     <button
       class="w-full dark:bg-gray-700 border border-gray-300 dark:border-gray-500 rounded-md px-2 py-1 text-left cursor-pointer focus:outline-none focus:ring-1 focus:ring-pink-500"
       @click="isOpen = !isOpen"
     >
     <span class="mdi mdi-sort-variant"></span>
-      {{ selected || 'Sort by:' }}
+      {{ value }}
       <span class="float-right">
         <i class="mdi" :class="isOpen?'mdi-chevron-up':'mdi-chevron-down'"></i>
       </span>
@@ -16,12 +16,12 @@
       class="absolute z-10 mt-1 w-full bg-white/80 dark:bg-gray-700 border border-gray-300 dark:border-gray-500 rounded-lg overflow-hidden"
     >
       <li
-        v-for="option in options"
-        :key="option"
-        @click="selectOption(option)"
-        class="px-4 py-2 hover:bg-pink-100 dark:hover:bg-gray-600 cursor-pointer"
+        v-for="(option, idx) in options"
+        :key="idx"
+        @click="select(option)"
+        class="px-4 py-2 hover:bg-pink-100 dark:hover:bg-gray-600 cursor-pointer "
       >
-        {{ option }}
+        {{ option.label }}
       </li>
     </ul>
   </div>
@@ -31,14 +31,21 @@
 <script setup lang="ts">
 import { ref, onMounted, onUnmounted } from 'vue'
 
-const options = ['Option 1', 'Option 2', 'Option 3']
-const selected = ref<string | null>(null)
+const props = defineProps<{
+  value: string | null,
+  options: any[]
+}>()
+
 const isOpen = ref(false)
 
 const dropdownRef = ref<HTMLElement | null>(null)
 
-const selectOption = (option: string) => {
-  selected.value = option
+const emit = defineEmits<{
+    (e: 'select', value: any): void
+}>();
+
+const select = (selected: any) => {
+  emit('select', selected.value);
   isOpen.value = false
 }
 
@@ -59,7 +66,6 @@ onUnmounted(() => {
 
 
 <style scoped>
-/* Optional: smooth dropdown */
 ul {
   transition: all 0.2s ease-in-out;
 }

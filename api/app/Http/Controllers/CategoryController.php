@@ -38,7 +38,7 @@ class CategoryController extends Controller
         //
     }
 
-    public function update(Request $request, $id)
+    public function update(Request $request, $storeSlug, $id)
     {
         $category = Category::findOrFail($id);
         $name = Str::ucfirst(Str::lower($request->name));
@@ -50,7 +50,7 @@ class CategoryController extends Controller
         return response()->json(['status' => 'updated'], 200);
     }
 
-    public function destroy($id)
+    public function destroy($storeSlug, $id)
     {
         Category::find($id)->delete();
 

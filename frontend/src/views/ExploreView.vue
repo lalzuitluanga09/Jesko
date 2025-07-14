@@ -1,39 +1,42 @@
 <template>
-  <div class="flex flex-row items-center w-full max-w-4xl mx-auto md:gap-1">
-      <SearchBar />
-      <LocationBar />
+  <div class="flex flex-col md:flex-row items-center w-full max-w-5xl mx-auto md:gap-1">
+    <SearchBar v-model="storeFilter.searchTerm" @clear="() => storeFilter.searchTerm = ''" @search="getData"/>
+      <div class="flex w-full md:w-auto justify-between items-center">
+        <LocationBar />
+        <button @click="reset"
+                class="border border-blue-300 text-blue-400 px-3 py-2 md:w-32 rounded-md hover:bg-blue-100 dark:hover:bg-gray-700 cursor-pointer">
+            <span class="mdi mdi-close-circle md:pr-1"></span>Reset
+        </button>
+      </div>
   </div>
-  <div v-if="searchTerm === ''">
-    <ExploreCateogry />
+    <ExploreCateogry v-if="!searchTitle"/>
     <ExploreStores />
-  </div>
-  <div v-else>
-    <Loading v-if="loading" class="min-h-[400px]"/>
-    <div v-else class="flex flex-col w-full max-w-6xl mx-auto py-4 md:py-8">
-      <div class="flex justify-between items-center mb-2">
-        <div class="text-gray-600 text-sm ml-2 md:ml-0">Showing 4 of 4 results</div>
-        <SelectBtn />
-      </div>
-      <div class="grid grid-cols-2 sm:grid-cols-2 lg:grid-cols-4 gap-2 md:gap-4 mx-2 md:mx-0">
-        <StoreCard />
-        <StoreCard />
-        <StoreCard />
-        <StoreCard />
-      </div>
-    </div>
-  </div>
 </template>
 
 <script setup lang="ts">
 import SearchBar from '@/components/search/SearchBar.vue'
 import ExploreCateogry from '@/components/ExploreCateogry.vue'
 import ExploreStores from '@/components/ExploreStores.vue'
-import StoreCard from '@/components/cards/StoreCard.vue'
-import Loading from '@/components/others/Loading.vue'
 import { useStore } from '@/composables/useStore'
-import SelectBtn from '@/components/buttons/SelectBtn.vue'
 import LocationBar from '@/components/search/LocationBar.vue'
+import { onMounted } from 'vue'
 
-const { searchTerm, loading } = useStore()
+const { 
+  storeFilter,
+  searchTitle,
+  filtering,
+  getData
+} = useStore()
+
+onMounted(async() => {
+  filtering.value = true 
+  await getData()
+})
+
+const reset = () => {
+  storeFilter.value.category_id = null
+  storeFilter.value.searchTerm = ''
+  getData()
+}
 
 </script>

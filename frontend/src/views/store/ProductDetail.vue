@@ -4,13 +4,13 @@
     </div>
     <div v-else>
         <div class="max-w-5xl mx-auto p-2 md:p-6 grid grid-cols-1 md:grid-cols-2 gap-4 md:gap-8 rounded-lg">
-            <div class="flex items-center rounded-xl overflow-clip">
-                <ImageSlider />
+            <div class="relative flex items-center rounded-xl overflow-clip">
+                <ImageSlider :images="productData.images"/>
             </div>
             <ProductData />
         </div>
         <div class="max-w-5xl mx-auto p-1 md:p-4">
-            <div class="border-b border-gray-300 mb-4">
+            <div class="border-b border-gray-300 dark:border-gray-500 mb-4">
                 <nav class="flex space-x-2 md:space-x-4">
                     <button class="py-2 px-4 font-medium"
                         :class="activeTab === 'description' ? 'border-b-2 border-pink-500 text-pink-600' : 'text-gray-500 dark:text-gray-300'"
@@ -29,10 +29,10 @@
                     </button>
                 </nav>
             </div>
-            <div class="px-2 md:p-4">
+            <div class="px-2">
                 <div v-if="activeTab === 'description'"
                     class="text-gray-500 dark:text-gray-300 text-sm md:text-base pb-2">
-                    Description of the product
+                    {{ productData.item?.description }}
                 </div>
                 <div v-else-if="activeTab === 'details'"
                     class="text-gray-500 dark:text-gray-300 text-sm md:text-base pb-2">
@@ -44,8 +44,9 @@
                 </div>
             </div>
         </div>
-        <OtherProducts title="Similar Products" />
+        <!-- <OtherProducts title="Similar Products" /> -->
     </div>
+    <ViewImageSlider />
 </template>
 
 <script setup lang="ts">
@@ -53,20 +54,28 @@ import DataLoader from '@/components/others/DataLoader.vue';
 import ImageSlider from '@/components/product/ImageSlider.vue';
 import OtherProducts from '@/components/product/OtherProducts.vue';
 import ProductData from '@/components/product/ProductData.vue';
+import ViewImageSlider from '@/components/dialogs/view/ViewImageSlider.vue';
 import { useProduct } from '@/composables/useProduct';
 import { onMounted, ref } from 'vue';
+import { useRoute } from 'vue-router';
+import { useStore } from '@/composables/useStore';
 
 const {
     loading,
 } = useProduct()
 
+const {
+    productData,
+    getProductData
+} = useStore()
+
+const route = useRoute()
+
+
 onMounted(() => {
-    let timeout: ReturnType<typeof setTimeout> | null = null
-    loading.value = true
-    if (timeout) clearTimeout(timeout)
-    timeout = setTimeout(() => {
-        loading.value = false
-    }, 500)
+    if(!productData.value.item) {
+        getProductData(Number(route.params.id))
+    }
 })
 
 const activeTab = ref('description');

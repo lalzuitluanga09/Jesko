@@ -1,6 +1,6 @@
 <template>
     <div v-if="loadStoreData">
-        <StoreLoading title="Store Name" content="Welcome"/>
+        <StoreLoading :title="storeData.data?.name || 'Store'" content="Welcome"/>
     </div>
     <div v-else class="flex flex-col md:gap-2">
         <StoreHeader />
@@ -25,20 +25,25 @@ import StoreLoading from '@/components/others/StoreLoading.vue';
 import { useSetting } from '@/composables/useSetting';
 import { useStore } from '@/composables/useStore';
 import { onMounted } from 'vue';
+import { useRoute } from 'vue-router';
+
+const route = useRoute()
 
 const { isMobile } = useSetting()
 
 const {
     loadStoreData,
+    storeData,
+    getStoreData,
+    fetchProducts,
 } = useStore()
 
-onMounted(() => {
-    let timeout: ReturnType<typeof setTimeout> | null = null
-    loadStoreData.value = true
-    if (timeout) clearTimeout(timeout)
-        timeout = setTimeout(() => {
-        loadStoreData.value = false
-    }, 700)
+onMounted(async() => {
+    await getStoreData(route.params.slug as string )
+    const storeId = storeData.value.data?.id
+    if(storeId) {
+        await fetchProducts(storeId)
+    }
 })
 
 

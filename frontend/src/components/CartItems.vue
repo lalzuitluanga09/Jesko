@@ -1,24 +1,34 @@
 <template>
     <div class="mt-8 relative flex flex-col px-2 py-4 md:px-4 md:py-6 border border-gray-300  rounded-2xl">
-        <h1
-            class="absolute -top-4 left-5 px-2 -y-1 rounded-lg bg-white dark:bg-gray-700 border border-gray-300 text-base md:text-lg font-medium">
-            Puiipuii Gooods
+        <h1 @click="goTo"
+            class="cursor-pointer absolute -top-4 left-5 px-2 -y-1 rounded-lg bg-white dark:bg-gray-700 border border-gray-300 text-base md:text-lg font-medium">
+            {{ item.store_name }}
         </h1>
         <div class="flex flex-col gap-1">
             <transition-group name="fade-slide" tag="div" class="space-y-4">
-                <CartItem v-for="item in cartItems" :key="item.id" :item="item" />
+                <CartItem v-for="product in item.items" :key="product.id" :item="product" :slug="item.store_slug"/>
             </transition-group>
         </div>
     </div>
 </template>
 
 <script setup lang="ts">
+import type { GroupedItems } from '@/types/cart';
 import CartItem from './cards/CartItem.vue';
-import { useCart } from '@/composables/useCart';
+import router from '@/router';
 
+const props = defineProps<{
+    item: GroupedItems
+}>();
 
-const { cartItems } = useCart()
-
+const goTo = () => {
+    router.push({
+        name: 'store',
+        params: {
+            slug: props.item.store_slug,
+        }
+    })
+}
 
 </script>
 

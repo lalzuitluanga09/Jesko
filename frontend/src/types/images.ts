@@ -11,4 +11,10 @@ interface NewImage {
   preview_url?: string;
 }
 
-export type { Images, NewImage };
+interface ProductImages {
+  id: number,
+  image_path: string,
+  is_primary: boolean
+}
+
+export type { Images, NewImage, ProductImages };

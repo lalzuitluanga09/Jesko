@@ -6,7 +6,7 @@
                 class="flex flex-col bg-white dark:bg-gray-800 w-full max-w-xl px-6 py-4 rounded-2xl shadow-md space-y-4 mx-4 border border-gray-200 dark:border-gray-700 max-h-[90vh] overflow-y-auto cursor-default">
                 <h2 class="text-lg text-center font-semibold text-gray-900 dark:text-white">Product Overview</h2>
                 <div class="flex gap-4 justify-center">
-                    <div @click="viewImage(storageUrl(defaultImage?.image_path || ''))"
+                    <div @click="viewMainImage"
                         class="w-60 h-60 cursor-zoom-in rounded-xl overflow-hidden bg-gradient-to-br from-gray-100 via-gray-200 to-gray-300 dark:from-gray-700 dark:via-gray-800 dark:to-gray-900 flex items-center justify-center border-2 border-gray-200 dark:border-gray-700">
                         <img v-if="defaultImage?.image_path" :src="storageUrl(defaultImage?.image_path)"
                             :alt="selected?.name || 'Product Image'"
@@ -227,6 +227,12 @@ onMounted(() => {
 onBeforeUnmount(() => {
   window.removeEventListener('keydown', handleKeydown)
 })
+
+const viewMainImage = () => {
+    if(defaultImage.value?.image_path) {
+        viewImage(storageUrl(defaultImage.value?.image_path || ''))
+    }
+}
 </script>
 
 <style scoped>

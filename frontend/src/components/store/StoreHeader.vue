@@ -13,14 +13,17 @@
     <div class="px-4 pt-2 pb-4 sm:pt-4 sm:pb-6 sm:px-8 flex flex-row justify-between gap-6">
         <div class="flex flex-row items-center gap-12 sm:gap-24">
             <div class="flex flex-col max-w-1/2">
-                <h1 class="text-lg sm:text-2xl font-semibold line-clamp-2 leading-tight">Store Name</h1>
+                <h1 class="text-lg sm:text-2xl font-semibold line-clamp-2 leading-tight">{{ storeData.data?.name }}</h1>
                 <p class="text-sm md:text-base text-gray-500 dark:text-gray-400">Location</p>
-                <p class="text-sm text-gray-500 dark:text-gray-400 mt-2">Owner: John Doe</p>
+                <p class="text-sm text-gray-500 dark:text-gray-400 mt-2">Owner: {{ storeData.owner?.name }}</p>
             </div>
             <div class="flex items-center text-center my-auto">
                 <div class="flex flex-col md:flex-row gap-1 md:gap-4">
                     <h2 class="font-bold">
-                        <span class="mdi mdi-account">100</span>
+                        <span class="mdi mdi-account">{{ storeData.data?.followers_count }}</span>
+                    </h2>
+                    <h2 class="font-bold">
+                        <span class="mdi mdi-package-variant-closed">{{ storeData.data?.products_count }}</span>
                     </h2>
                     <!-- <p class="text-xs text-gray-500 dark:text-gray-400">Followers</p> -->
                     <button class="text-xs md:text-sm text-gray-500 dark:text-gray-400 border px-2 py-0.5 rounded-xl cursor-pointer hover:bg-pink-100 hover:text-pink-700">
@@ -38,3 +41,11 @@
     </div>
   </div>
 </template>
+
+<script setup lang="ts">
+import { useStore } from '@/composables/useStore';
+
+const {
+  storeData
+} = useStore()
+</script>

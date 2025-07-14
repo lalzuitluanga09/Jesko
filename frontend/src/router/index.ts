@@ -1,177 +1,155 @@
 import { createRouter, createWebHistory } from 'vue-router'
-import HomeView from '../views/HomeView.vue'
-import ExploreView from '@/views/ExploreView.vue'
-import Marketplace from '@/views/Marketplace.vue'
-import Cart from '@/views/Cart.vue'
-import Account from '@/views/Account.vue'
-import Home from '@/views/store/Home.vue'
-import ProductDetail from '../views/store/ProductDetail.vue'
-import ItemDetail from '@/views/marketplace/ItemDetail.vue'
-import Orders from '@/views/account/Orders.vue'
-import Profile from '@/views/account/Profile.vue'
-import Address from '@/views/account/Address.vue'
-import Following from '@/views/account/Following.vue'
-import Favourite from '@/views/Favourite.vue'
-import Notification from '@/views/Notification.vue'
-import Dashboard from '@/views/admin/Dashboard.vue'
-import DefaultLayout from '@/layouts/DefaultLayout.vue'
-import AdminLayout from '@/layouts/AdminLayout.vue'
-import Products from '@/views/admin/Products.vue'
-import Category from '@/views/admin/Category.vue'
-import Tag from '@/views/admin/Tag.vue'
-import Order from '@/views/admin/Order.vue'
-import Customer from '@/views/admin/Customer.vue'
-import Payment from '@/views/admin/Payment.vue'
-import Report from '@/views/admin/Report.vue'
-import Setting from '@/views/admin/Setting.vue'
-import Sale from '@/views/admin/Sale.vue'
-import Coupon from '@/views/admin/Coupon.vue'
 
 const router = createRouter({
   history: createWebHistory(import.meta.env.BASE_URL),
   routes: [
     {
       path: '/',
-      component: DefaultLayout,
+      component: () => import('@/layouts/DefaultLayout.vue'),
       children: [
         {
           path: '',
           name: 'home',
-          component: HomeView,
+          component: () => import('../views/HomeView.vue'),
         },
         {
           path: '/explore',
           name: 'explore',
-          component: ExploreView,
+          component: () => import('@/views/ExploreView.vue'),
         },
         {
           path: '/marketplace',
           name: 'marketplace',
-          component: Marketplace,
+          component: () => import('@/views/Marketplace.vue'),
         },
         {
           path: '/cart',
           name: 'cart',
-          component: Cart,
+          component: () => import('@/views/Cart.vue'),
         },
         {
           path: '/account',
           name: 'account',
-          component: Account,
+          component: () => import('@/views/Account.vue'),
         },
 
         {
           path: '/favourites',
           name: 'favourite',
-          component: Favourite,
+          component: () => import('@/views/Wishlist.vue'),
         },
         {
           path: '/notifications',
           name: 'notification',
-          component: Notification,
+          component: () => import('@/views/Notification.vue'),
         },
 
         //Store Pages
         {
           path: '/store/:slug',
           name: 'store',
-          component: () => Home,
+          component: () => import('@/views/store/Home.vue'),
         },
         {
           path: '/store/:storeslug/products/:id',
           name: 'product-detail',
-          component: ProductDetail,
+          component: () => import('../views/store/ProductDetail.vue'),
         },
 
         //Marketplace
         {
           path: '/marketplace/item/:id',
           name: 'item-detail',
-          component: ItemDetail,
+          component: () => import('@/views/marketplace/ItemDetail.vue'),
         },
 
         //Account
         {
           path: '/account/orders',
           name: 'orders',
-          component: Orders,
+          component: () => import('@/views/account/Orders.vue'),
         },
         {
           path: '/account/following',
           name: 'followings',
-          component: Following,
+          component: () => import('@/views/account/Following.vue'),
         },
         {
           path: '/account/profile',
           name: 'profile',
-          component: Profile,
+          component: () => import('@/views/account/Profile.vue'),
         },
         {
           path: '/account/addresses',
           name: 'addresses',
-          component: Address,
+          component: () => import('@/views/account/Address.vue'),
+        },
+        {
+          path: '/account/my-stores',
+          name: 'my-stores',
+          component: () => import('@/views/account/MyStores.vue'),
         },
 
       ]
     },
     {
-      path: '/admin',
-      component: AdminLayout,
+      path: '/admin/:storeslug',
+      component: () => import('@/layouts/AdminLayout.vue'),
       children: [
         {
           path: 'dashboard',
           name: 'dashboard',
-          component: Dashboard,
+          component: () => import('@/views/admin/Dashboard.vue'),
         },
         {
           path: 'products',
           name: 'products',
-          component: Products,
+          component: () => import('@/views/admin/Products.vue'),
         },
         {
           path: 'category',
           name: 'category',
-          component: Category,
+          component: () => import('@/views/admin/Category.vue'),
         },
         {
           path: 'tag',
           name: 'tag',
-          component: Tag,
+          component: () => import('@/views/admin/Tag.vue'),
         },
         {
           path: 'orders',
           name: 'orders-list',
-          component: Order,
+          component: () => import('@/views/admin/Order.vue'),
         },
         {
           path: 'customer',
           name: 'customer',
-          component: Customer,
+          component: () => import('@/views/admin/Customer.vue'),
         },
         {
           path: 'payment',
           name: 'payment',
-          component: Payment,
+          component: () => import('@/views/admin/Payment.vue'),
         },
         {
           path: 'reports',
           name: 'reports',
-          component: Report,
+          component: () => import('@/views/admin/Report.vue'),
         },
         {
           path: 'setting',
           name: 'setting',
-          component: Setting,
+          component: () => import('@/views/admin/Setting.vue'),
         },
         {
           path: 'sales',
           name: 'sales',
-          component: Sale,
+          component: () => import('@/views/admin/Sale.vue'),
         },
         {
           path: 'coupons',
           name: 'coupons',
-          component: Coupon,
+          component: () => import('@/views/admin/Coupon.vue'),
         },
       ]
     },

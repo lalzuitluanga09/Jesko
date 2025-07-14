@@ -2,7 +2,7 @@
     <div>
         <div class="flex items-center mb-6">
             <label class="text-sm md:text-base font-semibold text-gray-800 dark:text-gray-100 mr-3">Is Variable Product?</label>
-            <input type="checkbox" class="w-5 h-5 accent-blue-600" v-model="isVariable" />
+            <input type="checkbox" class="w-5 h-5 accent-blue-600 cursor-pointer" v-model="isVariable" />
         </div>
     </div>
     <div v-if="isVariable" class="bg-white dark:bg-gray-700 text-sm">
@@ -22,7 +22,7 @@
                 <div
                     v-if="variations.length > 1"
                     @click="removeVariation(vIdx)"
-                    class="mr-2 text-red-500 hover:text-red-700 transition px-1 rounded-full hover:bg-red-50 dark:hover:bg-red-900"
+                    class="mr-2 text-red-500 hover:text-red-700 transition px-1 rounded-full hover:bg-red-50 dark:hover:bg-red-900 cursor-pointer"
                     title="Remove Option"
                 >
                 <span class="mdi mdi-close"></span>
@@ -37,7 +37,7 @@
                     <span class="font-medium">{{ value }}</span>
                     <div
                         @click="removeValue(vIdx, valIdx)"
-                        class="ml-2 text-red-400 hover:text-red-600 transition px-1 rounded-full hover:bg-red-100 dark:hover:bg-red-900"
+                        class="ml-2 text-red-400 hover:text-red-600 transition px-1 rounded-full hover:bg-red-100 dark:hover:bg-red-900 cursor-pointer"
                         title="Remove Value"
                     >
                     <span class="mdi mdi-close"></span>

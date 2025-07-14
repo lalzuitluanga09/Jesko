@@ -1,6 +1,6 @@
 <template>
     <Transition name="bounce">
-        <div v-if="isView" class="fixed inset-0 flex items-center justify-center bg-black/10 backdrop-blur-xs z-50"
+        <div v-show="isView" class="fixed inset-0 flex items-center justify-center bg-black/10 backdrop-blur-xs z-50"
             @click.self="closeViewDialog">
             <div class="bg-white dark:bg-gray-900 w-full max-w-md p-6 rounded-xl shadow-xl mx-4 border border-gray-200 dark:border-gray-700">
                 <h2 class="text-2xl font-bold text-gray-800 dark:text-gray-100 mb-6 text-center tracking-wide">

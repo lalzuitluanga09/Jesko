@@ -1,9 +1,10 @@
 import { computed, ref, watch } from 'vue'
-import api from '@/lib/axios'
+import {adminApi} from '@/lib/axios'
 import { useNotify } from './useNotify'
 import { useConfirmDialog } from './useConfirmDialog'
 import type { Tag } from '@/types/tag'
 import { debounce } from 'lodash-es'
+import { useAdmin } from './useAdmin'
 
 const loading = ref<boolean>(false)
 const isDialogOpen = ref<boolean>(false)
@@ -28,6 +29,7 @@ const {
 } = useNotify()
 
 const { isOpen, itemId } = useConfirmDialog()
+const {storeSlug } = useAdmin()
 
 
 
@@ -36,7 +38,7 @@ export function useTag() {
   const getData = async () => {
     loading.value = true
     try {
-      const res = await api.get('/tag');
+      const res = await adminApi.get(`/${storeSlug.value}/tag`);
       data.value = res.data
       filteredData.value = res.data
     } catch (error) {
@@ -53,7 +55,7 @@ export function useTag() {
     }
     loading.value = true
     try {
-      await api.post('/tag', {
+      await adminApi.post(`/${storeSlug.value}/tag`, {
         name: inputData.value.trim()
       });
       notifySuccess('New Tag added')
@@ -73,7 +75,7 @@ export function useTag() {
     }
     loading.value = true
     try {
-      await api.put(`/tag/${editId.value}`, {
+      await adminApi.put(`/${storeSlug.value}/tag/${editId.value}`, {
         name: inputData.value.trim()
       });
       notifySuccess('Updated Successfully')
@@ -102,7 +104,7 @@ export function useTag() {
 
   const deleteData = async () => {
     try {
-      await api.delete(`/tag/${itemId.value}`);
+      await adminApi.delete(`/${storeSlug.value}/tag/${itemId.value}`);
       isOpen.value = false
       notifySuccess('Deleted successfully')
       getData();

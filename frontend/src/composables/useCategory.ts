@@ -1,9 +1,10 @@
 import { computed, ref, watch } from 'vue'
-import api from '@/lib/axios'
+import {adminApi} from '@/lib/axios'
 import { useNotify } from './useNotify'
 import type { Category } from '@/types/category'
 import { useConfirmDialog } from './useConfirmDialog'
 import { debounce } from 'lodash-es'
+import { useAdmin } from './useAdmin'
 
 const {
   notifySuccess,
@@ -11,6 +12,7 @@ const {
 } = useNotify()
 
 const { isOpen, itemId } = useConfirmDialog()
+const { storeSlug } = useAdmin()
 
 const loading = ref<boolean>(false)
 const isDialogOpen = ref<boolean>(false)
@@ -35,7 +37,7 @@ export function useCategory() {
   const getData = async () => {
     loading.value = true
     try {
-      const res = await api.get('/category');
+      const res = await adminApi.get(`/${storeSlug.value}/category`);
       data.value = res.data
       filteredData.value = res.data
     } catch (error) {
@@ -52,7 +54,7 @@ export function useCategory() {
     }
     loading.value = true
     try {
-      await api.post('/category', {
+      await adminApi.post(`/${storeSlug.value}/category`, {
         name: inputData.value.trim()
       });
       notifySuccess('Category added')
@@ -72,7 +74,7 @@ export function useCategory() {
     }
     loading.value = true
     try {
-      await api.put(`/category/${editId.value}`, {
+      await adminApi.put(`/${storeSlug.value}/category/${editId.value}`, {
         name: inputData.value.trim()
       });
       notifySuccess('Updated Successfully')
@@ -101,7 +103,7 @@ export function useCategory() {
 
   const deleteData = async () => {
     try {
-      await api.delete(`/category/${itemId.value}`);
+      await adminApi.delete(`/${storeSlug.value}/category/${itemId.value}`);
       isOpen.value = false
       notifySuccess('Deleted successfully')
       getData();

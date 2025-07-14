@@ -1,6 +1,7 @@
 <template>
   <RouterView />
   <Notify/>
+  <LoginDialog />
 </template>
 
 <script setup lang="ts">
@@ -9,6 +10,8 @@ import { useSetting } from './composables/useSetting';
 import { onMounted } from 'vue';
 import { useAuthStore } from './stores/auth';
 import Notify from './components/notification/Notify.vue';
+import LoginDialog from './components/dialogs/LoginDialog.vue';
+import { useMeta } from './stores/meta';
 
 const { checkScreenWidth } = useSetting()
 
@@ -16,9 +19,10 @@ checkScreenWidth();
 window.addEventListener('resize', checkScreenWidth);
 
 const auth = useAuthStore()
-
-onMounted(() => {
-  auth.checkAuth()
+const meta = useMeta()
+onMounted(async() => {
+  await auth.checkAuth()
+  await meta.getMeta()
 })
 
 </script>

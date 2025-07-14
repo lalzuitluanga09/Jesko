@@ -1,11 +1,11 @@
-import api from '@/lib/axios';
+import {adminApi} from '@/lib/axios';
 import type { Product } from '@/types/product';
 import { reactive, computed, watch, ref } from 'vue'
 import { useNotify } from './useNotify'
 import { useConfirmDialog } from './useConfirmDialog'
 import { debounce } from 'lodash-es'
-import type { Images, NewImage } from '@/types/images';
-
+import type { Images, NewImage, ProductImages } from '@/types/images';
+import { useAdmin } from './useAdmin';
 
 const {
   notifySuccess,
@@ -13,6 +13,7 @@ const {
 } = useNotify()
 
 const { isOpen, itemId } = useConfirmDialog()
+const { storeSlug } = useAdmin()
 
 const loading = ref<boolean>(false)
 const isView = ref<boolean>(false)
@@ -22,6 +23,9 @@ const editId = ref<number>(0)
 
 const isMagnify = ref<boolean>(false)
 const previewImageUrl = ref<string>('')
+
+const isMagnifyImages = ref<boolean>(false)
+const viewImages = ref<ProductImages []>([])
 
 //Variations
 const isVariable = ref<boolean>(false)
@@ -56,11 +60,16 @@ const updatedStocks = reactive<{ [id: string]: { price: number, stock: number } 
 const perPage = ref<number>(10)
 const currentPage = ref(<number>(1))
 
-const filter = ref({
+const filter = ref<{
+  searchTerm: string,
+  status: string,
+  category: number | null,
+  tag: number | null,
+}>({
   searchTerm: '',
   status: '',
-  category: '',
-  tag: ''
+  category: null,
+  tag: null
 })
 
 const data = ref<Product []>([])
@@ -103,7 +112,7 @@ export function useProduct() {
     const getData = async () => {
     loading.value = true
     try {
-      const res = await api.get('/product');
+      const res = await adminApi.get(`/${storeSlug.value}/product`);
       data.value = res.data
       filteredData.value = res.data
       filterData()
@@ -124,7 +133,7 @@ export function useProduct() {
     Object.entries(formData.value).forEach(([key, value]) => {
       if (Array.isArray(value)) {
         value.forEach((v) => {
-          form.append(`product[${key}][]`, v);
+          form.append(`product[${key}][]`, v.toString());
         });
       } else if (value !== null && value !== undefined) {
         form.append(`product[${key}]`, String(value));
@@ -152,7 +161,7 @@ export function useProduct() {
 
     loading.value = true
     try {
-      await api.post('/product', form);
+      await adminApi.post(`${storeSlug.value}/product`, form);
       notifySuccess('New Product added')
       closeAddDialog()
       reset()
@@ -175,7 +184,7 @@ export function useProduct() {
     Object.entries(formData.value).forEach(([key, value]) => {
     if (Array.isArray(value)) {
         value.forEach((v) => {
-        payload.append(`product[${key}][]`, v);
+        payload.append(`product[${key}][]`, v.toString());
       });
     } else if (value !== null && value !== undefined) {
       payload.append(`product[${key}]`, String(value));
@@ -196,7 +205,7 @@ export function useProduct() {
       payload.append('deleted_image_ids[]', id.toString());
     });
 
-    if(selected.value?.type == 'varaible') {
+    if(selected.value?.type == 'variable') {
         const variationUpdates = Object.entries(updatedStocks).map(([id, { price, stock }]) => ({
           id,
           price,
@@ -210,7 +219,7 @@ export function useProduct() {
     loading.value = true
     try {
 
-      await api.post(`/product/${editId.value}`, payload, {
+      await adminApi.post(`${storeSlug.value}/product/${editId.value}`, payload, {
         headers: { 'Content-Type': 'multipart/form-data' },
       });
       notifySuccess('Updated Successfully')
@@ -224,7 +233,7 @@ export function useProduct() {
   const fetchItem = async () => {
     loading.value = true
     try {
-      const res = await api.get(`/product/${editId.value}`);
+      const res = await adminApi.get(`${storeSlug.value}/product/${editId.value}`);
       selected.value = res.data.product
       formData.value = res.data.product
       formData.value.category_ids = res.data.categories
@@ -250,7 +259,7 @@ export function useProduct() {
 
     const deleteData = async () => {
       try {
-        await api.delete(`/product/${itemId.value}`);
+        await adminApi.delete(`${storeSlug.value}/product/${itemId.value}`);
         isOpen.value = false
         notifySuccess('Deleted successfully')
         getData();
@@ -375,8 +384,8 @@ export function useProduct() {
     filter.value = {
       searchTerm: '',
       status: '',
-      category: '',
-      tag: ''
+      category: null,
+      tag: null
     }
   }
 
@@ -447,6 +456,8 @@ export function useProduct() {
 
     return {
       isMagnify,
+      isMagnifyImages,
+      viewImages,
       previewImageUrl,
       filter,
       columns,

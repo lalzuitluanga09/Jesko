@@ -10,13 +10,8 @@
         <SettingLink title="Followings" icon="mdi mdi-storefront-outline" to="following"/>
         <SettingLink title="Profile" icon="mdi mdi-account-outline" to="profile"/>
         <SettingLink title="Addresses" icon="mdi mdi-map-marker-outline" to="address"/>
+        <SettingLink title="My Stores" icon="mdi mdi-storefront" to="myStores" v-if="auth.isStoreUser"/>
         <SettingLink title="Logout" icon="mdi mdi-location-exit" to="logout"/>
-      </div>
-      <div class="text-center mt-12">
-        <RouterLink :to="{name:'dashboard'}" class="bg-blue-100 dark:text-blue-700 px-4 py-2 rounded-2xl hover:bg-blue-200 hover:text-blue-800 transition-colors">
-          <span class="mdi mdi-shield-home text-xl"></span>
-          Go to Admin Panel 
-        </RouterLink>
       </div>
    </div>
 </template>

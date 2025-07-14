@@ -20,6 +20,7 @@ return new class extends Migration
             $table->timestamp('joined_at')->nullable();
             $table->timestamps();
             $table->softDeletes();
+            $table->unique(['user_id', 'store_id']);
         });
     }
 

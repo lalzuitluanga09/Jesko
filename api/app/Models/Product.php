@@ -41,15 +41,19 @@ class Product extends Model
     {
         return $this->hasMany(Product::class, 'parent_id');
     }
+    public function defaultImage(): HasOne
+    {
+        return $this->hasOne(ProductImage::class)->where('is_primary', true);
+    }
 
     public function images(): HasMany
     {
         return $this->hasMany(ProductImage::class);
     }
 
-    public function storeProducts(): HasOne
+    public function store(): BelongsTo
     {
-        return $this->hasOne(StoreProduct::class);
+        return $this->belongsTo(Store::class);
     }
 
     public function marketplaceProducts(): HasOne
@@ -77,8 +81,26 @@ class Product extends Model
         return $this->hasMany(Product::class, 'parent_id');
     }
 
-    public function variationAttributes()
+    public function variationAttributes(): HasMany
     {
         return $this->hasMany(ProductVariationAttribute::class, 'product_id');
     }
+
+    public function wishlist(): HasMany
+    {
+        return $this->hasMany(Wishlist::class, 'product_id');
+    }
+
+    //If you want to access users who wishlisted the product directly:
+    public function wishlistedByUsers(): BelongsToMany
+    {
+        return $this->belongsToMany(User::class, 'wishlists', 'product_id', 'user_id')->withTimestamps();
+    }
+
+    //If you want to check whether a specific user wishlisted the product:
+    public function isWishlistedBy(User $user): bool
+    {
+        return $this->wishlist()->where('user_id', $user->id)->exists();
+    }
+
 };

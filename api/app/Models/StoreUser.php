@@ -16,6 +16,7 @@ class StoreUser extends Model
         'user_id',
         'role',
         'status',
+        'joined_at'
     ];
     protected $casts = [
         'store_id' => 'integer',
@@ -26,12 +27,12 @@ class StoreUser extends Model
 
     public function store(): BelongsTo
     {
-        return $this->belongsTo(Store::class, 'store_id');
+        return $this->belongsTo(Store::class);
     }
 
     public function user(): BelongsTo   
     {
-        return $this->belongsTo(User::class, 'user_id');
+        return $this->belongsTo(User::class);
     }
     public function isOwner(): bool
     {

@@ -33,13 +33,23 @@
 
 <script setup lang="ts">
 import AdminNav from '../components/AdminNav.vue';
-import { ref } from 'vue';
+import { onMounted, ref } from 'vue';
+import { useRoute } from 'vue-router'
+import { useAdmin } from '@/composables/useAdmin';
+
+const route = useRoute()
+
+const { storeSlug } = useAdmin()
 
 
 const showSidebar = ref(false);
 const toggleSidebar = () => {
   showSidebar.value = !showSidebar.value;
 };
+
+onMounted(() => {
+  storeSlug.value = route.params.storeslug
+})
 
 </script>
 

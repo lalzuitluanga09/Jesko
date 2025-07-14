@@ -6,7 +6,7 @@
         <p class="text-sm text-gray-500 font-semibold pt-2">Admin Panel</p>
       </div>
       <div :class="`text-${isDark ? 'white' : 'black'} pl-2`">
-        <i :class="`mdi mdi-weather-${isDark ? 'sunny' : 'night'} text-2xl hover:text-yellow-400 mr-4`" @click="toggleDark"></i>
+        <span :class="`mdi mdi-weather-${isDark ? 'sunny' : 'night'} text-2xl hover:text-yellow-400 mr-4 cursor-pointer`" @click="toggleDark"></span>
       </div>
     </div>
     <div class="border-t border-gray-300 dark:border-gray-500 mx-4"></div>
@@ -19,7 +19,7 @@
           <RouterLink
             v-for="item in group.items"
             :key="item.name"
-            :to="{ name: item.route }"
+            :to="{ name: item.route}"
             class="flex items-center space-x-2 text-gray-700 dark:text-gray-200 hover:bg-blue-100 dark:hover:bg-gray-700 hover:text-blue-600 dark:hover:text-blue-400 transition-all duration-200 px-2 py-1 rounded-lg"
             active-class="bg-blue-500 text-white font-semibold hover:bg-blue-600 hover:text-white"
           >
@@ -32,6 +32,7 @@
     <div class="flex-1"></div>
     <RouterLink
       :to="{ name: 'account' }"
+      @click="logout"
       class="flex items-center space-x-2 mx-5 mb-6 text-red-600 hover:bg-red-100 hover:text-red-700 transition-all duration-200 px-3 py-2 rounded-lg "
     >
       <span class="mdi mdi-arrow-left text-xl mr-2"></span> Go Back to home
@@ -39,13 +40,16 @@
   </div>
 </template>
 
-<script setup>
+<script setup lang="ts">
 import { useSetting } from '@/composables/useSetting';
+import { useAdmin } from '@/composables/useAdmin';
 
 const {
   isDark,
   toggleDark
 } = useSetting()
+
+const { logout } = useAdmin()
 
 const menuGroups = [
   {

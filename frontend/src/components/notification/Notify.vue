@@ -3,7 +3,7 @@
         <div
             v-if="visible"
             :class="[
-                'fixed left-1/2 bottom-6 transform -translate-x-1/2  p-2  rounded-md shadow-md  z-50 text-xs md:text-sm',
+                'fixed left-1/2 bottom-6 transform -translate-x-1/2  p-2  rounded-md shadow-md  z-100 text-xs md:text-sm',
                 typeClasses[type] || typeClasses.success
             ]"
             role="alert"
@@ -25,7 +25,7 @@
                 </div>
                 <button
                     @click="close"
-                    class="text-gray-400 hover:text-gray-700 focus:outline-none rounded-full p-1 transition-colors"
+                    class="text-gray-300 cursor-pointer hover:text-gray-700 focus:outline-none rounded-full p-1 transition-colors"
                     aria-label="Close"
                 >
                     <svg class="w-4 h-4" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">

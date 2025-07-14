@@ -12,7 +12,7 @@
     <DesktopNav v-if="!isMobile" />
     <MobileNav v-else />
     <div class="flex items-center gap-4">
-      <i :class="`mdi mdi-weather-${isDark ? 'sunny' : 'night'} text-2xl hover:text-yellow-400`" @click="toggleDark"></i>
+      <span :class="`mdi mdi-weather-${isDark ? 'sunny' : 'night'} text-2xl hover:text-yellow-400 cursor-pointer`" @click="toggleDark"></span>
       <RouterLink :to="{ name: 'favourite' }" ><i class="mdi mdi-heart-outline text-2xl cursor-pointer hover:text-red-700"></i></RouterLink>
       <RouterLink v-if="!isMobile" :to="{ name: 'cart' }" ><i class="mdi mdi-shopping-outline text-2xl cursor-pointer hover:text-blue-700"></i></RouterLink>
       <RouterLink :to="{ name: 'notification' }" ><i class="mdi mdi-bell-outline text-2xl cursor-pointer hover:text-red-700"></i></RouterLink>

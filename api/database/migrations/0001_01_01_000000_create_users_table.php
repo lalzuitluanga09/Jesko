@@ -20,7 +20,6 @@ return new class extends Migration
             $table->timestamp('phone_verified_at')->nullable();
             $table->enum('role', ['customer', 'seller', 'admin',])->default('customer');
             $table->enum('status', ['active', 'inactive', 'banned'])->default('active');
-            $table->boolean('is_store_owner')->default(false);
             $table->string('password');
             $table->rememberToken();
             $table->timestamps();

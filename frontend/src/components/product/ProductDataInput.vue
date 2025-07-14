@@ -18,11 +18,11 @@
       >Description</label
     >
     <textarea
-      id="description"
-      rows="3"
-      v-model="formData.description"
-      class="w-full px-4 py-2 border border-gray-300 dark:border-gray-600 rounded focus:outline-none focus:ring-2 focus:ring-blue-500 dark:bg-gray-800 dark:text-gray-100"
-      placeholder="Enter product description"
+        id="description"
+        rows="3"
+        v-model="formData.description"
+        class="w-full px-4 py-2 border border-gray-300 dark:border-gray-600 rounded focus:outline-none focus:ring-2 focus:ring-blue-500 dark:bg-gray-800 dark:text-gray-100"
+        placeholder="Enter product description"
     ></textarea>
   </div>
   <!-- Price & Stock -->
@@ -93,11 +93,10 @@ import { useCategory } from '@/composables/useCategory';
 import { useTag } from '@/composables/useTag';
 import type { Tag } from '@/types/tag';
 import type { Category } from '@/types/category';
-import { nextTick, onMounted, ref, watch } from 'vue';
+import { nextTick, onMounted, ref } from 'vue';
 
 const { 
   formData,
-  isDialogOpen
 } = useProduct()
 
 const {

@@ -1,14 +1,14 @@
 <template>
   <Transition name="bounce">
     <div
-      v-if="isMagnify"
+      v-show="isMagnify"
       class="fixed inset-0 h-screen z-50 flex items-center justify-center bg-black/30 backdrop-blur-sm"
       @click.self="isMagnify = false"
       @keydown.prevent.escape="isMagnify = false"
     >
       <div class="relative border border-gray-400 bg-white dark:bg-gray-700 rounded-lg shadow max-w-[90vw] max-h-[90vh] p-2 cursor-default">
         <div
-          class="absolute top-2 right-2 z-10 px-2 py-1 rounded-full cursor-pointer bg-black/60 text-white hover:bg-black"
+          class="absolute top-2 right-2 z-10 px-2 py-1 rounded-full cursor-pointer bg-black/40 text-white hover:bg-black/60 transition-colors"
           @click="isMagnify = false"
         >
           <i class="mdi mdi-close text-lg"></i>

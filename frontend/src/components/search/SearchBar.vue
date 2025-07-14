@@ -4,9 +4,10 @@
             <input
                 type="text"
                 autofocus
-                :value="searchTerm"
-                @input="onInput"
+                :value="modelValue"
+                @input="$emit('update:modelValue', ($event.target as HTMLInputElement)?.value)"
                 placeholder="Search store..."
+                @keydown.enter.prevent="handleSearch()"
                 class="w-full pl-10 pr-4 py-2 rounded-lg border border-gray-300 focus:outline-none focus:ring-2 focus:ring-gray-500 shadow-sm transition"
             />
             <span class="absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-400">
@@ -15,23 +16,30 @@
                     <line x1="21" y1="21" x2="16.65" y2="16.65" />
                 </svg>
             </span>
+            <span class="absolute right-3 top-1/2 transform -translate-y-1/2 text-gray-400 mdi mdi-close text-xl cursor-pointer" v-if="modelValue"
+               @click="clear"
+            ></span>
         </div>
     </div>
 </template>
 
 <script setup lang="ts">
-import { useStore } from '@/composables/useStore';
+const props = defineProps<{
+  modelValue: string
+}>()
 
-const { searchTerm } = useStore()
+const emit = defineEmits<{
+    (e: 'update:modelValue', value: string): void
+    (e: 'search'): void
+    (e: 'clear'): void
+}>();
 
-let debounceTimeout: ReturnType<typeof setTimeout> | null = null
+const clear = () => {
+    emit('clear')
+}
 
-const onInput = (event: Event) => {
-    const value = (event.target as HTMLInputElement).value
-    if (debounceTimeout) clearTimeout(debounceTimeout)
-    debounceTimeout = setTimeout(() => {
-        searchTerm.value = value
-    }, 500)
+const handleSearch = () => {
+    emit('search')
 }
 
 </script>

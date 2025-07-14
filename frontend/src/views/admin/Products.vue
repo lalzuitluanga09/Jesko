@@ -75,6 +75,7 @@ const clear = () => {
     getData()
     getCategories()
     getTags()
+    
  })
 
 </script>

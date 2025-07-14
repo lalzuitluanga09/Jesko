@@ -1,30 +1,36 @@
 <template>
     <div @click="gotTo" 
-        class="w-full max-w-sm overflow-hidden rounded bg-white/70 dark:bg-gray-600 cursor-pointer hover:bg-amber-50 dark:hover:bg-gray-500 border border-gray-300 hover:shadow-md hover:-translate-y-1  transition">
-        <img class="w-full lg:h-48 md:h-40 h-36 object-cover rounded" src="/images/product.png" alt="Store Image">
-        <div class="px-3 md:px-4 py-1 md:py-2">
-            <div class="text-base md:text-lg mb-1 line-clamp-2">Item Name</div>
-            <p class="font-medium text-md md:text-xl ">₹999</p>
+        class="w-full max-w-sm overflow-hidden rounded bg-white/70 dark:bg-gray-600 cursor-pointer hover:bg-amber-50 dark:hover:bg-gray-500 border border-gray-300 hover:shadow-md transition">
+        <img class="w-full lg:h-48 md:h-40 h-36 object-cover rounded" :src="item.image_url ? storageUrl(item.image_url) : '/images/product.png'" alt="Item Image">
+        <div class="px-3 md:px-4 py-2 space-y-1">
+            <h1 class="text-sm md:text-lg truncate text-gray-700 dark:text-gray-300">{{ item.title }}</h1>
+            <p class="font-medium text-base md:text-xl ">₹ {{ toNumber(item.price) }}</p>
         </div>
     </div>
 </template>
 
 <script setup lang="ts">
+import { storageUrl } from '@/config';
 import router from '@/router';
+import { type MarketplaceItem } from '@/types/marketplace_product'
+import { toNumber } from 'lodash-es';
+import { useMarket } from '@/composables/useMarket';
 
 
-const props = withDefaults(defineProps<{
-    id?: string | number,
-}>(), {
-    id: 1
-});
+const props = defineProps<{
+    item: MarketplaceItem
+}>();
 
+const {
+    fetchItem
+} = useMarket()
 
-const gotTo = () => {
+const gotTo = async () => {
+    await fetchItem(props.item.id)
     router.push({
         name: 'item-detail',
         params: {
-            id: props.id
+            id: props.item.id
         }
     })
 }
