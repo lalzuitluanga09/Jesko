@@ -1,4 +1,4 @@
-import {api} from '@/lib/axios';
+import {adminApi, api} from '@/lib/axios';
 import type { Store } from '@/types/store'
 import { ref } from 'vue'
 import { useNotify } from './useNotify';
@@ -20,7 +20,7 @@ export function useAdmin() {
             'pin': pin, 
             'store_id': storeId 
           })
-          currentStore.value = res.data
+          currentStore.value = res.data.store
           isPinVerify.value = true
           notifySuccess('Access granted')
       } catch (error) {
@@ -39,11 +39,23 @@ export function useAdmin() {
         }
     }
 
+    const getCurrentStore = async () => {
+      try {
+        const res = await adminApi.get(`/${storeSlug.value}/current-store`);
+          currentStore.value = res.data
+          isPinVerify.value = true
+      } catch (error) {
+        notifyError('Error fetching data')
+      }
+    }
+ 
+
   return {
     storeSlug,
     isPinVerify,
     currentStore,
     checkPin,
-    logout
+    logout,
+    getCurrentStore
   }
 }

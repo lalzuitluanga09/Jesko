@@ -15,7 +15,8 @@ class WishlistController extends Controller
         $products = Product::with([
             'categories:id',
             'tags:id',
-            'store:id,slug'
+            'store:id,slug,theme_id',
+            'store.storeTheme:id,name'
         ])
         ->whereIn('id', function ($query) use ($user) {
             $query->select('product_id')
@@ -29,10 +30,12 @@ class WishlistController extends Controller
             $product->tag_ids = $product->tags->pluck('id')->toArray();
             $product->default_image_url = $product->defaultImage()->value('image_path');
             $product->store_slug = optional($product->store)->slug;
+            $product->theme = optional(optional($product->store)->storeTheme)->name;
+            
             unset($product->categories, $product->tags, $product->store);
             return $product;
         });
-
+        
         return response()->json($products);
     }
     public function store(Request $request)

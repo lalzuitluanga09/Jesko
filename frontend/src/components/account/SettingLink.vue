@@ -32,6 +32,7 @@ const routeMap: Record<string, string | (() => void)> = {
   address: 'addresses',
   following: 'followings',
   myStores: 'my-stores',
+  marketplace: 'my-marketplace'
 }
 
 const goTo = () => {

@@ -9,9 +9,11 @@ interface Store {
     is_featured: boolean,
     launch_at: Date,
     category_id: number
+    theme_id?: number
     followers_count: number,
     products_count: number,
     ratings: number,
+    theme?: string,
 }
 
 interface StoreCategory {

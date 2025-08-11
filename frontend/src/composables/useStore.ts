@@ -1,5 +1,5 @@
-import { computed, ref, watch } from 'vue'
-import type { Store, StoreCategory } from '@/types/store'
+import { computed, ref } from 'vue'
+import type { Store } from '@/types/store'
 import { useNotify } from './useNotify'
 import { api } from '@/lib/axios'
 import type { Product, ProductVariation } from '@/types/product'
@@ -11,7 +11,6 @@ import type { Seller } from '@/types/seller'
 import type { Pagination } from '@/types/pagination'
 
 const {
-  notifySuccess,
   notifyError
 } = useNotify()
 
@@ -50,19 +49,20 @@ const productData = ref<{
     name: string;
     values: string[];
   }[],
-  variations: ProductVariation[]
+  variations: ProductVariation[],
+  related_products: Product[]
 }>({
   item: null,
   seller: null,
   similarItems: [],
   images: [],
   attribute: [],
-  variations: []
+  variations: [],
+  related_products: []
 })
 
 
 const stores = ref<Store[]>([])
-const filteredStores = ref<Store[]>([])
 const topStores = ref<Store[]>([])
 
 const filter = ref<{
@@ -204,6 +204,7 @@ export function useStore() {
       productData.value.images = res.data.images
       convertBackendToFrontend(res.data.attribute)
       productData.value.variations = res.data.variations
+      productData.value.related_products = res.data.related_products || []
     } catch (error) {
       notifyError('Error fetching data')
     } finally {
@@ -328,7 +329,6 @@ export function useStore() {
     sortOptions,
     productData,
     topStores,
-    filteredStores,
     storeFilter,
     pagination,
     pageNumbers,

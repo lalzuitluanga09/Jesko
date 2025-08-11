@@ -1,6 +1,5 @@
 <template>
-    <LoginMessage title="Notifications show here" v-if="!auth.isAuthenticated"/>
-  <div v-else class="flex flex-col w-full max-w-4xl mx-auto px-2 py-6">
+  <div class="flex flex-col w-full max-w-4xl mx-auto px-2 py-6">
     <h1 class="text-lg md:text-xl font-bold text-center pb-6">Notifications</h1>
     <div class="space-y-2 max-h-[60vh] overflow-y-auto">
       <!-- Notification Item -->
@@ -39,7 +38,6 @@
 </template>
 
 <script setup lang="ts">
-import LoginMessage from '@/components/LoginMessage.vue';
 import { useAuthStore } from '@/stores/auth';
 
 const auth = useAuthStore()

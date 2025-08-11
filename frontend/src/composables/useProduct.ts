@@ -1,4 +1,4 @@
-import {adminApi} from '@/lib/axios';
+import { adminApi } from '@/lib/axios';
 import type { Product } from '@/types/product';
 import { reactive, computed, watch, ref } from 'vue'
 import { useNotify } from './useNotify'
@@ -25,18 +25,18 @@ const isMagnify = ref<boolean>(false)
 const previewImageUrl = ref<string>('')
 
 const isMagnifyImages = ref<boolean>(false)
-const viewImages = ref<ProductImages []>([])
+const viewImages = ref<ProductImages[]>([])
 
 //Variations
 const isVariable = ref<boolean>(false)
 interface Variation {
-      option: string
-      values: string[]
-      newValue: string
-  }
+  option: string
+  values: string[]
+  newValue: string
+}
 const variations = reactive<Variation[]>([
-      { option: '', values: [], newValue: '' }
-  ])
+  { option: '', values: [], newValue: '' }
+])
 const variationData = reactive<{ [key: string]: { stock: number; price: number } }>({})
 
 const productAttributes = ref<{
@@ -54,9 +54,6 @@ const productVariations = ref<{
 
 const updatedStocks = reactive<{ [id: string]: { price: number, stock: number } }>({})
 
-////////////////////////////////////////////////////
-
-
 const perPage = ref<number>(10)
 const currentPage = ref(<number>(1))
 
@@ -72,8 +69,8 @@ const filter = ref<{
   tag: null
 })
 
-const data = ref<Product []>([])
-const filteredData = ref<Product []>([])
+const data = ref<Product[]>([])
+const filteredData = ref<Product[]>([])
 
 const defaultImage = ref<NewImage | null>(null);
 const images = ref<Images[]>([]);
@@ -109,7 +106,7 @@ const options = [
 
 export function useProduct() {
 
-    const getData = async () => {
+  const getData = async () => {
     loading.value = true
     try {
       const res = await adminApi.get(`/${storeSlug.value}/product`);
@@ -123,7 +120,7 @@ export function useProduct() {
     }
   }
 
-    const save = async () => {
+  const save = async () => {
     if (formData.value.name.trim() == '') {
       notifyError('Name cannot be null or empty')
       return
@@ -148,7 +145,7 @@ export function useProduct() {
         form.append('images[]', img.file);
       }
     });
-    if(isVariable.value) {
+    if (isVariable.value) {
       form.append('variations', JSON.stringify(variations))
       const variationItems = Object.entries(variationData).map(([key, data]) => ({
         values: key.split('-'),
@@ -182,19 +179,20 @@ export function useProduct() {
     const payload = new FormData()
 
     Object.entries(formData.value).forEach(([key, value]) => {
-    if (Array.isArray(value)) {
+      if (Array.isArray(value)) {
         value.forEach((v) => {
-        payload.append(`product[${key}][]`, v.toString());
-      });
-    } else if (value !== null && value !== undefined) {
-      payload.append(`product[${key}]`, String(value));
-    }
+          payload.append(`product[${key}][]`, v.toString());
+        });
+      } else if (value !== null && value !== undefined) {
+        payload.append(`product[${key}]`, String(value));
+      }
     });
     if (defaultImage.value?.file) {
       payload.append('defaultImage', defaultImage.value.file)
     } else if (defaultImage.value?.image_path) {
       payload.append('defaultImage', defaultImage.value.image_path)
     }
+    
     images.value.forEach(img => {
       if (img.file) {
         payload.append('new_images[]', img.file);
@@ -205,13 +203,13 @@ export function useProduct() {
       payload.append('deleted_image_ids[]', id.toString());
     });
 
-    if(selected.value?.type == 'variable') {
-        const variationUpdates = Object.entries(updatedStocks).map(([id, { price, stock }]) => ({
-          id,
-          price,
-          stock
-        }))
-        payload.append('variations', JSON.stringify(variationUpdates));
+    if (selected.value?.type == 'variable') {
+      const variationUpdates = Object.entries(updatedStocks).map(([id, { price, stock }]) => ({
+        id,
+        price,
+        stock
+      }))
+      payload.append('variations', JSON.stringify(variationUpdates));
     }
 
     payload.append('_method', 'PUT'); // overwrite post to send FormData
@@ -251,22 +249,22 @@ export function useProduct() {
     }
   }
 
-    const editData = (item: Product) => {
-      editId.value = item.id
-      fetchItem()
-      isDialogOpen.value = true
-    }
+  const editData = (item: Product) => {
+    editId.value = item.id
+    fetchItem()
+    isDialogOpen.value = true
+  }
 
-    const deleteData = async () => {
-      try {
-        await adminApi.delete(`${storeSlug.value}/product/${itemId.value}`);
-        isOpen.value = false
-        notifySuccess('Deleted successfully')
-        getData();
-      } catch (error) {
-        notifyError('Cannot delete item')
-      }
+  const deleteData = async () => {
+    try {
+      await adminApi.delete(`${storeSlug.value}/product/${itemId.value}`);
+      isOpen.value = false
+      notifySuccess('Deleted successfully')
+      getData();
+    } catch (error) {
+      notifyError('Cannot delete item')
     }
+  }
 
   const openAddDialog = () => {
     isDialogOpen.value = true
@@ -338,7 +336,7 @@ export function useProduct() {
   }
 
   const debouncedFilterData = debounce(filterData, 300)
-  
+
   watch(() => filter.value.searchTerm, () => {
     currentPage.value = 1
     debouncedFilterData()
@@ -349,14 +347,14 @@ export function useProduct() {
   watch(() => filter.value.tag, filterData)
 
 
-    const totalPages = computed(() =>
-      Math.ceil(filteredData.value.length / perPage.value)
-    )
-  
-    const paginatedItems = computed(() => {
-      const start = (currentPage.value - 1) * perPage.value
-      return filteredData.value.slice(start, start + perPage.value)
-    })
+  const totalPages = computed(() =>
+    Math.ceil(filteredData.value.length / perPage.value)
+  )
+
+  const paginatedItems = computed(() => {
+    const start = (currentPage.value - 1) * perPage.value
+    return filteredData.value.slice(start, start + perPage.value)
+  })
 
   const reset = () => {
     editId.value = 0
@@ -391,22 +389,22 @@ export function useProduct() {
 
   //variations
   function cartesian(arr: string[][]): string[][] {
-      return arr.reduce<string[][]>(
-          (a, b) => a.flatMap(d => b.map(e => [...d, e])),
-          [[]]
-      )
+    return arr.reduce<string[][]>(
+      (a, b) => a.flatMap(d => b.map(e => [...d, e])),
+      [[]]
+    )
   }
 
   const variationCombinations = computed(() => {
-      const valueArrays = variations
-          .filter(v => v.option && v.values.length)
-          .map(v => v.values)
-      if (!valueArrays.length) return []
-      const combos = cartesian(valueArrays)
-      return combos.map(values => ({
-          values,
-          key: values.join('-')
-      }))
+    const valueArrays = variations
+      .filter(v => v.option && v.values.length)
+      .map(v => v.values)
+    if (!valueArrays.length) return []
+    const combos = cartesian(valueArrays)
+    return combos.map(values => ({
+      values,
+      key: values.join('-')
+    }))
   })
 
   watch(variationCombinations, (newCombos) => {
@@ -423,24 +421,24 @@ export function useProduct() {
   }, { immediate: true })
 
   function addVariation() {
-      variations.push({ option: '', values: [], newValue: '' })
+    variations.push({ option: '', values: [], newValue: '' })
   }
 
   function removeVariation(idx: number) {
-      variations.splice(idx, 1)
+    variations.splice(idx, 1)
   }
 
   function addValue(vIdx: number) {
-      const v = variations[vIdx]
-      const val = v.newValue.trim()
-      if (val && !v.values.includes(val)) {
-          v.values.push(val)
-      }
-      v.newValue = ''
+    const v = variations[vIdx]
+    const val = v.newValue.trim()
+    if (val && !v.values.includes(val)) {
+      v.values.push(val)
+    }
+    v.newValue = ''
   }
 
   function removeValue(vIdx: number, valIdx: number) {
-      variations[vIdx].values.splice(valIdx, 1)
+    variations[vIdx].values.splice(valIdx, 1)
   }
 
   watch(productVariations, (newVariations) => {
@@ -454,54 +452,54 @@ export function useProduct() {
     })
   }, { immediate: true })
 
-    return {
-      isMagnify,
-      isMagnifyImages,
-      viewImages,
-      previewImageUrl,
-      filter,
-      columns,
-      loading,
-      isView,
-      isDialogOpen,
-      options,
-      selected,
-      editId,
-      data,
-      formData,
-      totalPages,
-      perPage,
-      currentPage,
-      paginatedItems,
-      defaultImage,
-      images,
-      deletedImageIds,
-      openAddDialog,
-      closeAddDialog,
-      closeEditDialog,
-      openViewDialog,
-      closeViewDialog,
-      getData,
-      save,
-      update,
-      editData,
-      viewProduct,
-      deleteData,
-      clearFilter,
-      filterData,
-      ////////////->
-      //Varaitons
-      isVariable,
-      variations,
-      variationData,
-      variationCombinations,
-      productAttributes,
-      productVariations,
-      updatedStocks,
-      addVariation,
-      removeVariation,
-      addValue,
-      removeValue,
-      ////////////<-
+  return {
+    isMagnify,
+    isMagnifyImages,
+    viewImages,
+    previewImageUrl,
+    filter,
+    columns,
+    loading,
+    isView,
+    isDialogOpen,
+    options,
+    selected,
+    editId,
+    data,
+    formData,
+    totalPages,
+    perPage,
+    currentPage,
+    paginatedItems,
+    defaultImage,
+    images,
+    deletedImageIds,
+    openAddDialog,
+    closeAddDialog,
+    closeEditDialog,
+    openViewDialog,
+    closeViewDialog,
+    getData,
+    save,
+    update,
+    editData,
+    viewProduct,
+    deleteData,
+    clearFilter,
+    filterData,
+    ////////////->
+    //Varaitons
+    isVariable,
+    variations,
+    variationData,
+    variationCombinations,
+    productAttributes,
+    productVariations,
+    updatedStocks,
+    addVariation,
+    removeVariation,
+    addValue,
+    removeValue,
+    ////////////<-
   }
 }

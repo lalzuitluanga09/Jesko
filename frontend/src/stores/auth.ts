@@ -29,13 +29,21 @@ export const useAuthStore = defineStore('auth', () => {
     email: string,
     phone: string,
     password: string,
-    password_confirmation: string
+    password_confirmation: string,
+    date_of_birth?: Date,
+    gender?: string
+    profile_image?: File | null
+    delete_profile_image?: boolean
   }>({
     name: '',
     email: '',
     phone: '',
     password: '',
-    password_confirmation: ''
+    password_confirmation: '',
+    date_of_birth: undefined,
+    gender: undefined,
+    profile_image: null,
+    delete_profile_image: false
   })
 
   const { notifySuccess, notifyError } = useNotify()
@@ -56,6 +64,7 @@ export const useAuthStore = defineStore('auth', () => {
       isStoreUser.value = userStores.value.length > 0
       meta.getMeta()
       closeDialog()
+      getUserMeta()
       notifySuccess('Login Successfully')
     } catch (error) {
       notifyError('Incorrect Credentials')
@@ -106,6 +115,11 @@ const logout = async () => {
     try {
       const res = await api.get('/user')
       user.value = res.data.user
+      if(user.value) {
+        user.value.profile_image = res.data.profile_image
+        user.value.date_of_birth = res.data.date_of_birth
+        user.value.gender = res.data.gender
+      }
       userStores.value = res.data.userStores;
       isStoreUser.value = userStores.value.length > 0;
       isAuthenticated.value = true
@@ -151,8 +165,54 @@ const logout = async () => {
       email: '',
       phone: '',
       password: '',
-      password_confirmation: ''
+      password_confirmation: '',
+      // date_of_birth: undefined,
+      // gender: undefined,
+      profile_image: null,
+      delete_profile_image: false
     }
+  }
+
+    const updateProfile = async () => {
+      loading.value = true
+      const form = new FormData()
+      form.append('name', formData.value.name)
+      form.append('email', formData.value.email)
+      form.append('phone', formData.value.phone)
+      if (formData.value.password) {
+        form.append('password', formData.value.password)
+        form.append('password_confirmation', formData.value.password_confirmation)
+      }
+      if (formData.value.date_of_birth) {
+        form.append('date_of_birth', formData.value.date_of_birth.toString())
+      }
+      if (formData.value.gender) {
+        form.append('gender', formData.value.gender)
+      }
+      if (formData.value.profile_image) {
+        form.append('profile_image', formData.value.profile_image)
+      }
+      if (formData.value.delete_profile_image) {
+        form.append('delete_profile_image', 'true')
+      }
+      try {
+        await api.post('/user', form);
+        notifySuccess('Updated Successfully')
+        checkAuth()
+        resetData()
+      } catch (erro) {
+        notifyError('Unable to update')
+      } finally {
+        loading.value = false
+      }
+    }
+
+  const initFormData = () => {
+    formData.value.name = user.value?.name || ''
+    formData.value.email = user.value?.email || ''
+    formData.value.phone = user.value?.phone ? user.value.phone.toString() : ''
+    formData.value.date_of_birth = user.value?.date_of_birth
+    formData.value.gender = user.value?.gender || undefined
   }
 
   return {
@@ -174,6 +234,8 @@ const logout = async () => {
     closeDialog,
     toggleMode,
     openRegisterDialog,
-    resetData
+    resetData,
+    updateProfile,
+    initFormData
   }
 })

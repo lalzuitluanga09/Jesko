@@ -39,7 +39,11 @@ import { useAdmin } from '@/composables/useAdmin';
 
 const route = useRoute()
 
-const { storeSlug } = useAdmin()
+const { 
+  currentStore,
+  storeSlug,
+  getCurrentStore
+} = useAdmin()
 
 
 const showSidebar = ref(false);
@@ -47,8 +51,11 @@ const toggleSidebar = () => {
   showSidebar.value = !showSidebar.value;
 };
 
-onMounted(() => {
+onMounted(async() => {
   storeSlug.value = route.params.storeslug
+  if(!currentStore.value) {
+    await getCurrentStore()
+  }
 })
 
 </script>

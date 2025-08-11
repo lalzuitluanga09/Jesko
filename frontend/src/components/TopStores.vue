@@ -1,6 +1,6 @@
 <template>
     <div class="mt-10 rounded-2xl md:rounded-4xl relative bg-gray-100 dark:bg-gray-500 shadow">
-        <h1 class="absolute -top-5 left-5 px-2 py-0.5 md:px-4 md:py-1   rounded-xl md:rounded-3xl bg-gray-100 shadow text-gray-700 text-base lg:text-xl font-extrabold">
+        <h1 class="absolute -top-5 left-5 px-2 py-0.5 md:px-4 md:py-1 rounded-xl md:rounded-3xl bg-gray-100 shadow text-gray-700 text-base lg:text-xl font-extrabold">
             Top Stores
         </h1>
         <div class="lg:mx-8 lg:mt-10 md:mx-4 mx-2 pt-10">
@@ -29,7 +29,7 @@ import Loading from './others/Loading.vue';
 const bannerOptions = ref({ 
     type: 'slide',
     arrows: false, 
-    perPage: 4,
+    perPage: 5,
     perMove: 1,
     rewind: true,
     rewindByDrag: true,

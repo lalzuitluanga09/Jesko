@@ -3,7 +3,7 @@
 namespace App\Http\Controllers;
 
 use App\Models\StoreCategory;
-use Illuminate\Http\Request;
+use App\Models\StoreTheme;
 
 class MetaController extends Controller
 {
@@ -13,8 +13,11 @@ class MetaController extends Controller
             ->where('is_active', true)
             ->get(['id', 'name', 'slug', 'icon', 'is_active', 'parent_id']);
 
+        $storeThemes = StoreTheme::select('name', 'id')->get();
+
         return response()->json([
-            'store_categories' => $storeCategories
+            'store_categories' => $storeCategories,
+            'store_themes' => $storeThemes
         ]);
     }
 }

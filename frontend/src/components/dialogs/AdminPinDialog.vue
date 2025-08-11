@@ -10,7 +10,7 @@
                 class="relative max-w-xs bg-white dark:bg-gray-800 text-black dark:text-white border border-gray-200 p-6 rounded-2xl shadow-md hover:shadow-xl transition-shadow duration-300">
                 <div class="flex justify-center mb-4">
                     <img class="w-24 h-24 md:w-28 md:h-28 rounded-full object-cover border-4 border-white shadow-md"
-                        :src="item.logo || '/images/logo.png'" alt="Store Logo" />
+                        :src="item.logo ? storageUrl(item.logo) : '/images/logo.png'" alt="Store Logo" />
                 </div>
 
                 <div class="text-center">
@@ -61,6 +61,7 @@ import { useAdmin } from '@/composables/useAdmin'
 import { useNotify } from '@/composables/useNotify'
 import Loading from '../others/Loading.vue'
 import router from '@/router';
+import { storageUrl } from '@/config'
 
 
 interface Store {

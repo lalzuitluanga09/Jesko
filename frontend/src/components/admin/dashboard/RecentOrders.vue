@@ -1,7 +1,7 @@
 <template>
     <div class="bg-teal-50 dark:bg-gray-900 border border-gray-300 rounded-xl px-4 pt-2 pb-4 ">
         <h3 class="text-lg font-semibold mb-2 text-teal-700 dark:text-teal-200"><span class="mdi mdi-list-box-outline mr-1"></span>Recent Orders</h3>
-        <div class="max-h-[10rem] overflow-y-auto rounded-lg">
+        <div class="max-h-[12rem] overflow-y-auto rounded-lg">
             <table class="bg-white dark:bg-gray-900 min-w-full text-sm border border-gray-300">
                 <thead>
                     <tr class="bg-teal-100 dark:bg-gray-800">
@@ -43,12 +43,14 @@
 import { ref } from 'vue'
 
 const headers = ['Order ID', 'Customer', 'Amount']
-const itemKeys = ['orderId', 'customer', 'amount']
-const items = ref([
+const itemKeys = ['orderId', 'customer', 'amount'] 
+type OrderItem = { [key: string]: string }
+
+const items = ref<OrderItem[]>([
     { orderId: 'A001', customer: 'Alice', amount: '$120', status: 'Cancelled' },
     { orderId: 'A002', customer: 'Bob', amount: '$80', status: 'Pending' },
     { orderId: 'A003', customer: 'Charlie', amount: '$150', status: 'Delivered' },
-
+    { orderId: 'A003', customer: 'Charlie', amount: '$150', status: 'Delivered' },
 ])
 </script>
 

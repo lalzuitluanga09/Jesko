@@ -1,54 +1,92 @@
 <template>
     <div
         @click="goTo"
-        class="w-full max-w-sm rounded-2xl md:rounded-3xl overflow-hidden bg-white dark:bg-gray-600 dark:hover:bg-gray-500 hover:bg-amber-50 cursor-pointer border border-gray-300 shadow transition">
-        <div class="mx-1 mt-1 md:mx-2 md:mt-2">
-            <img class="w-full lg:h-48 md:h-40 h-32 object-cover rounded-t-xl md:rounded-t-2xl" src="/images/logo.png"
-            alt="Store Image" />
+        :class="`group w-full max-w-sm rounded-3xl bg-white dark:bg-gray-700 hover:bg-${store.theme}-50 dark:hover:bg-gray-600 cursor-pointer border border-gray-200 dark:border-gray-600 shadow-lg transition-all duration-200`"
+    >
+        <div :class="`flex justify-center items-center pt-6 pb-2 bg-gradient-to-b from-${store.theme}-50 to-transparent dark:from-gray-800 rounded-t-3xl`">
+            <img
+                :class="`h-24 w-24 md:h-32 md:w-32 object-cover rounded-full border-4 border-${store.theme}-200 dark:border-${store.theme}-500 shadow-lg transition-transform duration-200 group-hover:scale-105`"
+                :src="store.logo ? storageUrl(store.logo) : '/images/logo.png'"
+                alt="Store Image"
+            />
         </div>
-        <div class="px-3 md:px-4 pb-2 pt-2 ">
-            <div class="font-medium text-base md:text-lg mb-1 truncate">
-                {{ store.name }} 
+        <div class="px-5 pb-2 pt-2 text-center">
+            <div :class="`font-semibold text-md md:text-lg mb-1 truncate text-${store.theme}-800 dark:text-${store.theme}-400`">
+                {{ store.name }}
             </div>
-            <p class="text-gray-500 dark:text-white/50 text-sm pb-2 truncate" v-if="!isMobile">
-                {{ store.description }}
-            </p>
+            <div class="text-xs md:text-sm text-gray-500 dark:text-gray-300 truncate">
+                <!-- {{ store.description || 'No description available.' }} -->
+                  {{ store.theme || 'No theme selected.' }}
+            </div>
         </div>
-        <div class="px-3 md:px-4 mb-2 flex justify-between items-center">
-            <div class="flex items-center gap-1 text-xs md:text-sm">
-                <i class="mdi mdi-account text-xs md:text-base" />
-                <span>{{ store.followers_count }}</span>
-                <!-- <i class="mdi mdi-star-four-points text-xs md:text-base md:ml-3" />
-                <span>4.5</span> -->
-                <i class="mdi mdi-package-variant-closed text-xs md:text-base md:ml-3" />
-                <span>{{ store.products_count }}</span>
+        <div class="px-5 pb-4 flex justify-between items-center">
+            <div class="flex items-center gap-4">
+                <div class="flex items-center gap-1">
+                    <i :class="`mdi mdi-account text-${store.theme}-500 text-base md:text-lg`" />
+                    <span class="font-medium text-gray-700 dark:text-gray-200">{{ store.followers_count }}</span>
+                </div>
+                <div class="flex items-center gap-1">
+                    <i :class="`mdi mdi-package-variant-closed text-${store.theme}-500 text-base md:text-lg`" />
+                    <span class="font-medium text-gray-700 dark:text-gray-200">{{ store.products_count }}</span>
+                </div>
             </div>
-                <button v-if="auth.isAuthenticated" @click.stop="handleFollow(store.id)"
-                    class="dark:text-black bg-amber-100 px-2 md:px-3 py-1 md:py-1.5 ml-2 mb-2 rounded-full hover:bg-amber-200 transition-colors duration-200 flex items-center gap-1 text-xs md:text-sm cursor-pointer">
-                    <span v-if="auth.userMeta.followings.includes(store.id)">
-                        Unfollow <i class="mdi mdi-close text-xs md:text-sm" />
-                    </span>
-                    <span v-else>
-                        Follow <i class="mdi mdi-plus text-xs md:text-sm" />
-                    </span>
-                </button>
+            <button
+                v-if="auth.isAuthenticated"
+                @click.stop="handleFollow(store.id)"
+                :class="`bg-${store.theme}-100 dark:bg-${store.theme}-500 px-3 py-1.5 rounded-full hover:bg-${store.theme}-200 dark:hover:bg-${store.theme}-400 transition-colors duration-200 flex items-center gap-2 text-sm font-semibold shadow`"
+                :title="auth.userMeta.followings.includes(store.id) ? 'Unfollow' : 'Follow'"
+            >
+                <span v-if="auth.userMeta.followings.includes(store.id)" :class="`mdi mdi-store-check text-lg text-${store.theme}-600 dark:text-gray-100`"></span>
+                <span v-else :class="`mdi mdi-store-plus-outline text-lg text-${store.theme}-600 dark:text-gray-100`"></span>
+                <span :class="`hidden md:inline font-normal text-${store.theme}-600 dark:text-gray-100`">{{ auth.userMeta.followings.includes(store.id) ? 'Following' : 'Follow' }}</span>
+            </button>
+        </div>
+        <div class="relative hidden md:block">
+            <div
+            class="absolute translate-y-1/4 translate-x-4/5 bottom-full mb-3 z-20 w-72 p-4 rounded-xl shadow-xl bg-white/40 backdrop-blur-sm dark:bg-gray-800/50 border border-gray-200 dark:border-gray-700 text-sm text-gray-800 dark:text-gray-200 opacity-0 group-hover:opacity-100 pointer-events-none transition-opacity duration-300"
+            >
+            <div class="font-bold text-lg mb-2 truncate">{{ store.name }}</div>
+            <div class="flex items-center mb-1">
+                <span :class="`mdi mdi-account-circle-outline mr-2 text-${store.theme}-500`"></span>
+                <span class="font-medium italic text-gray-500 dark:text-gray-400">Owner:</span>
+                <span class="ml-1">{{ store.owner?.name || 'N/A' }}</span>
+            </div>
+            <div class="flex items-center mb-1">
+                <span :class="`mdi mdi-account-multiple-outline mr-2 text-${store.theme}-500`"></span>
+                <span class="font-medium italic text-gray-500 dark:text-gray-400">Followers:</span>
+                <span class="ml-1">{{ store.followers_count }}</span>
+            </div>
+            <div class="flex items-center mb-1">
+                <span :class="`mdi mdi-package-variant-closed mr-2 text-${store.theme}-500`"></span>
+                <span class="font-medium italic text-gray-500 dark:text-gray-400">Products:</span>
+                <span class="ml-1">{{ store.products_count }}</span>
+            </div>
+            <div class="flex items-center mb-1">
+                <span :class="`mdi mdi-map-marker mr-2 text-${store.theme}-500`"></span>
+                <span class="font-medium italic text-gray-500 dark:text-gray-400">Location:</span>
+                <span class="ml-1">{{ store.location || 'N/A' }}</span>
+            </div>
+            <div class="mt-2 text-gray-700 dark:text-gray-300">
+                <span class="font-medium text-gray-500 dark:text-gray-400">Description:</span>
+                <span class="ml-1">{{ store.description || 'No description available.' }}</span>
+            </div>
+            </div>
         </div>
     </div>
 </template>
 
 
 <script setup lang="ts">
-import { useSetting } from '@/composables/useSetting';
 import { useAuthStore } from '@/stores/auth';
 import router from '@/router';
 import type { Store } from '@/types/store';
 import { useUser } from '@/composables/useUser';
+import { storageUrl } from '@/config';
 
 const props = defineProps<{
     store: Store
 }>();
 
-const  { isMobile } = useSetting()
 const auth = useAuthStore()
 const {
     follow,

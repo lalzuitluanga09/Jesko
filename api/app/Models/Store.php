@@ -40,7 +40,7 @@ class Store extends Model
         return $this->belongsTo(StoreCategory::class, 'category_id');
     }
 
-    public function theme(): BelongsTo
+    public function storeTheme(): BelongsTo
     {
         return $this->belongsTo(StoreTheme::class, 'theme_id');
     }

@@ -4,7 +4,10 @@ interface User {
     email: string,
     phone: number,
     role: string,
-    status: string
+    status: string,
+    date_of_birth?: Date,
+    gender?: string,
+    profile_image?: string | null,
 }
 
 interface UserStore {

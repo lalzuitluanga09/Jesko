@@ -6,16 +6,22 @@ use App\Models\Product;
 use App\Models\ProductAttribute;
 use App\Models\ProductImage;
 use App\Models\ProductVariationAttribute;
+use App\Models\Store;
 use Illuminate\Http\Request;
 
 use function PHPUnit\Framework\isEmpty;
 
 class ProductController extends Controller
 {
-    public function index(Request $request)
+    public function index($storeSlug)
     {
+        $store = Store::where('slug', $storeSlug)->first();
+
+        if (!$store) abort(404, 'Store not found');
+
         $products = Product::with(['categories:id', 'tags:id'])
             ->whereNull('parent_id')
+            ->where('store_id', $store->id)
             ->get(['id', 'name', 'price', 'stock', 'sku', 'status', 'type']);
 
         $products->transform(function ($product) {
@@ -29,18 +35,23 @@ class ProductController extends Controller
     }
 
 
-    public function store(Request $request)
+    public function store(Request $request, $storeSlug)
     {
         $request->validate([
             'product.name' => 'required|string|max:255',
             'defaultImage' => 'image',
             'images.*' => 'image'
         ]);
+        $store = Store::where('slug', $storeSlug)->first();
 
         $productData = $request->product;
-        $productData['store_id'] = 1;
+        $productData['store_id'] = $store->id;
         $productData['parent_id'] = null;
         $productData['type'] = 'simple';
+
+
+        $productData['sku'] = $storeSlug . '-' . $productData['sku'];
+
 
         $product = Product::create($productData);
 
@@ -266,7 +277,10 @@ class ProductController extends Controller
 
     public function destroy($storeSlug, $id)
     {
-        Product::find($id)->delete();
+        $product = Product::find($id);
+        $product->delete();
+
+        $product->images()->delete();
 
         return response()->json(['status' => 'deleted'], 200);
     }

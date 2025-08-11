@@ -20,6 +20,7 @@ window.addEventListener('resize', checkScreenWidth);
 
 const auth = useAuthStore()
 const meta = useMeta()
+
 onMounted(async() => {
   await auth.checkAuth()
   await meta.getMeta()

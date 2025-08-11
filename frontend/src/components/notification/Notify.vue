@@ -4,6 +4,7 @@
             v-if="visible"
             :class="[
                 'fixed left-1/2 bottom-6 transform -translate-x-1/2  p-2  rounded-md shadow-md  z-100 text-xs md:text-sm',
+                //@ts-ignore
                 typeClasses[type] || typeClasses.success
             ]"
             role="alert"

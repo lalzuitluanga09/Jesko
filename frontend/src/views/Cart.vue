@@ -1,6 +1,5 @@
 <template>
-    <LoginMessage title="Your cart items show here" v-if="!auth.isAuthenticated"/>
-    <div v-else class="flex flex-col w-full max-w-4xl mx-auto">
+    <div class="flex flex-col w-full max-w-4xl mx-auto">
         <div class="text-2xl font-bold flex justify-center py-2 md:py-4">My Cart</div>
         <div v-if="cart.itemCount == 0" class="flex flex-col items-center justify-center py-12 rounded-xl my-8">
             <span class="mdi mdi-cart-outline text-4xl py-4"></span>
@@ -36,7 +35,6 @@
 <script setup lang="ts">
 import SimpleBtn from '@/components/buttons/SimpleBtn.vue';
 import CartItems from '@/components/CartItems.vue';
-import LoginMessage from '@/components/LoginMessage.vue';
 import { useAuthStore } from '@/stores/auth';
 import { useCartStore } from '@/stores/cart';
 import { onMounted, ref } from 'vue';

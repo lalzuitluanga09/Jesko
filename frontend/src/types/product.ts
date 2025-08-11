@@ -12,7 +12,8 @@ interface Product {
     category_ids?: number[]
     tag_ids?: number[]
     default_image_url?: string,
-    store_slug?: string 
+    store_slug?: string,
+    theme?: string
 }
 
 interface VariationAttributes {

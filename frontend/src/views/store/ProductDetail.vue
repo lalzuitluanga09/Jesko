@@ -44,7 +44,7 @@
                 </div>
             </div>
         </div>
-        <!-- <OtherProducts title="Similar Products" /> -->
+        <OtherProducts title="Similar Products" :products="productData.related_products" v-if="productData.related_products.length > 0"/>
     </div>
     <ViewImageSlider />
 </template>

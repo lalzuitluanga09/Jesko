@@ -1,5 +1,5 @@
 <template>
-    <aside class="sm:w-52 lg:w-72 bg-white dark:bg-gray-700 p-6 rounded-xl border border-gray-300 space-y-8 mr-1">
+    <aside :class="`sm:w-52 lg:w-72 bg-white dark:bg-gray-700 p-6 rounded-xl border border-${storeData.data?.theme}-300 space-y-8 mr-1`">
         <div>
             <label class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2" for="search">Search</label>
             <div class="flex">
@@ -7,12 +7,12 @@
                     id="search"
                     type="text"
                     placeholder="Search products..."
-                    class="w-full px-3 py-2 border border-gray-300 rounded-l focus:outline-none focus:ring-2 focus:ring-blue-500"
+                    :class="`w-full px-3 py-2 border border-${storeData.data?.theme}-300 rounded-l focus:outline-none focus:ring-2 focus:ring-gray-400`"
                     v-model="filter.searchTerm"
                     @keydown.enter.prevent="handleFilter()"
                 />
-                <div class="flex items-center border border-gray-300 px-2 rounded-r cursor-pointer hover:bg-gray-200 dark:hover:bg-gray-600 transition duration-300" @click="handleFilter()">
-                    <span class="text-gray-400 mdi mdi-magnify text-xl"></span>
+                <div :class="`flex items-center border border-${storeData.data?.theme}-300 px-2 rounded-r cursor-pointer hover:bg-${storeData.data?.theme}-200 dark:hover:bg-gray-600 transition duration-300`" @click="handleFilter()">
+                    <span :class="`text-${storeData.data?.theme}-500 mdi mdi-magnify text-xl`"></span>
                 </div>
             </div>
 
@@ -22,7 +22,7 @@
             <select
                 id="sort"
                 v-model="filter.sort"
-                class="w-full px-3 py-2 border border-gray-300 dark:bg-gray-700 rounded focus:outline-none focus:ring-1 focus:ring-pink-500"
+                :class="`w-full px-3 py-2 border border-${storeData.data?.theme}-300 dark:bg-gray-700 rounded`"
             >
                 <option value="relevance">Relevance</option>
                 <option value="price_low_high">Price: Low to High</option>
@@ -32,7 +32,7 @@
         </div>
         <div>
             <label class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">Price Range</label>
-            <VueSlider v-model="filter.price_range" tooltip="hover" :min="0" :max="maxPrice" :enableCross="false" />
+            <VueSlider v-model="filter.price_range" tooltip="hover" :min="0" :max="maxPrice" :enableCross="false" :process-style="{ backgroundColor: colorMatch[storeData.data?.theme || 'neutral'] }" :tooltip-style="{ backgroundColor: colorMatch[storeData.data?.theme || 'neutral'] }"/>
             <div class="flex justify-between text-xs text-gray-500 mt-1">
                 <span>₹ {{ filter.price_range[0] }}</span>
                 <span>₹{{ filter.price_range[1] }}</span>
@@ -44,12 +44,12 @@
                 <li
                 v-for="category in storeData.categories"
                 :key="category.id"
-                class="hover:bg-amber-50 dark:hover:bg-gray-600 px-2 py-1 rounded"
+                :class="`hover:bg-${storeData.data?.theme}-50 dark:hover:bg-${storeData.data?.theme}-500 px-2 py-1 rounded`"
                 >
                 <input
                     type="checkbox"
                     :id="`cat-${category.id}`"
-                    class="mr-2 accent-blue-500"
+                    :class="`mr-2 accent-${storeData.data?.theme}-500`"
                     v-model="filter.categories"
                     :value="category.id"
                 />
@@ -70,27 +70,29 @@
                 :key="tag.id"
                 @click="selectTag(tag.id)"
                 class="px-2 py-1 rounded text-sm cursor-pointer transition"
-                :class="[
-                    filter.tags.includes(tag.id)
-                    ? 'bg-sky-200 '
-                    : 'bg-gray-100 dark:bg-gray-600 text-gray-700 dark:text-gray-300 hover:bg-sky-100 dark:hover:bg-gray-500 select-none'
-                ]"
+                :class="filter.tags.includes(tag.id)
+                    ? `bg-${storeData.data?.theme}-200 dark:bg-${storeData.data?.theme}-500`
+                    : `bg-${storeData.data?.theme}-50 dark:bg-gray-600 text-gray-700 dark:text-gray-300 hover:bg-${storeData.data?.theme}-200 dark:hover:bg-${storeData.data?.theme}-500 select-none`"
                 >
                 # {{ tag.name }}
                 </span>
 
             </div>
         </div>
-        <div class="relative">
+        <div :class="`relative text-${storeData.data?.theme}-400 dark:text-gray-300`">
             <button @click="handleFilter"
-                class="text-sm border border-sky-700 bg-sky-200 text-sky-700 dark:bg-sky-600 dark:text-white dark:border-gray-300 px-2 py-1 rounded-md hover:bg-sky-300 dark:hover:bg-sky-700 cursor-pointer transition">
-                <span class="mdi mdi-check md:pr-1"></span>Apply
+                :class="`inline-flex items-center gap-1 px-2 py-1 text-sm hover:bg-${storeData.data?.theme}-100 dark:hover:bg-${storeData.data?.theme}-500 dark:hover:text-white font-medium border border-${storeData.data?.theme}-400 rounded-xl shadow-md active:scale-95 transition-transform duration-150 ease-in-out`">
+                <span class="mdi mdi-check text-lg"></span>
+                Apply
             </button>
+
             <button @click="reset"
-                 v-if="filter.searchTerm || filter.sort != 'relevance' || filter.categories.length > 0 || filter.tags.length > 0 || filter.price_range[0] > 0 || filter.price_range[1] < maxPrice"
-                class="absolute right-0 text-sm border border-blue-300 text-blue-400 px-2 py-1 rounded-md hover:bg-blue-100 dark:hover:bg-gray-600 cursor-pointer transition">
-                <span class="mdi mdi-close-circle md:pr-1"></span>Reset
+                v-if="filter.searchTerm || filter.sort != 'relevance' || filter.categories.length > 0 || filter.tags.length > 0 || filter.price_range[0] > 0 || filter.price_range[1] < maxPrice"
+                :class="`absolute right-0 inline-flex items-center gap-1 px-2 py-1 text-sm font-medium hover:bg-${storeData.data?.theme}-100 dark:hover:bg-${storeData.data?.theme}-500 text-${storeData.data?.theme}-400 dark:hover:text-white border border-${storeData.data?.theme}-400 rounded-xl shadow active:scale-95 transition-transform duration-150 ease-in-out`">
+                <span class="mdi mdi-close-circle text-lg"></span>
+                Reset
             </button>
+
         </div>
     </aside>
 </template>
@@ -99,6 +101,7 @@
 import { onMounted, ref } from 'vue';
 import VueSlider from "vue-3-slider-component";
 import { useStore } from '@/composables/useStore';
+import { useTheme } from '@/composables/useTheme';
 
 const {
     filter,
@@ -106,6 +109,8 @@ const {
     clearFilter,
     handleFilter,
 } = useStore()
+
+const { colorMatch } = useTheme()
 
 const maxPrice = ref<number>(0)
 
@@ -130,7 +135,3 @@ const reset = () => {
 }
 
 </script>
-
-<style scoped>
-
-</style>

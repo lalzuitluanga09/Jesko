@@ -14,8 +14,6 @@
     </div>
 </template>
 
-
-
 <script setup lang="ts">
 import MobileFilter from '@/components/store/MobileFilter.vue';
 import StoreFilter from '@/components/store/StoreFilter.vue';

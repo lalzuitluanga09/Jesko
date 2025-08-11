@@ -12,22 +12,25 @@ class Address extends Model
 
     protected $fillable = [
         'user_id',
-        'type',
         'label',
-        'address_line_1',
-        'address_line_2',
-        'landmark',
-        'city_id',
-        'state_id',
-        'country_id',
-        'postal_code',
+        'name',
         'phone',
+        'address',
+        'landmark',
+        'district_id',
+        'postal_code',
+        'city',
         'is_default',
     ];
 
     public function user(): BelongsTo
     {
         return $this->belongsTo(User::class);
+    }
+
+    public function district(): BelongsTo
+    {
+        return $this->belongsTo(District::class);
     }
 
     public function city(): BelongsTo

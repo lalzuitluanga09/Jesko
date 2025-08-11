@@ -1,7 +1,7 @@
 <template>
         <div class="bg-purple-50 dark:bg-gray-900 rounded-lg shadow p-3 border border-gray-300">
             <h2 class="text-base font-semibold mb-3 flex items-center text-purple-800 dark:text-purple-200"><span class="mdi mdi-package-variant-closed text-lg mr-1"></span>Top Selling Products</h2>
-            <div class="space-y-4">
+            <div class="max-h-[11rem] overflow-y-auto  space-y-4">
                 <div
                     v-for="item in items"
                     :key="item.productName"
@@ -25,10 +25,11 @@
 import { ref } from 'vue'
 
 const items = ref([
-        { productName: 'Product A asdfasf', price: '$120', quantitySold: 10 },
+        { productName: 'Product A', price: '$120', quantitySold: 10 },
         { productName: 'Product B', price: '$80', quantitySold: 5 },
         { productName: 'Product C', price: '$150', quantitySold: 8 },
         { productName: 'Product D', price: '$100', quantitySold: 12 },
+        { productName: 'Product E', price: '$100', quantitySold: 12 },
 ])
 </script>
 

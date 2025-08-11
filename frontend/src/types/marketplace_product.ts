@@ -23,8 +23,34 @@ interface MarketplaceItem {
 
 interface MarketplaceProductData {
     item: MarketplaceProduct | null
-    images: string [],
+    images: ItemImage [],
     related_items: MarketplaceItem []
 }
 
-export type { MarketplaceProduct, MarketplaceItem, MarketplaceProductData };
+interface ItemImage {
+    id: number | string
+    file?: File
+    position: number,
+    image_url: string,
+    preview_url?: string
+}
+
+
+interface MarketplaceItemForm {
+    item: {
+        id: number | null,
+        title: string
+        description: string
+        price: number
+        condition: string
+        category_id: number | null
+        location_id: number | null
+        tags: string
+        status: string
+    }
+    images: ItemImage []
+}
+
+
+
+export type { MarketplaceProduct, MarketplaceItem, MarketplaceProductData, MarketplaceItemForm, ItemImage };

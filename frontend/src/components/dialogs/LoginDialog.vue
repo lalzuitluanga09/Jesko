@@ -18,7 +18,7 @@
             </div>
             <div class="mb-4">
               <label class="block text-gray-700 dark:text-gray-400 text-sm mb-2">Phone</label>
-              <input v-model="auth.formData.phone" type="tel" class="w-full border hover:bg-pink-50 dark:hover:bg-gray-600 border-gray-500 rounded px-3 py-2" required />
+              <input v-model="auth.formData.phone" type="text" inputmode="numeric" pattern="[0-9]*" maxlength="10" @input="auth.formData.phone = ($event.target as HTMLInputElement).value.replace(/\D/g, '').slice(0, 10)" class="w-full border hover:bg-pink-50 dark:hover:bg-gray-600 border-gray-500 rounded px-3 py-2" required />
             </div>
           </template>
   

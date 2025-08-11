@@ -9,24 +9,28 @@ use Illuminate\Support\Str;
 
 class CategoryController extends Controller
 {
-    public function index()
+    public function index(Request $request, $storeSlug)
     {
-        $categories = Category::where('store_id', 1)->get(['id', 'name','slug']);
+        info($request->all());
+        $store = Store::where('slug', $storeSlug)->first();
+        $categories = Category::where('store_id', $store->id)->get(['id', 'name','slug']);
 
         return response()->json($categories);
     }
 
-    public function store(Request $request)
+    public function store(Request $request, $storeSlug)
     {
         $request->validate([
             'name' => 'required|string|max:255',
         ]);
 
         $name = Str::ucfirst(Str::lower($request->name));
+
+        $store = Store::where('slug', $storeSlug)->first();
         
         Category::create([
             'name' => $name,
-            'store_id' => Store::first()->id,
+            'store_id' => $store->id,
             'slug' => Str::slug($name)
         ]);
 

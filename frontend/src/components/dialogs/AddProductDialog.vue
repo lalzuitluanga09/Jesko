@@ -1,34 +1,35 @@
 <template>
   <div>
-    <div v-if="isDialogOpen" class="w-full h-[100vh] bg-black/20 fixed inset-0 z-10">
-    </div>
+    <div v-if="isDialogOpen" class="w-full h-[100vh] bg-black/20 fixed inset-0 z-10"></div>
     <Transition name="slide">
-      <div v-if="isDialogOpen" class="fixed inset-0 flex my-1 justify-end z-20" @click.self="close('self')">
+      <div v-if="isDialogOpen" class="fixed inset-0 flex justify-end z-20" @click.self="close('self')">
         <div class="bg-white dark:bg-gray-700 w-full max-w-5xl p-8 rounded-lg shadow-xl overflow-y-auto">
-          <h1 class="text-2xl font-semibold mb-6 text-gray-800 dark:text-gray-100">{{ editId == 0 ? 'Add' : 'Edit' }} Product</h1>
-          <form class="space-y-6" @submit.prevent="() => (editId === 0 ? save() : update()) ">
+          <h1 class="text-2xl font-semibold mb-6 text-gray-800 dark:text-gray-100">
+            {{ editId == 0 ? 'Add' : 'Edit' }} Product
+          </h1>
+          <form class="space-y-6" @submit.prevent="() => (editId === 0 ? save() : update())">
             <ProductDataInput />
-            <VariationInput v-if="editId == 0"/>
-            <VariationEdit v-if="selected?.type == 'variable'"/>
+            <VariationInput v-if="editId == 0" />
+            <VariationEdit v-if="selected?.type == 'variable'" />
             <ImageInput />
             <div class="flex flex-col gap-1 text-sm">
               <label class="mr-4 text-gray-700 dark:text-gray-300 font-medium">Status:</label>
-              <div class="flex items-center ">
+              <div class="flex text-xs md:text-sm">
                 <button type="button" :class="[
-                  'px-3 py-1.5 rounded-l-lg font-medium border transition',
-                  formData.status == 'draft'
-                    ? 'bg-gray-400 text-white border-gray-400'
-                    : 'bg-white dark:bg-gray-700 text-gray-700 dark:text-gray-200 border-gray-300'
-                ]" @click="formData.status = 'draft'">
-                  Draft
-                </button>
-                <button type="button" :class="[
-                  'px-3 py-1.5 rounded-r-lg font-medium border transition',
-                  formData.status == 'active'
-                    ? 'bg-blue-600 text-white border-blue-700'
-                    : 'bg-white dark:bg-gray-700 text-gray-700 dark:text-gray-200 border-gray-300'
-                ]" @click="formData.status = 'active'">
-                  Active
+                    'px-4 py-2 rounded-l-md font-medium border border-gray-300 transition-all duration-200 cursor-pointer',
+                    formData.status === 'draft'
+                      ? 'bg-gray-500 text-white '
+                      : 'bg-white dark:bg-gray-700 text-gray-700 dark:text-gray-200',
+                  ]" @click="formData.status = 'draft'">
+                    Draft
+                  </button>
+                  <button type="button" :class="[
+                    'px-4 py-2 rounded-r-md font-medium border border-gray-300 transition-all duration-200 cursor-pointer',
+                    formData.status === 'active'
+                      ? 'bg-blue-600 text-white '
+                      : 'bg-white dark:bg-gray-700 text-gray-700 dark:text-gray-200',
+                  ]" @click="formData.status = 'active'">
+                    Active
                 </button>
               </div>
             </div>
@@ -49,35 +50,25 @@
   </div>
 </template>
 
-
 <script setup lang="ts">
-import { useProduct } from '@/composables/useProduct';
-import ProductDataInput from '../product/ProductDataInput.vue';
-import VariationInput from '../product/VariationInput.vue';
-import ImageInput from '../product/ImageInput.vue';
-import VariationEdit from '../product/VariationEdit.vue';
+import { useProduct } from '@/composables/useProduct'
+import ProductDataInput from '../product/ProductDataInput.vue'
+import VariationInput from '../product/VariationInput.vue'
+import ImageInput from '../product/ImageInput.vue'
+import VariationEdit from '../product/VariationEdit.vue'
 
-const {
-  formData,
-  isDialogOpen,
-  editId,
-  selected,
-  save,
-  update,
-  closeAddDialog,
-  closeEditDialog
-} = useProduct()
+const { formData, isDialogOpen, editId, selected, save, update, closeAddDialog, closeEditDialog } =
+  useProduct()
 
 const close = (key: string) => {
-  if(editId.value> 0){
+  if (editId.value > 0) {
     closeEditDialog()
-  } else if(key == 'self') {
+  } else if (key == 'self') {
     isDialogOpen.value = false
-  } else if ( key == 'cancel') {
+  } else if (key == 'cancel') {
     closeAddDialog()
   }
 }
-
 </script>
 
 <style scoped>

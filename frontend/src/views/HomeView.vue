@@ -15,7 +15,6 @@ import { useStore } from '@/composables/useStore';
 import { onMounted } from 'vue';
 
 const {
-  topStores,
   getTopStores
 } = useStore()
 

@@ -1,15 +1,14 @@
 <template>
     <div @click.prevent="gotTo"
-        class="relative w-full max-w-sm rounded-2xl overflow-hidden bg-white/70 dark:bg-gray-600 cursor-pointer hover:bg-amber-50 dark:hover:bg-gray-500 border border-gray-300  transition">
-        <div v-if="!auth.userMeta.wishlists.includes(item.id)" @click.stop="handleWishlistAction('add')"
-            class="absolute top-2 right-2 bg-amber-50 hover:bg-amber-100 dark:bg-gray-600 dark:hover:bg-gray-500 rounded-full px-1 md:px-2 md:py-1 z-10 cursor-pointer">
-            <span class="mdi mdi-heart-outline text-base md:text-xl text-amber-500 dark:text-gray-300"></span>
-            <!-- <span class="mdi mdi-heart text-base md:text-xl text-amber-500 dark:text-gray-300"></span> -->
+        :class="`relative w-full max-w-sm rounded-2xl overflow-hidden bg-white/70 dark:bg-gray-600 cursor-pointer hover:bg-${theme}-50 dark:hover:bg-gray-500 border border-${theme}-200  transition`">
+        <div v-if="!auth.userMeta.wishlists.includes(item.id)" @click.stop="handleWishlistAction('add')" title="Add to Wishlist"
+            :class="`absolute top-2 right-2 bg-${theme}-50 hover:bg-${theme}-200 dark:bg-${theme}-500 dark:hover:bg-${theme}-400 rounded-full px-1 md:px-2 md:py-1 z-10 cursor-pointer`">
+            <span :class="`mdi mdi-heart-outline text-base md:text-xl text-${theme}-500 dark:text-white`"></span>
         </div>
         <div v-else @click.stop="handleWishlistAction('remove')"
-            class="absolute top-2 right-2 bg-amber-50 hover:bg-amber-100 dark:bg-gray-600 dark:hover:bg-gray-500 rounded-full px-1 md:px-2 md:py-1 z-10 cursor-pointer">
-            <!-- <span class="mdi mdi-heart-outline text-base md:text-xl text-amber-500 dark:text-gray-300"></span> -->
-            <span class="mdi mdi-heart text-base md:text-xl text-amber-500 dark:text-gray-300"></span>
+            title="Remove from Wishlist"
+            :class="`absolute top-2 right-2 bg-${theme}-50 hover:bg-${theme}-200 dark:bg-${theme}-500 dark:hover:bg-${theme}-400 rounded-full px-1 md:px-2 md:py-1 z-10 cursor-pointer`">
+            <span :class="`mdi mdi-heart text-base md:text-xl text-${theme}-500 dark:text-white`"></span>
         </div>
         <img class="w-full lg:h-48 md:h-40 h-36 object-cover rounded-t-xl" :src="item.default_image_url ? storageUrl(item.default_image_url) : '/images/image.png'"
             alt="Store Image">
@@ -29,14 +28,16 @@
             <button v-if="!auth.userMeta.cart_items.includes(item.id)"
                 @click.stop="handleCartAction('add')"
                 :disabled="cart.loading"
-                class="cursor-pointer absolute bottom-3 right-3 bg-amber-100 dark:bg-gray-500 px-2 py-1 md:px-3 md:py-2 rounded-full hover:bg-amber-200 dark:hover:bg-gray-600 transition-colors duration-200 flex items-center shadow-sm">
-                <span class="mdi mdi-shopping-outline text-md md:text-xl"></span>
+                title="Add to Cart"
+                :class="`cursor-pointer absolute bottom-3 right-3 bg-${theme}-100 dark:bg-${theme}-500 px-2 py-1 md:px-3 md:py-2 rounded-full hover:bg-${theme}-200 dark:hover:bg-${theme}-400 transition-colors duration-200 flex items-center shadow-sm`">
+                <span :class="`mdi mdi-shopping-outline text-md md:text-xl text-${theme}-500 dark:text-white`"></span>
             </button>
              <button v-else
                 @click.stop="handleCartAction('remove')"
                 :disabled="cart.loading"
-                class="cursor-pointer absolute bottom-3 right-3 bg-amber-100 dark:bg-gray-500 px-2 py-1 md:px-3 md:py-2 rounded-full hover:bg-amber-200 dark:hover:bg-gray-600 transition-colors duration-200 flex items-center shadow-sm">
-                <span class="mdi mdi-shopping text-md md:text-xl"></span>
+                title="Remove from Cart"
+                :class="`cursor-pointer absolute bottom-3 right-3 bg-${theme}-100 dark:bg-${theme}-500 px-2 py-1 md:px-3 md:py-2 rounded-full hover:bg-${theme}-200 dark:hover:bg-${theme}-400 transition-colors duration-200 flex items-center shadow-sm`">
+                <span :class="`mdi mdi-shopping text-md md:text-xl text-${theme}-500 dark:text-white`"></span>
             </button>
         </div>
     </div>
@@ -58,6 +59,7 @@ const props = defineProps<{
     slug: string | undefined,
     item: Product,
     categories?: Category[],
+    theme?: string
 }>();
 
 const cart = useCartStore()

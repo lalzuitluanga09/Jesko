@@ -18,7 +18,9 @@
                         >
                         Seller: Seller Name
                     </p>
-                    <p class="text-sm md:text-base text-gray-600 dark:text-gray-400 mb-4">Category: Categories</p>
+                    <p v-if="itemData.item?.category_id" class="text-sm md:text-base text-gray-600 dark:text-gray-400 mb-4">Category: 
+                        {{ categories.filter(item => item.id == itemData.item?.category_id)[0]?.name }}
+                    </p>
                     <div class="mb-4" v-if="itemData.item?.discounted_price">
                         <span class="text-2xl font-semibold text-pink-600 dark:text-pink-500">₹ {{ itemData.item?.discounted_price }}</span>
                         <span class="ml-2 text-sm text-gray-400 line-through">₹{{ itemData.item.price }}</span>
@@ -50,9 +52,11 @@
         </div>
         <OtherItems v-if="itemData.related_items.length > 0" title="Similar Items" :items="itemData.related_items"/>
     </div>
+    <ViewMarketplaceImage />
 </template>
 
 <script setup lang="ts">
+import ViewMarketplaceImage from '@/components/dialogs/marketplace/ViewMarketplaceImage.vue';
 import MarketplaceImageSlider from '@/components/marketplace/MarketplaceImageSlider.vue';
 import OtherItems from '@/components/marketplace/OtherItems.vue';
 import DataLoader from '@/components/others/DataLoader.vue';
@@ -64,8 +68,9 @@ const route = useRoute()
 
 const {
     loading,
+    categories,
     itemData,
-    fetchItem
+    fetchItem,
 } = useMarket()
 
 onMounted(async() => {

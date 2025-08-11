@@ -9,23 +9,31 @@ use Illuminate\Support\Str;
 
 class TagController extends Controller
 {
-        public function index()
+    public function index($storeSlug)
     {
-        $tags = Tag::where('store_id', 1)->get(['id', 'name','slug'] );
+        $store = Store::where('slug', $storeSlug)->first();
+        
+        if (!$store) abort(404, 'Store not found');
+
+        $tags = Tag::where('store_id', $store->id)->get(['id', 'name','slug'] );
 
         return response()->json($tags);
     }
 
-    public function store(Request $request)
+    public function store(Request $request, $storeSlug)
     {
         $request->validate([
             'name' => 'required|string|max:255',
         ]);
+
+        $store = Store::where('slug', $storeSlug)->first();
+
+        if (!$store) abort(404, 'Store not found');
         
         $name = Str::ucfirst(Str::lower($request->name));
         Tag::create([
             'name' => $name,
-            'store_id' => Store::first()->id,
+            'store_id' => $store->id,
             'slug' => Str::slug($name)
         ]);
 

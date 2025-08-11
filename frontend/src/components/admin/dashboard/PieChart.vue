@@ -1,4 +1,3 @@
-
 <template>
     <div class="card flex justify-center">
         <Chart type="doughnut" :data="chartData" :options="chartOptions" class="w-full md:w-[20rem]" />

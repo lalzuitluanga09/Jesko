@@ -89,7 +89,11 @@ const router = createRouter({
           name: 'my-stores',
           component: () => import('@/views/account/MyStores.vue'),
         },
-
+        {
+          path: '/account/marketplace',
+          name: 'my-marketplace',
+          component: () => import('@/views/account/MyMarketplace.vue'),
+        },
       ]
     },
     {
