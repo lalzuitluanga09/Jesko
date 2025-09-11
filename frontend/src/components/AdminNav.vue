@@ -2,7 +2,7 @@
   <div class="h-screen w-68 bg-white dark:bg-gray-800 flex flex-col">
     <div class="flex items-center justify-between ">
       <div class="p-4 text-gray-800 dark:text-white">
-        <h1 class="text-xl font-bold line">Store Name</h1>
+        <h1 :title="currentStore?.name" class="text-xl font-bold line-clamp-2">{{ currentStore?.name }}</h1>
         <p class="text-sm text-gray-500 font-semibold pt-2">Admin Panel</p>
       </div>
       <div :class="`text-${isDark ? 'white' : 'black'} pl-2`">
@@ -49,7 +49,10 @@ const {
   toggleDark
 } = useSetting()
 
-const { logout } = useAdmin()
+const { 
+  currentStore,
+  logout
+} = useAdmin()
 
 const menuGroups = [
   {
@@ -65,6 +68,11 @@ const menuGroups = [
       { name: 'Products', route: 'products', icon: 'mdi mdi-package-variant-closed' },
       { name: 'Categories', route: 'category', icon: 'mdi mdi-shape-outline' },
       { name: 'Tags', route: 'tag', icon: 'mdi mdi-tag-outline' },
+    ]
+  },
+  {
+    title: 'Marketing & Promotions',
+    items: [
       { name: 'Coupons', route: 'coupons', icon: 'mdi mdi-ticket-percent' },
       { name: 'Sales', route: 'sales', icon: 'mdi mdi-sale' },
     ]
@@ -77,13 +85,14 @@ const menuGroups = [
     ]
   },
   {
-    title: 'User & Settings',
+    title: 'Administration',
     items: [
       { name: 'Customers', route: 'customer', icon: 'mdi mdi-account-multiple-outline' },
       { name: 'Settings', route: 'setting', icon: 'mdi mdi-cog-outline' },
     ]
   }
 ];
+
 </script>
 
 <style scoped>

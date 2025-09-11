@@ -1,15 +1,18 @@
 <template>
     <div
         @click="goTo"
-        :class="`group w-full max-w-sm rounded-3xl bg-white dark:bg-gray-700 hover:bg-${store.theme}-50 dark:hover:bg-gray-600 cursor-pointer border border-gray-200 dark:border-gray-600 shadow-lg transition-all duration-200`"
+        :class="`relative group w-full max-w-sm rounded-3xl bg-white dark:bg-gray-700 hover:bg-${store.theme}-50 dark:hover:bg-gray-600 cursor-pointer border border-gray-200 dark:border-gray-600 shadow-lg transition-all duration-200`"
     >
-        <div :class="`flex justify-center items-center pt-6 pb-2 bg-gradient-to-b from-${store.theme}-50 to-transparent dark:from-gray-800 rounded-t-3xl`">
-            <img
-                :class="`h-24 w-24 md:h-32 md:w-32 object-cover rounded-full border-4 border-${store.theme}-200 dark:border-${store.theme}-500 shadow-lg transition-transform duration-200 group-hover:scale-105`"
-                :src="store.logo ? storageUrl(store.logo) : '/images/logo.png'"
-                alt="Store Image"
-            />
-        </div>
+    <div :class="`flex justify-center items-center pt-6 pb-2 bg-gradient-to-b from-${store.theme}-50 to-transparent dark:from-gray-800 rounded-t-3xl`">
+        <img
+        :class="`h-24 w-24 md:h-32 md:w-32 object-cover rounded-full border-4 border-${store.theme}-200 dark:border-${store.theme}-500 shadow-lg transition-transform duration-200 group-hover:scale-105`"
+        :src="store.logo ? storageUrl(store.logo) : '/images/logo.png'"
+        alt="Store Image"
+        />
+    </div>
+    <SaleBadge v-if="store.isNew" title="New" type="green" class="absolute top-4 left-0"/>
+    <StoreBadge v-if="store.active_sale" :title="store.active_sale" type="red" class="absolute top-0 left-1/2 -translate-x-1/2"/>
+
         <div class="px-5 pb-2 pt-2 text-center">
             <div :class="`font-semibold text-md md:text-lg mb-1 truncate text-${store.theme}-800 dark:text-${store.theme}-400`">
                 {{ store.name }}
@@ -19,7 +22,7 @@
                   {{ store.theme || 'No theme selected.' }}
             </div>
         </div>
-        <div class="px-5 pb-4 flex justify-between items-center">
+        <div :class="auth.isAuthenticated ? 'px-5 pb-4 flex justify-between items-center' : 'px-5 pb-4 flex justify-center items-center'">
             <div class="flex items-center gap-4">
                 <div class="flex items-center gap-1">
                     <i :class="`mdi mdi-account text-${store.theme}-500 text-base md:text-lg`" />
@@ -51,7 +54,7 @@
                 <span class="font-medium italic text-gray-500 dark:text-gray-400">Owner:</span>
                 <span class="ml-1">{{ store.owner?.name || 'N/A' }}</span>
             </div>
-            <div class="flex items-center mb-1">
+            <!-- <div class="flex items-center mb-1">
                 <span :class="`mdi mdi-account-multiple-outline mr-2 text-${store.theme}-500`"></span>
                 <span class="font-medium italic text-gray-500 dark:text-gray-400">Followers:</span>
                 <span class="ml-1">{{ store.followers_count }}</span>
@@ -60,7 +63,7 @@
                 <span :class="`mdi mdi-package-variant-closed mr-2 text-${store.theme}-500`"></span>
                 <span class="font-medium italic text-gray-500 dark:text-gray-400">Products:</span>
                 <span class="ml-1">{{ store.products_count }}</span>
-            </div>
+            </div> -->
             <div class="flex items-center mb-1">
                 <span :class="`mdi mdi-map-marker mr-2 text-${store.theme}-500`"></span>
                 <span class="font-medium italic text-gray-500 dark:text-gray-400">Location:</span>
@@ -82,6 +85,8 @@ import router from '@/router';
 import type { Store } from '@/types/store';
 import { useUser } from '@/composables/useUser';
 import { storageUrl } from '@/config';
+import SaleBadge from '../badge/SaleBadge.vue';
+import StoreBadge from '../badge/StoreBadge.vue';
 
 const props = defineProps<{
     store: Store

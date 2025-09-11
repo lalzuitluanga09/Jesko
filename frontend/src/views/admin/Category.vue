@@ -5,7 +5,7 @@
         <TableSearch title="Search by name" v-model="searchInput"/>
         <AddBtn title="Add Category" @click="openAddDialog"/>
     </div>
-    <SimpleTable :columns="columns" :rows="paginatedItems" :with-status="false" :with-action="true" :with-view="false"
+    <SimpleTable :rows="paginatedItems" :loading="loadingData"
         @delete-row="deleteData()" @edit-item="editData($event)" @prev="currentPage--" @next="currentPage++"
         :totalPages="totalPages" :currentPage="currentPage"
         />
@@ -23,8 +23,8 @@ import { onMounted } from 'vue';
 
 const {
     searchInput,
-    columns,
     totalPages,
+    loadingData,
     currentPage,
     paginatedItems,
     openAddDialog,

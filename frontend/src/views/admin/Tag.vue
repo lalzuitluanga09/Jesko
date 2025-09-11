@@ -5,10 +5,11 @@
             <TableSearch title="Search by name" v-model="searchInput"/>
             <AddBtn title="Add Tag" @click="openAddDialog"/>
         </div>
-    <SimpleTable :columns="columns" :rows="paginatedItems" :with-status="false" :with-action="true" :with-view="false"
-        @delete-row="deleteData()" @edit-item="editData($event)" @prev="currentPage--" @next="currentPage++"
-        :totalPages="totalPages" :currentPage="currentPage"
-        />    </div>
+        <SimpleTable :rows="paginatedItems" :loading="loadingData"
+            @delete-row="deleteData()" @edit-item="editData($event)" @prev="currentPage--" @next="currentPage++"
+            :totalPages="totalPages" :currentPage="currentPage"
+            /> 
+    </div>
     <AddTagDialog />
 </template>
 
@@ -22,10 +23,10 @@ import { onMounted } from 'vue';
 
 const {
     searchInput,
-    columns,
     paginatedItems,
     currentPage,
     totalPages,
+    loadingData,
     openAddDialog,
     editData,
     deleteData,

@@ -32,7 +32,11 @@ const router = createRouter({
           name: 'account',
           component: () => import('@/views/Account.vue'),
         },
-
+        {
+          path: '/checkout',
+          name: 'checkout',
+          component: () => import('@/views/checkout/CheckoutPage.vue'),
+        },
         {
           path: '/favourites',
           name: 'favourite',
@@ -67,7 +71,7 @@ const router = createRouter({
         {
           path: '/account/orders',
           name: 'orders',
-          component: () => import('@/views/account/Orders.vue'),
+          component: () => import('@/views/account/MyOrders.vue'),
         },
         {
           path: '/account/following',
@@ -123,7 +127,7 @@ const router = createRouter({
         {
           path: 'orders',
           name: 'orders-list',
-          component: () => import('@/views/admin/Order.vue'),
+          component: () => import('@/views/admin/OrderList.vue'),
         },
         {
           path: 'customer',

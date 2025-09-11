@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use App\Models\Order;
 use App\Models\Store;
 use App\Models\StoreFollower;
 use App\Models\Wishlist;
@@ -79,11 +80,14 @@ class UserController extends Controller
 
         $wishlists = Wishlist::where('user_id', $user->id)->pluck('product_id');
 
+        $pendingOrders = $user->orders()->where('status', 'pending')->count();
+
 
         return response()->json([
             'followings' => $followings,
             'cart_items' => $cartItems,
-            'wishlists' => $wishlists
+            'wishlists' => $wishlists,
+            'pendingOrders'=> $pendingOrders
         ]);
 
     }

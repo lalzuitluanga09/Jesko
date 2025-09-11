@@ -4,10 +4,14 @@ use App\Http\Controllers\AddressController;
 use App\Http\Controllers\AuthController;
 use App\Http\Controllers\CartController;
 use App\Http\Controllers\CategoryController;
+use App\Http\Controllers\CouponController;
 use App\Http\Controllers\MarketplaceController;
 use App\Http\Controllers\MetaController;
+use App\Http\Controllers\OrderController;
+use App\Http\Controllers\PaymentController;
 use App\Http\Controllers\ProductController;
 use App\Http\Controllers\RegisterController;
+use App\Http\Controllers\SaleController;
 use App\Http\Controllers\StoreController;
 use App\Http\Controllers\TagController;
 use App\Http\Controllers\UserController;
@@ -61,6 +65,11 @@ Route::group([
     Route::put('/addresses/{addressId}/default', [AddressController::class, 'setDefault'])->name('addresses.set-default');
     Route::apiResource('/addresses', AddressController::class);
 
+    Route::post('/place_order', [OrderController::class, 'placeOrder'])->name('order.create');
+    Route::get('/orders', [OrderController::class, 'getOrders'])->name('order.getOrders');
+
+    Route::post('/checkout/apply-coupon', [CouponController::class, 'applyCoupon'])->name('coupon.apply');
+
 
     //Admin Routes
     Route::prefix('admin/{storeslug}')
@@ -70,6 +79,10 @@ Route::group([
             Route::apiResource('/product', ProductController::class);
             Route::apiResource('/category', CategoryController::class);
             Route::apiResource('/tag', TagController::class);
+            Route::apiResource('/orders', OrderController::class);
+            Route::apiResource('/payments', PaymentController::class);
+            Route::apiResource('/sales', SaleController::class);
+            Route::apiResource('/coupons', CouponController::class);
             Route::post('/store-data/{storeId}', [StoreController::class, 'updateStoreData'])->name('update.store-data');
         });
 });

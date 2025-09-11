@@ -2,11 +2,14 @@
 
 namespace App\Models;
 
+use Carbon\Carbon;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Database\Eloquent\Relations\BelongsToMany;
 use Illuminate\Database\Eloquent\Relations\HasMany;
+use Illuminate\Database\Eloquent\Relations\HasOne;
+use Illuminate\Database\Eloquent\Relations\HasOneThrough;
 use Illuminate\Database\Eloquent\SoftDeletes;
 
 class Store extends Model
@@ -34,6 +37,18 @@ class Store extends Model
         'category_id' => 'integer',
         'theme_id' => 'integer',
     ];
+
+    public function owner(): HasOneThrough
+    {
+        return $this->hasOneThrough(
+            User::class,
+            StoreUser::class,
+            'store_id',
+            'id',
+            'id',
+            'user_id'
+        )->where('store_users.role', 'owner');
+    }
 
     public function category(): BelongsTo
     {
@@ -80,5 +95,29 @@ class Store extends Model
         return $this->belongsToMany(User::class, 'store_users')
                     ->withPivot('role', 'status', 'joined_at')
                     ->withTimestamps();
+    }
+
+    public function orders(): HasMany
+    {
+        return $this->hasMany(Order::class);
+    }
+
+    public function coupons(): HasMany
+    {
+        return $this->hasMany(Coupon::class);
+    }
+
+    public function sales(): HasMany
+    {
+        return $this->hasMany(Sale::class);
+    }
+
+    public function activeSale(): HasOne
+    {
+        return $this->hasOne(Sale::class)
+                    ->where('status', 'active')
+                    ->where('start_at', '<=', Carbon::now())
+                    ->where('end_at', '>=', Carbon::now())
+                    ->orderBy('start_at', 'desc');
     }
 }

@@ -15,6 +15,7 @@ const { isOpen, itemId } = useConfirmDialog()
 const { storeSlug } = useAdmin()
 
 const loading = ref<boolean>(false)
+const loadingData = ref<boolean>(false)
 const isDialogOpen = ref<boolean>(false)
 const inputData = ref<string>('')
 const editId = ref<number>(0)
@@ -26,24 +27,19 @@ const filteredData = ref<Category[]>([])
 const perPage = ref<number>(10)
 const currentPage = ref(<number>(1))
 
-
-const columns = [
-  'name',
-  'slug',
-]
-
 export function useCategory() {
 
   const getData = async () => {
-    loading.value = true
+    loadingData.value = true
     try {
       const res = await adminApi.get(`/${storeSlug.value}/category`);
       data.value = res.data
       filteredData.value = res.data
     } catch (error) {
       notifyError('Error fetching data')
+      console.log(error)
     } finally {
-      loading.value = false
+      loadingData.value = false
     }
   }
 
@@ -62,6 +58,7 @@ export function useCategory() {
       getData()
     } catch (error) {
       notifyError('Error adding category')
+      console.log(error)
     } finally {
       loading.value = false
     }
@@ -80,8 +77,9 @@ export function useCategory() {
       notifySuccess('Updated Successfully')
       closeAddDialog()
       getData()
-    } catch (erro) {
+    } catch (error) {
       notifyError('Unable to update')
+      console.log(error)
     }
   }
 
@@ -109,6 +107,7 @@ export function useCategory() {
       getData();
     } catch (error) {
       notifyError('Cannot delete item')
+      console.log(error)
     }
   }
 
@@ -142,12 +141,12 @@ export function useCategory() {
 
   return {
     inputData,
-    columns,
     editId,
     data,
     filteredData,
     searchInput,
     loading,
+    loadingData,
     isDialogOpen,
     currentPage,
     perPage,

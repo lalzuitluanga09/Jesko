@@ -6,7 +6,7 @@
       </div>
       <ProfileImage />
       <div class="flex flex-col gap-1 w-full max-w-2xl justify-center mx-auto mt-10 px-4 md:px-0">
-        <SettingLink title="Orders" icon="mdi mdi-list-box-outline" to="orders"  badge="12"/>
+        <SettingLink title="Orders" icon="mdi mdi-list-box-outline" to="orders"  :badge="auth.userMeta.pendingOrders"/>
         <SettingLink title="Followings" icon="mdi mdi-store-check-outline" to="following"/>
         <SettingLink title="Profile" icon="mdi mdi-account-outline" to="profile"/>
         <SettingLink title="Addresses" icon="mdi mdi-map-marker-outline" to="address"/>

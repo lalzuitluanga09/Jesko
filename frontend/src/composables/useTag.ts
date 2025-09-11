@@ -7,6 +7,7 @@ import { debounce } from 'lodash-es'
 import { useAdmin } from './useAdmin'
 
 const loading = ref<boolean>(false)
+const loadingData = ref<boolean>(false)
 const isDialogOpen = ref<boolean>(false)
 const searchInput = ref<string>('')
 const inputData = ref<string>('')
@@ -17,11 +18,6 @@ const filteredData = ref<Tag[]>([])
 
 const perPage = ref<number>(10)
 const currentPage = ref(<number>(1))
-
-const columns = [
-  'name',
-  'slug'
-]
 
 const {
   notifySuccess,
@@ -36,7 +32,7 @@ const {storeSlug } = useAdmin()
 export function useTag() {
 
   const getData = async () => {
-    loading.value = true
+    loadingData.value = true
     try {
       const res = await adminApi.get(`/${storeSlug.value}/tag`);
       data.value = res.data
@@ -44,7 +40,7 @@ export function useTag() {
     } catch (error) {
       notifyError('Error fetching data')
     } finally {
-      loading.value = false
+      loadingData.value = false
     }
   }
 
@@ -146,8 +142,8 @@ export function useTag() {
     inputData,
     editId,
     searchInput,
-    columns,
     loading,
+    loadingData,
     isDialogOpen,
     perPage,
     currentPage,

@@ -11,9 +11,16 @@ class CategoryController extends Controller
 {
     public function index(Request $request, $storeSlug)
     {
-        info($request->all());
         $store = Store::where('slug', $storeSlug)->first();
-        $categories = Category::where('store_id', $store->id)->get(['id', 'name','slug']);
+        $categories = Category::where('store_id', $store->id)
+            ->withCount('products')
+            ->get()
+            ->map(fn($item) => [
+                'id'            => $item->id,
+                'name'          => $item->name,
+                'slug'          => $item->slug,
+                'productsCount' => $item->products_count,
+            ]);
 
         return response()->json($categories);
     }

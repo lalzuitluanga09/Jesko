@@ -38,7 +38,7 @@
                 <span>₹{{ filter.price_range[1] }}</span>
             </div>
         </div>
-        <div>
+        <div v-if="storeData.categories.length > 0">
             <label class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">Category</label>
             <ul class="space-y-1">
                 <li
@@ -62,7 +62,7 @@
                 </li>
             </ul>
         </div>
-        <div>
+        <div v-if="storeData.tags.length > 0">
             <label class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">Tags</label>
             <div class="flex flex-wrap gap-2">
                 <span

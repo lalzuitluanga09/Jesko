@@ -3,6 +3,7 @@ interface Category {
     name: string
     slug: string
     parent_id?: number
+    productsCount?: number
 }
 
 

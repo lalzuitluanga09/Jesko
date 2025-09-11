@@ -19,6 +19,8 @@ const isDeleting = ref<boolean>(false)
 const isEditing = ref<boolean>(false)
 
 const addresses = ref<Address[]>([])
+const deliveryAddress = ref<Address>()
+const otherAddress = ref<Address []>([])
 
 const formData = ref<{
   id?: number;
@@ -33,7 +35,7 @@ const formData = ref<{
 }>({
   label: '',
   name: auth.user?.name || '',
-  phone: auth.user?.phone.toString() || null,
+  phone: auth.user?.phone?.toString() || null,
   address: '',
   landmark: '',
   districtId: null,
@@ -74,6 +76,7 @@ export function useAddress() {
       try {
         const res = await api.get('/addresses');
         addresses.value = res.data
+        setDeliveryAddress()
       } catch (error) {
         console.error('Error fetching addresses:', error)
       } finally {
@@ -89,6 +92,7 @@ export function useAddress() {
         addresses.value.push(res.data.data);
         closeDialog();
         notifySuccess('Address saved successfully');
+        fetchAddresses()
       } catch (error) {
         console.error('Error saving address:', error)
         notifyError('Failed to save address');
@@ -140,7 +144,7 @@ export function useAddress() {
       }
     }
 
-    const deleteAddress = async (id: number | undefined) => {
+    const deleteAddress = async (id: number | null) => {
       if (!id) {
         notifyError('Invalid address ID');
         return;
@@ -173,6 +177,16 @@ export function useAddress() {
       }
     }
 
+    const setDeliveryAddress = (id?: number) => {
+      if(id) {
+        deliveryAddress.value = addresses.value.find(item => item.id === id);
+        otherAddress.value = addresses.value.filter(item => item.id !== id);
+      } else {
+          deliveryAddress.value = addresses.value[0];
+          otherAddress.value = addresses.value.filter(item => item.is_default == false)
+      }
+    }
+
   return {
     isOpen,
     loading,
@@ -180,6 +194,8 @@ export function useAddress() {
     isDeleting,
     formData,
     addresses,
+    deliveryAddress,
+    otherAddress,
     isEditing,
     openDialog,
     closeDialog,
@@ -189,6 +205,7 @@ export function useAddress() {
     openEditDialog,
     update,
     resetForm,
-    deleteAddress
+    deleteAddress,
+    setDeliveryAddress
   }
 }

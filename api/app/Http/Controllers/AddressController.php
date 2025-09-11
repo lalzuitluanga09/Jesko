@@ -25,6 +25,11 @@ class AddressController extends Controller
 
         $address = Address::create($data);
 
+        if(!$request->user()->defaultAddress) {
+            $address->is_default = true;
+            $address->save();
+        }
+
         return response()->json(['message' => 'Address created successfully', 'data' => $address], 201);
     }
 
@@ -66,7 +71,6 @@ class AddressController extends Controller
             return response()->json(['message' => 'Address not found'], 404);
         }
 
-        // Set the address as default
         Address::where('user_id', $user->id)->update(['is_default' => false]);
         $address->is_default = true;
         $address->save();

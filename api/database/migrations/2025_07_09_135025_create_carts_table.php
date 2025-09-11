@@ -15,10 +15,6 @@ return new class extends Migration
             $table->id();
             $table->foreignId('user_id')->nullable()->constrained()->onDelete('cascade');
             $table->enum('status', ['active', 'completed', 'abandoned'])->default('active');
-            $table->decimal('subtotal', 10, 2)->default(0);
-            $table->decimal('tax', 10, 2)->default(0);
-            $table->decimal('discount', 10, 2)->default(0);
-            $table->decimal('total', 10, 2)->default(0);
             $table->timestamps();
         });
     }

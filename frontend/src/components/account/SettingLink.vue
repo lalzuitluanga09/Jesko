@@ -41,7 +41,9 @@ const goTo = () => {
   if (typeof target === 'function') {
     target()
   } else if (typeof target === 'string') {
-    router.push({ name: target })
+    router.push({ name: target }).catch(err => {
+      console.error("Navigation error:", err);
+    })
   } else {
     router.push(props.to)
   }

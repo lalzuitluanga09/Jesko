@@ -30,4 +30,18 @@ class Category extends Model
     {
         return $this->belongsToMany(Product::class, 'product_categories');
     }
+
+    public function sales(): BelongsToMany
+    {
+        return $this->belongsToMany(Sale::class, 'sale_categories')
+            ->withTimestamps();
+    }
+
+    public function activeSale(): BelongsToMany
+    {
+        return $this->belongsToMany(Sale::class, 'sale_categories')
+            ->where('sales.start_at', '<=', now())
+            ->where('sales.end_at', '>=', now())
+            ->withTimestamps();
+    }
 }

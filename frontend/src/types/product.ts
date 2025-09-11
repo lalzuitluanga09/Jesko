@@ -3,6 +3,18 @@ interface Product {
     name: string
     description: string
     price: number
+    discount_price?: number
+    discount?: {
+      name: string
+      type: string
+      value: number
+      rules: {
+        bogoX: number
+        bogoY: number
+      }
+    }
+    isSale?: boolean
+    badge?: string
     stock: number
     sku: string,
     parent_id?: number
@@ -23,6 +35,7 @@ interface VariationAttributes {
 interface ProductVariation {
   id: number;
   price: string;
+  discount_price?: string;
   stock: number;
   sku: string | null;
   attributes: VariationAttributes;

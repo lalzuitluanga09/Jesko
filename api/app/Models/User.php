@@ -65,6 +65,11 @@ class User extends Authenticatable
         return $this->hasMany(Address::class);
     }
 
+    public function defaultAddress(): HasOne
+    {
+        return $this->hasOne(Address::class)->where('is_default', true);
+    }
+
     public function followedStores(): BelongsToMany
     {
         return $this->belongsToMany(Store::class, 'store_followers');
@@ -105,6 +110,11 @@ class User extends Authenticatable
     public function wishlistProducts(): BelongsToMany 
     {
         return $this->belongsToMany(Product::class, 'wishlists');
+    }
+
+    public function orders(): HasMany
+    {
+        return $this->hasMany(Order::class);
     }
 
 }      

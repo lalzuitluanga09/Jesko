@@ -24,6 +24,8 @@ return new class extends Migration
             $table->enum('type', ['simple', 'variable', 'variant'])->default('simple');
             $table->timestamps();
             $table->softDeletes();
+            
+            $table->index(['store_id', 'status'], 'idx_products_store_status');
         });
     }
 

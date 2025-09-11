@@ -15,7 +15,6 @@ const rows = [
   { name: 'Cosmetics', phone: '555-555-5555', email: 'cosmetics@example.com', address: '789 Cosmetics Blvd' },
 ]
 
-
 export function useCustomer() {
 
 

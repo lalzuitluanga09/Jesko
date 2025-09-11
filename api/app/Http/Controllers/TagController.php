@@ -15,8 +15,16 @@ class TagController extends Controller
         
         if (!$store) abort(404, 'Store not found');
 
-        $tags = Tag::where('store_id', $store->id)->get(['id', 'name','slug'] );
-
+        $tags = Tag::where('store_id', $store->id)
+                ->withCount('products')
+                ->get()
+                ->map(fn($item) => [
+                    'id'            => $item->id,
+                    'name'          => $item->name,
+                    'slug'          => $item->slug,
+                    'productsCount' => $item->products_count,
+                ]);
+                
         return response()->json($tags);
     }
 

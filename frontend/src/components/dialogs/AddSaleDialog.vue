@@ -5,113 +5,179 @@
     <Transition name="slide">
       <div v-if="addDialogOpen" class="fixed inset-0 flex items-center justify-end z-20" @click.self="closeAddDialog">
         <div class="bg-white dark:bg-gray-700 w-full max-w-4xl p-8 rounded-lg shadow-lg">
-          <h1 class="text-2xl font-semibold mb-6 text-gray-800 dark:text-gray-100">New Sale</h1>
-        <form class="space-y-6" @submit.prevent>
+          <h1 class="text-2xl font-semibold mb-6 text-gray-800 dark:text-gray-100">{{ selectedSale ? 'Edit Sale' : 'New Sale' }}</h1>
+          <form class="space-y-6" @submit.prevent="selectedSale ? update() : save()">
             <div class="grid grid-cols-1 md:grid-cols-2 gap-5">
-                <!-- Name -->
+              <!-- Name -->
+              <div>
+                <label for="name" class="block text-sm font-medium text-gray-700 dark:text-gray-200 mb-2">Sale
+                  Name</label>
+                <input id="name" type="text" v-model="saleForm.name" required
+                  class="w-full rounded border border-gray-300 dark:border-gray-600 bg-white dark:bg-gray-800 text-gray-900 dark:text-gray-100 px-3 py-2 focus:outline-none focus:ring-2 focus:ring-blue-500 transition"
+                  placeholder="e.g. Summer Sale" />
+              </div>
+              <!-- Type -->
+              <div>
+                <label for="type" class="block text-sm font-medium text-gray-700 dark:text-gray-200 mb-2">Type</label>
+                <select id="type" v-model="saleForm.type" required
+                  class="w-full rounded border border-gray-300 dark:border-gray-600 bg-white dark:bg-gray-800 text-gray-900 dark:text-gray-100 px-3 py-2 focus:outline-none focus:ring-2 focus:ring-blue-500 transition">
+                  <option value="flash">Flash</option>
+                  <option value="special">Special</option>
+                  <option value="clearance">Clearance</option>
+                  <option value="seasonal">Seasonal</option>
+                </select>
+              </div>
+              <!-- Description -->
+              <div class="col-span-2">
+                <label class="block text-sm font-medium text-gray-700 dark:text-gray-200 mb-1"
+                  for="description">Description</label>
+                <textarea id="description" rows="3" v-model="saleForm.description"
+                  class="w-full px-4 py-2 border border-gray-300 dark:border-gray-600 rounded focus:outline-none focus:ring-2 focus:ring-blue-500 dark:bg-gray-800 dark:text-gray-100"
+                  placeholder="Enter short description"></textarea>
+              </div>
+              <!-- Start Date -->
+              <div>
+                <label for="startDate" class="block text-sm font-medium text-gray-700 dark:text-gray-200 mb-2">Start
+                  Date</label>
+                  <VueDatePicker
+                    v-model="saleForm.startDate"
+                    :dark="isDark"
+                    :enable-time-picker="true"
+                    week-start="0"
+                    auto-apply
+                    :is-24="false"
+                    time-picker-inline
+                    :start-time="{ hours: 0, minutes: 0 }"
+                    format="dd/MM/yyyy hh:mm aa"
+                    placeholder="Select Start Date"
+                />
+              </div>
+              <!-- End Date -->
+              <div>
+                <label for="endDate" class="block text-sm font-medium text-gray-700 dark:text-gray-200 mb-2">End
+                  Date</label>
+                  <VueDatePicker
+                    v-model="saleForm.endDate"
+                    :dark="isDark"
+                    :enable-time-picker="true"
+                    week-start="0"
+                    auto-apply
+                    :is-24="false"
+                    time-picker-inline
+                    :start-time="{ hours: 23, minutes: 59 }"
+                    format="dd/MM/yyyy hh:mm aa"
+                    placeholder="Select End Date"
+                />
+              </div>
+              <!-- Discount Type -->
+              <div>
+                <label for="discountType"
+                  class="block text-sm font-medium text-gray-700 dark:text-gray-200 mb-2">Discount Type</label>
+                <select id="discountType" v-model="saleForm.discountType" required
+                  class="w-full rounded border border-gray-300 dark:border-gray-600 bg-white dark:bg-gray-800 text-gray-900 dark:text-gray-100 px-3 py-2 focus:outline-none focus:ring-2 focus:ring-blue-500 transition">
+                  <option value="percentage">Percentage</option>
+                  <option value="fixed">Fixed Amount</option>
+                  <option value="bogo">Buy X Get Y</option>
+                </select>
+              </div>
+              <div v-if="saleForm.discountType === 'bogo'" class="flex gap-2 items-center">
                 <div>
-                    <label for="name" class="block text-sm font-medium text-gray-700 dark:text-gray-200 mb-2">Sale Name</label>
-                    <input
-                        id="name"
-                        type="text"
-                        v-model="sale.name"
-                        required
-                        class="w-full rounded border border-gray-300 dark:border-gray-600 bg-white dark:bg-gray-800 text-gray-900 dark:text-gray-100 px-3 py-2 focus:outline-none focus:ring-2 focus:ring-blue-500 transition"
-                        placeholder="e.g. Summer Sale"
-                    />
+                    <label for="bogoX" class="block text-sm font-medium text-gray-700 dark:text-gray-200 mb-2">Buy X</label>
+                    <input id="bogoX" type="number" min="1" v-model="saleForm.bogoX"
+                      class="w-full rounded border border-gray-300 dark:border-gray-600 bg-white dark:bg-gray-800 text-gray-900 dark:text-gray-100 px-2 py-1 focus:outline-none focus:ring-2 focus:ring-blue-500 transition"
+                      placeholder="X" />
                 </div>
-                <!-- Status -->
                 <div>
-                    <label for="status" class="block text-sm font-medium text-gray-700 dark:text-gray-200 mb-2">Status</label>
-                    <select
-                        id="status"
-                        v-model="sale.status"
-                        required
-                        class="w-full rounded border border-gray-300 dark:border-gray-600 bg-white dark:bg-gray-800 text-gray-900 dark:text-gray-100 px-3 py-2 focus:outline-none focus:ring-2 focus:ring-blue-500 transition"
-                    >
-                        <option value="active">Active</option>
-                        <option value="inactive">Inactive</option>
-                    </select>
+                    <label for="bogoX" class="block text-sm font-medium text-gray-700 dark:text-gray-200 mb-2">Get Y</label>
+                  <input id="bogoY" type="number" min="1" v-model="saleForm.bogoY"
+                    class="w-full rounded border border-gray-300 dark:border-gray-600 bg-white dark:bg-gray-800 text-gray-900 dark:text-gray-100 px-2 py-1 focus:outline-none focus:ring-2 focus:ring-blue-500 transition"
+                    placeholder="Y" />
                 </div>
-                <!-- Start Date -->
-                <div>
-                    <label for="startDate" class="block text-sm font-medium text-gray-700 dark:text-gray-200 mb-2">Start Date</label>
-                    <input
-                        id="startDate"
-                        type="date"
-                        v-model="sale.startDate"
-                        required
-                        class="w-full rounded border border-gray-300 dark:border-gray-600 bg-white dark:bg-gray-800 text-gray-900 dark:text-gray-100 px-3 py-2 focus:outline-none focus:ring-2 focus:ring-blue-500 transition"
-                    />
+              </div>
+              <!-- Discount Amount -->
+              <div v-else>
+                <label for="discountAmount"
+                  class="block text-sm font-medium text-gray-700 dark:text-gray-200 mb-2">Discount {{ saleForm.discountType === 'percentage' ? '%' : 'Amount' }}</label>
+                <input id="discountAmount" type="text" v-model="saleForm.discountValue" required
+                  class="w-full rounded border border-gray-300 dark:border-gray-600 bg-white dark:bg-gray-800 text-gray-900 dark:text-gray-100 px-3 py-2 focus:outline-none focus:ring-2 focus:ring-blue-500 transition"
+                  :placeholder="saleForm.discountType === 'percentage' ? 'e.g. 10%' : 'e.g. ₹100'" />
+              </div>
+              <!-- Apply To -->
+              <div class="col-span-2">
+                <label class="block text-sm font-medium text-gray-700 dark:text-gray-200 mb-3">Apply Discount To</label>
+                <div class="flex flex-wrap gap-2 text-sm">
+                  <label class="flex items-center cursor-pointer group">
+                    <input type="radio" value="all" v-model="saleForm.applyTo" class="peer sr-only" />
+                    <span class="px-4 py-2 rounded-lg border border-gray-300 dark:border-gray-600 bg-white dark:bg-gray-800 text-gray-500 dark:text-gray-300 font-medium transition-all duration-200
+                        peer-checked:bg-blue-600 peer-checked:text-white peer-checked:border-blue-600
+                        hover:bg-gray-100 dark:hover:bg-gray-700">
+                      All Products
+                    </span>
+                  </label>
+                  <label class="flex items-center cursor-pointer group">
+                    <input type="radio" value="individual" v-model="saleForm.applyTo" class="peer sr-only" />
+                    <span class="px-4 py-2 rounded-lg border border-gray-300 dark:border-gray-600 bg-white dark:bg-gray-800 text-gray-500 dark:text-gray-300 font-medium transition-all duration-200
+                        peer-checked:bg-blue-600 peer-checked:text-white peer-checked:border-blue-600
+                        hover:bg-gray-100 dark:hover:bg-gray-700">
+                      Individual Products
+                    </span>
+                  </label>
+                  <label class="flex items-center cursor-pointer group">
+                    <input type="radio" value="categories" v-model="saleForm.applyTo" class="peer sr-only" />
+                    <span class="px-4 py-2 rounded-lg border border-gray-300 dark:border-gray-600 bg-white dark:bg-gray-800 text-gray-500 dark:text-gray-300 font-medium transition-all duration-200
+                        peer-checked:bg-blue-600 peer-checked:text-white peer-checked:border-blue-600
+                        hover:bg-gray-100 dark:hover:bg-gray-700">
+                      Categories
+                    </span>
+                  </label>
                 </div>
-                <!-- End Date -->
-                <div>
-                    <label for="endDate" class="block text-sm font-medium text-gray-700 dark:text-gray-200 mb-2">End Date</label>
-                    <input
-                        id="endDate"
-                        type="date"
-                        v-model="sale.endDate"
-                        required
-                        class="w-full rounded border border-gray-300 dark:border-gray-600 bg-white dark:bg-gray-800 text-gray-900 dark:text-gray-100 px-3 py-2 focus:outline-none focus:ring-2 focus:ring-blue-500 transition"
-                    />
-                </div>
-                <!-- Discount Type -->
-                <div>
-                    <label for="discountType" class="block text-sm font-medium text-gray-700 dark:text-gray-200 mb-2">Discount Type</label>
-                    <select
-                        id="discountType"
-                        v-model="sale.discountType"
-                        required
-                        class="w-full rounded border border-gray-300 dark:border-gray-600 bg-white dark:bg-gray-800 text-gray-900 dark:text-gray-100 px-3 py-2 focus:outline-none focus:ring-2 focus:ring-blue-500 transition"
-                    >
-                        <option value="Percentage">Percentage</option>
-                        <option value="Fixed">Fixed Amount</option>
-                    </select>
-                </div>
-                <!-- Discount Amount -->
-                <div>
-                    <label for="discountAmount" class="block text-sm font-medium text-gray-700 dark:text-gray-200 mb-2">Discount Amount</label>
-                    <input
-                        id="discountAmount"
-                        type="text"
-                        v-model="sale.discountAmount"
-                        required
-                        class="w-full rounded border border-gray-300 dark:border-gray-600 bg-white dark:bg-gray-800 text-gray-900 dark:text-gray-100 px-3 py-2 focus:outline-none focus:ring-2 focus:ring-blue-500 transition"
-                        placeholder="e.g. 10% or $10"
-                    />
-                </div>
-                <!-- Target -->
-                <div class="md:col-span-2">
-                    <label for="target" class="block text-sm font-medium text-gray-700 dark:text-gray-200 mb-2">Target</label>
-                    <select
-                        id="target"
-                        v-model="sale.target"
-                        required
-                        class="w-full rounded border border-gray-300 dark:border-gray-600 bg-white dark:bg-gray-800 text-gray-900 dark:text-gray-100 px-3 py-2 focus:outline-none focus:ring-2 focus:ring-blue-500 transition"
-                    >
-                        <option value="All Products">All Products</option>
-                        <option value="Selected Products">Selected Products</option>
-                        <option value="Categories">Categories</option>
-                    </select>
-                </div>
-                <div v-if="sale.target === 'Selected Products'" class="md:col-span-2">
-                    <label for="selectedProducts" class="block text-sm font-medium text-gray-700 dark:text-gray-200 mb-2">Select Products</label>
-                    <VueSelect :options="options" v-model="selected" multiple/>
-                </div>
-                <div v-if="sale.target === 'Categories'" class="md:col-span-2">
-                    <label for="selectedCategories" class="block text-sm font-medium text-gray-700 dark:text-gray-200 mb-2">Select Categories</label>
-                    <VueSelect :options="options" v-model="selected" multiple/>
-                </div>
+              </div>
+              <div v-if="saleForm.applyTo === 'all'" class="md:col-span-2">
+                <label for="selectedProducts"
+                  class="block text-sm font-medium text-green-500 dark:text-green-300 mb-2">
+                  <span class="mdi mdi-check-all"></span> Discount will be applied to all products.
+                </label>
+              </div>
+              <div v-if="saleForm.applyTo === 'individual'" class="md:col-span-2">
+                <label for="selectedProducts"
+                  class="block text-sm font-medium text-gray-500 dark:text-gray-300 mb-2">Select Products</label>
+                <VueSelect :options="allProducts" v-model="saleForm.selectedProducts" multiple
+                  :reduce="(product: { id: number }) => product.id" label="name" />
+              </div>
+              <div v-if="saleForm.applyTo === 'categories'" class="md:col-span-2">
+                <label for="selectedCategories"
+                  class="block text-sm font-medium text-gray-700 dark:text-gray-200 mb-2">Select Categories</label>
+                <VueSelect :options="allCategories" v-model="saleForm.selectedCategories" multiple
+                  :reduce="(category: { id: number }) => category.id" label="name" />
+              </div>
+              <div class="flex text-xs md:text-sm">
+                <button type="button" :class="[
+                  'px-4 py-2 rounded-l-md font-medium border border-gray-300 transition-all duration-200 cursor-pointer',
+                  saleForm.status === 'draft'
+                    ? 'bg-gray-500 text-white '
+                    : 'bg-white dark:bg-gray-700 text-gray-700 dark:text-gray-200',
+                ]" @click="saleForm.status = 'draft'">
+                  Draft
+                </button>
+                <button type="button" :class="[
+                  'px-4 py-2 rounded-r-md font-medium border border-gray-300 transition-all duration-200 cursor-pointer',
+                  saleForm.status === 'active'
+                    ? 'bg-blue-600 text-white '
+                    : 'bg-white dark:bg-gray-700 text-gray-700 dark:text-gray-200',
+                ]" @click="saleForm.status = 'active'">
+                  Active
+                </button>
+              </div>
             </div>
             <div class="flex justify-end gap-3 pt-6">
-                <button type="button" @click="closeAddDialog"
-                    class="px-5 py-2 rounded border border-gray-300 dark:border-gray-600 bg-white dark:bg-gray-700 text-gray-700 dark:text-gray-200 hover:bg-gray-100 dark:hover:bg-gray-600 transition">
-                    Cancel
-                </button>
-                <button type="submit"
-                    class="px-5 py-2 rounded bg-blue-600 text-white hover:bg-blue-700 transition font-semibold">
-                    Create Sale
-                </button>
+              <button type="button" @click="closeAddDialog"
+                class="px-5 py-2 rounded border border-gray-300 dark:border-gray-600 bg-white dark:bg-gray-700 text-gray-700 dark:text-gray-200 hover:bg-gray-100 dark:hover:bg-gray-600 transition">
+                Cancel
+              </button>
+              <button type="submit"
+                class="px-5 py-2 rounded bg-blue-600 text-white hover:bg-blue-700 transition font-semibold">
+                {{ selectedSale ? 'Update' : 'Create' }}
+              </button>
             </div>
           </form>
         </div>
@@ -123,22 +189,43 @@
 
 <script setup lang="ts">
 import { useSale } from '@/composables/useSale';
-import { ref } from 'vue';
+import VueDatePicker from '@vuepic/vue-datepicker';
+import { useSetting } from '@/composables/useSetting';
 import VueSelect from "vue-select"
 
-const options = [ 'Car', 'Bike', 'Clothes', 'Electronics', 'Furniture' ]
-const selected = ref<string[]>([])
-
 const {
-    sale,
+  allProducts,
+  allCategories,
+  saleForm,
+  selectedSale,
   addDialogOpen,
-  closeAddDialog
+  closeAddDialog,
+  save,
+  update
 } = useSale()
 
+const { isDark } = useSetting()
 
 </script>
 
 <style scoped>
+:deep() {
+  --vs-controls-color: #664cc3;
+  --vs-border-color: #664cc3;
+
+  --vs-dropdown-bg: #282c34;
+  --vs-dropdown-color: #cc99cd;
+  --vs-dropdown-option-color: #cc99cd;
+
+  --vs-selected-bg: white;
+  --vs-selected-color: black;
+
+  --vs-search-input-color: #eeeeee;
+
+  --vs-dropdown-option--active-bg: #664cc3;
+  --vs-dropdown-option--active-color: #eeeeee;
+}
+
 .slide-enter-active {
   animation: slide-in-right 0.4s ease-out forwards;
 }

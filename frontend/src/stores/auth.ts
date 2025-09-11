@@ -10,7 +10,8 @@ export const useAuthStore = defineStore('auth', () => {
   const userMeta = ref<UserMeta>({
     followings: [],
     cart_items: [],
-    wishlists:  []
+    wishlists:  [],
+    pendingOrders: 0
 })
 
   const meta = useMeta()
@@ -135,6 +136,7 @@ const logout = async () => {
       userMeta.value.followings = res.data.followings
       userMeta.value.cart_items = res.data.cart_items
       userMeta.value.wishlists = res.data.wishlists
+      userMeta.value.pendingOrders = res.data.pendingOrders
     } catch (error) {
       console.error(error)
     }
@@ -200,8 +202,9 @@ const logout = async () => {
         notifySuccess('Updated Successfully')
         checkAuth()
         resetData()
-      } catch (erro) {
+      } catch (error) {
         notifyError('Unable to update')
+        console.log(error)
       } finally {
         loading.value = false
       }

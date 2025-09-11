@@ -3,9 +3,10 @@ import type { Product } from '@/types/product';
 import { reactive, computed, watch, ref } from 'vue'
 import { useNotify } from './useNotify'
 import { useConfirmDialog } from './useConfirmDialog'
-import { debounce } from 'lodash-es'
 import type { Images, NewImage, ProductImages } from '@/types/images';
 import { useAdmin } from './useAdmin';
+import type { Pagination } from '@/types/pagination';
+import { debounce } from 'chart.js/helpers';
 
 const {
   notifySuccess,
@@ -16,6 +17,7 @@ const { isOpen, itemId } = useConfirmDialog()
 const { storeSlug } = useAdmin()
 
 const loading = ref<boolean>(false)
+const loadingData = ref<boolean>(false)
 const isView = ref<boolean>(false)
 const isDialogOpen = ref<boolean>(false)
 const selected = ref<Product>();
@@ -54,9 +56,6 @@ const productVariations = ref<{
 
 const updatedStocks = reactive<{ [id: string]: { price: number, stock: number } }>({})
 
-const perPage = ref<number>(10)
-const currentPage = ref(<number>(1))
-
 const filter = ref<{
   searchTerm: string,
   status: string,
@@ -69,20 +68,30 @@ const filter = ref<{
   tag: null
 })
 
-const data = ref<Product[]>([])
-const filteredData = ref<Product[]>([])
+const pagination = ref<Pagination>({
+  current_page: 0,
+  from: 0,
+  last_page: 0,
+  per_page: 0,
+  to: 0,
+  total: 0,
+})
+
+const products = ref<Product []>([])
+
+const allCategories = ref<{
+  id: number
+  name: string
+}[]>([])
+
+const allTags = ref<{
+  id: number
+  name: string
+}[]>([])
 
 const defaultImage = ref<NewImage | null>(null);
 const images = ref<Images[]>([]);
 const deletedImageIds = ref<number[]>([]);
-
-
-const columns = [
-  'name',
-  'price',
-  'stock',
-  'sku',
-]
 
 const formData = ref<Product>({
   id: 0,
@@ -106,19 +115,44 @@ const options = [
 
 export function useProduct() {
 
-  const getData = async () => {
-    loading.value = true
+  const getData = async (page: number = 1) => {
+    loadingData.value = true
     try {
-      const res = await adminApi.get(`/${storeSlug.value}/product`);
-      data.value = res.data
-      filteredData.value = res.data
-      filterData()
+      const res = await adminApi.get(`/${storeSlug.value}/product`, {
+        params: {
+          page: page,
+          searchTerm: filter.value.searchTerm,
+          status: filter.value.status,
+          category: filter.value.category,
+          tag: filter.value.tag,
+        },
+      });
+      products.value = res.data.products.data
+      pagination.value.current_page = res.data.products.current_page
+      pagination.value.from = res.data.products.from
+      pagination.value.last_page = res.data.products.last_page
+      pagination.value.per_page = res.data.products.per_page
+      pagination.value.to = res.data.products.to
+      pagination.value.total = res.data.products.total
+      allCategories.value = res.data.categories
+      allTags.value = res.data.tags
     } catch (error) {
       notifyError('Error fetching data')
+      console.error(error)
     } finally {
-      loading.value = false
+      loadingData.value = false
     }
   }
+
+  const debouncedGetPayments = debounce(() => {
+        if (!loadingData.value)
+          getData()
+      }, 300)
+    
+      watch(
+        [() => filter.value.searchTerm, () => filter.value.status, () => filter.value.category, () => filter.value.tag,],
+        debouncedGetPayments
+      )
 
   const save = async () => {
     if (formData.value.name.trim() == '') {
@@ -165,6 +199,7 @@ export function useProduct() {
       getData()
     } catch (error) {
       notifyError('Error adding item')
+      console.error(error)
     } finally {
       loading.value = false
     }
@@ -223,8 +258,9 @@ export function useProduct() {
       notifySuccess('Updated Successfully')
       closeEditDialog()
       getData()
-    } catch (erro) {
+    } catch (error) {
       notifyError('Unable to update')
+      console.error(error)
     }
   }
 
@@ -244,18 +280,19 @@ export function useProduct() {
       productVariations.value = res.data.variations
     } catch (error) {
       notifyError('Error fetching data')
+      console.error(error)
     } finally {
       loading.value = false
     }
   }
 
-  const editData = (item: Product) => {
+  const openEditDialog = (item: Product) => {
     editId.value = item.id
     fetchItem()
     isDialogOpen.value = true
   }
 
-  const deleteData = async () => {
+  const deleteProduct = async () => {
     try {
       await adminApi.delete(`${storeSlug.value}/product/${itemId.value}`);
       isOpen.value = false
@@ -263,6 +300,7 @@ export function useProduct() {
       getData();
     } catch (error) {
       notifyError('Cannot delete item')
+      console.error(error)
     }
   }
 
@@ -297,64 +335,6 @@ export function useProduct() {
     openViewDialog();
   }
 
-  const filterData = () => {
-    loading.value = true
-
-    let results = [...data.value]
-
-    const search = filter.value.searchTerm?.trim().toLowerCase()
-    const status = filter.value.status?.toLowerCase()
-    const category = filter.value.category
-    const tag = filter.value.tag
-
-    if (search) {
-      results = results.filter(item =>
-        item.name?.toLowerCase().includes(search)
-      )
-    }
-
-    if (status) {
-      results = results.filter(item =>
-        item.status?.toLowerCase().includes(status)
-      )
-    }
-
-    if (category) {
-      results = results.filter(item =>
-        Array.isArray(item.category_ids) && item.category_ids.includes(category)
-      )
-    }
-
-    if (tag) {
-      results = results.filter(item =>
-        Array.isArray(item.tag_ids) && item.tag_ids.includes(tag)
-      )
-    }
-
-    filteredData.value = results
-    loading.value = false
-  }
-
-  const debouncedFilterData = debounce(filterData, 300)
-
-  watch(() => filter.value.searchTerm, () => {
-    currentPage.value = 1
-    debouncedFilterData()
-  })
-
-  watch(() => filter.value.status, filterData)
-  watch(() => filter.value.category, filterData)
-  watch(() => filter.value.tag, filterData)
-
-
-  const totalPages = computed(() =>
-    Math.ceil(filteredData.value.length / perPage.value)
-  )
-
-  const paginatedItems = computed(() => {
-    const start = (currentPage.value - 1) * perPage.value
-    return filteredData.value.slice(start, start + perPage.value)
-  })
 
   const reset = () => {
     editId.value = 0
@@ -453,40 +433,38 @@ export function useProduct() {
   }, { immediate: true })
 
   return {
+    pagination,
+    loadingData,
     isMagnify,
     isMagnifyImages,
     viewImages,
     previewImageUrl,
     filter,
-    columns,
     loading,
     isView,
     isDialogOpen,
     options,
     selected,
     editId,
-    data,
+    products,
     formData,
-    totalPages,
-    perPage,
-    currentPage,
-    paginatedItems,
     defaultImage,
     images,
     deletedImageIds,
+    allCategories,
+    allTags,
     openAddDialog,
     closeAddDialog,
+    openEditDialog,
     closeEditDialog,
     openViewDialog,
     closeViewDialog,
     getData,
     save,
     update,
-    editData,
     viewProduct,
-    deleteData,
+    deleteProduct,
     clearFilter,
-    filterData,
     ////////////->
     //Varaitons
     isVariable,

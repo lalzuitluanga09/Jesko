@@ -3,105 +3,157 @@
         <div v-if="isOpen" class="fixed inset-0 flex items-center justify-center bg-black/20 backdrop-blur-sm z-50"
             @click.self="closeDialog">
             <div
-                class="bg-white/80 dark:bg-gray-700/80 w-full max-w-2xl p-4 md:p-6 rounded-xl shadow-md space-y-4 mx-2">
-                <div class="flex justify-between items-center text-sm text-gray-600 dark:text-gray-400 md:text-base">
-                    <div>Order ID: <span class="font-medium text-gray-800 dark:text-gray-200">#ORD123456</span></div>
-                    <div>Order Date: <span class="text-gray-800 dark:text-gray-200">June 15, 2025</span></div>
+                class="bg-white dark:bg-gray-900 w-full max-w-2xl p-4 md:p-8 rounded-2xl shadow-2xl space-y-6 mx-2 border border-gray-200 dark:border-gray-800 transition-all duration-300"
+            >
+                <!-- Header -->
+                <div class="flex flex-col md:flex-row justify-between items-start md:items-center gap-2">
+                    <div>
+                        <div class="text-xs md:text-sm text-gray-500 dark:text-gray-400">Order ID</div>
+                        <div class="font-bold text-sm md:text-base text-gray-900 dark:text-white tracking-wide">
+                            #{{ selectedOrder?.data.order_number }}
+                        </div>
+                    </div>
+                    <div>
+                        <div class="text-xs md:text-sm text-gray-500 dark:text-gray-400">Order Date</div>
+                        <div class="text-sm md:text-base text-gray-700 dark:text-gray-200">
+                            {{ selectedOrder?.data.placed_at ? formatToDatetime(selectedOrder?.data.placed_at) : '-' }}
+                        </div>
+                    </div>
                 </div>
 
-                <div class="flex justify-between text-sm md:text-base text-gray-600 dark:text-gray-400">
-                    <div>Order from: <span class="font-medium text-gray-800 dark:text-gray-200">Store Name</span></div>
-                    <div>No. of Items: <span class="font-medium text-gray-800 dark:text-gray-200">1</span></div>
+                <!-- Store & Items -->
+                <div class="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-2 text-sm md:text-base">
+                    <div>
+                        <span class="text-gray-500 dark:text-gray-400">Order from: </span>
+                        <span
+                            @click="router.push({name: 'store', params: { slug: selectedOrder?.store.slug }})"
+                            class="font-semibold text-blue-600 dark:text-blue-400 hover:underline cursor-pointer transition"
+                        >
+                            {{ selectedOrder?.store.name }}
+                        </span>
+                    </div>
+                    <div>
+                        <span class="text-gray-500 dark:text-gray-400">No. of Items: </span>
+                        <span class="font-semibold text-gray-900 dark:text-white">{{ selectedOrder?.orderItems.length }}</span>
+                    </div>
                 </div>
 
-                <div class="flex flex-col gap-2 max-h-72 overflow-y-auto">
-                    <div v-for="n in 5" :key="n"
-                        class="flex space-x-4 items-center border border-gray-400 p-2 rounded-xl">
-                        <img src="/images/product.png" alt="Product" class="w-20 h-20 rounded object-cover" />
-                        <div class=" w-full flex items-center justify-between">
-                            <div class="flex-1">
-                                <h3 class="font-medium text-base md:text-lg">Item Name</h3>
-                                <p class="text-sm text-gray-500 dark:text-gray-400">Qty: 2</p>
-                                <p class="text-sm text-gray-500 dark:text-gray-400">₹499.00</p>
+                <!-- Items List -->
+                <div class="flex flex-col gap-4 max-h-72 overflow-y-auto scrollbar-thin scrollbar-thumb-gray-300 dark:scrollbar-thumb-gray-700">
+                    <div
+                        v-for="item in selectedOrder?.orderItems"
+                        :key="item.id"
+                        @click="gotTo(item.id)"
+                        class="flex items-center gap-4 border border-gray-200 dark:border-gray-700 p-3 rounded-xl cursor-pointer bg-gray-100 dark:bg-gray-800"
+                    >
+                        <img src="/images/product.png" alt="Product" class="w-20 h-20 rounded-lg object-cover border border-gray-300 dark:border-gray-700" />
+                        <div class="flex-1 w-full flex items-center justify-between gap-2">
+                            <div class="flex-1 text-left space-y-1">
+                                <h3 class="font-semibold text-sm md:text-base text-gray-900 dark:text-white truncate">{{ item.product_name }}</h3>
+                                <p class="text-xs text-gray-500 dark:text-gray-400">Qty: {{ item.quantity }}</p>
+                                <p class="text-xs md:text-sm text-gray-700 dark:text-gray-200 font-medium">₹{{ item.unit_price }}</p>
                             </div>
                             <div>
-                                <span class="mdi mdi-chevron-right text-2xl"></span>
+                                <span class="mdi mdi-chevron-right text-2xl text-gray-400"></span>
                             </div>
                         </div>
                     </div>
                 </div>
 
-
+                <!-- Order Progress -->
                 <div
-                    class="flex items-center justify-between font-medium text-gray-500 dark:text-gray-300 py-2 md:py-6">
-                    <div class="flex items-center space-x-2 text-xs sm:text-base">
-                        <div class="w-2 h-2 md:w-4 md:h-4 rounded-full bg-blue-500"></div>
-                        <span>Processing</span>
+                class="flex flex-wrap items-center justify-between font-medium text-gray-500 dark:text-gray-300 py-2 md:py-6 gap-2"
+                >
+                <template v-for="(step, index) in steps" :key="step.key">
+                    <div class="flex items-center space-x-1 text-xs sm:text-base">
+                    <span 
+                        :class="[
+                        'text-xl',
+                        orderStatus.includes(step.key) ? 'mdi mdi-check-all text-green-600' : 'mdi mdi-circle-outline'
+                        ]"
+                    ></span>
+                    <span>{{ step.label }}</span>
                     </div>
-                    <div class="w-5 h-0.5 bg-gray-300 flex-1 mx-1"></div>
-                    <div class="flex items-center space-x-2 text-xs sm:text-base">
-                        <div class="w-2 h-2 md:w-4 md:h-4 rounded-full bg-blue-500"></div>
-                        <span>Confirmed</span>
-                    </div>
-                    <div class="w-5 h-0.5 bg-gray-300 flex-1 mx-1"></div>
-                    <div class="flex items-center space-x-2 text-xs sm:text-base">
-                        <div class="w-2 h-2 md:w-4 md:h-4 rounded-full bg-blue-200"></div>
-                        <span>Out for Delivery</span>
-                    </div>
-                    <div class="w-5 h-0.5 bg-gray-300 flex-1 mx-1"></div>
-                    <div class="flex items-center space-x-2 text-sm sm:text-lg">
-                        <div class="w-2 h-2 md:w-4 md:h-4 rounded-full bg-gray-200"></div>
-                        <span>Delivered</span>
-                    </div>
+                    <!-- Divider except last -->
+                    <div 
+                    v-if="index < steps.length - 1" 
+                    class="w-6 h-0.5 bg-gray-300 dark:bg-gray-700 flex-1 mx-1"
+                    ></div>
+                </template>
                 </div>
 
-                <div class="pt-4 border-t text-sm md:text-base text-gray-600 dark:text-gray-300 flex items-center">
-                    <span class="font-medium">Payment Mode:</span>
+
+                <!-- Payment Mode -->
+                <div class="pt-4 border-t border-gray-200 dark:border-gray-700 text-sm md:text-base text-gray-600 dark:text-gray-300 flex items-center gap-2">
+                    <span class="font-semibold">Payment Mode:</span>
                     <span
-                        class="bg-gray-200 dark:bg-gray-500 text-gray-800 dark:text-gray-200 px-3 py-1 rounded-md ml-2">Cash
-                        on Delivery</span>
+                        class="bg-gray-100 dark:bg-gray-700 text-gray-900 dark:text-gray-200 px-3 py-1 rounded-md ml-2 font-medium"
+                    >
+                        {{ selectedOrder?.payment.payment_mode }}
+                    </span>
                 </div>
 
-
-                <div class="border-t pt-4 text-sm md:text-base text-gray-700 dark:text-gray-300 space-y-1">
+                <!-- Price Summary -->
+                <div class="border-t border-gray-200 dark:border-gray-700 pt-4 text-sm md:text-base text-gray-700 dark:text-gray-300 space-y-2">
                     <div class="flex justify-between">
                         <span>Subtotal</span>
-                        <span>₹1897.00</span>
+                        <span>₹{{ selectedOrder?.data.subtotal }}</span>
                     </div>
                     <div class="flex justify-between">
                         <span>Shipping</span>
                         <span>₹50.00</span>
                     </div>
-                    <div class="flex justify-between font-semibold text-base">
+                    <div class="flex justify-between font-bold text-base">
                         <span>Total</span>
-                        <span>₹1947.00</span>
+                        <span>₹{{ selectedOrder?.data.total }}</span>
                     </div>
                 </div>
 
-                <div class="text-right space-x-1">
+                <!-- Actions -->
+                <div class="flex flex-col sm:flex-row justify-end items-center gap-2 pt-4">
                     <button
-                        class="px-4 py-2 text-sm border border-gray-400 rounded hover:bg-pink-100 dark:hover:bg-gray-600"
-                        @click="closeDialog">
+                        class="px-5 py-2 text-sm font-semibold border border-gray-300 dark:border-gray-600 rounded-lg hover:bg-gray-100 dark:hover:bg-gray-800 transition"
+                        @click="closeDialog"
+                    >
                         Close
                     </button>
-                    <button class="px-4 py-2 text-sm bg-red-600 text-white rounded hover:bg-red-700">
+                    <button
+                        class="px-5 py-2 text-sm font-semibold bg-gradient-to-r from-red-500 to-pink-500 text-white rounded-lg shadow hover:from-red-600 hover:to-pink-600 transition"
+                    >
                         Request Cancellation
                     </button>
                 </div>
             </div>
-
         </div>
     </Transition>
 </template>
 
-
-
 <script setup lang="ts">
 import { useOrder } from '@/composables/useOrder';
+import { useStore } from '@/composables/useStore';
+import { formatToDatetime } from '@/lib/formatDate';
+import router from '@/router';
+
 const {
     isOpen,
-    closeDialog
+    selectedOrder,
+    steps,
+    orderStatus,
+    closeDialog,
 } = useOrder()
+
+const { getProductData } = useStore()
+
+const gotTo = (id: number) => {
+  getProductData(id)
+    router.push({
+        name: 'product-detail',
+        params: {
+            storeslug: selectedOrder.value?.store.slug,
+            id: id
+        },
+    })
+}
 
 </script>
 

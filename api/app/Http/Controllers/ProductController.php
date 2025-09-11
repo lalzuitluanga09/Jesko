@@ -2,19 +2,24 @@
 
 namespace App\Http\Controllers;
 
+use App\Models\Category;
 use App\Models\Product;
 use App\Models\ProductAttribute;
 use App\Models\ProductImage;
 use App\Models\ProductVariationAttribute;
 use App\Models\Store;
+use App\Models\Tag;
 use Illuminate\Http\Request;
-
-use function PHPUnit\Framework\isEmpty;
 
 class ProductController extends Controller
 {
-    public function index($storeSlug)
+    public function index(Request $request, $storeSlug)
     {
+        $searchTerm = $request->query('searchTerm');
+        $status = $request->query('status');
+        $categoryId = $request->query('category');
+        $tagId = $request->query('tag');
+
         $store = Store::where('slug', $storeSlug)->first();
 
         if (!$store) abort(404, 'Store not found');
@@ -22,7 +27,26 @@ class ProductController extends Controller
         $products = Product::with(['categories:id', 'tags:id'])
             ->whereNull('parent_id')
             ->where('store_id', $store->id)
-            ->get(['id', 'name', 'price', 'stock', 'sku', 'status', 'type']);
+            ->when($searchTerm, function ($q) use ($searchTerm) {
+                $q->where(function ($query) use ($searchTerm) {
+                    $query->where('name', 'like', "%{$searchTerm}%")
+                        ->orWhere('sku', 'like', "%{$searchTerm}%"); // optional: search by sku
+                });
+            })
+            ->when($status, function ($q) use ($status) {
+                $q->where('status', $status);
+            })
+            ->when($categoryId, function ($q) use ($categoryId) {
+                $q->whereHas('categories', function ($c) use ($categoryId) {
+                    $c->where('categories.id', $categoryId); // ✅ qualify with table
+                });
+            })
+            ->when($tagId, function ($q) use ($tagId) {
+                $q->whereHas('tags', function ($t) use ($tagId) {
+                    $t->where('tags.id', $tagId); // ✅ qualify with table
+                });
+            })
+            ->paginate(10,['id', 'name', 'price', 'stock', 'sku', 'status', 'type']);
 
         $products->transform(function ($product) {
             $product->category_ids = $product->categories->pluck('id')->toArray();
@@ -31,7 +55,14 @@ class ProductController extends Controller
             return $product;
         });
 
-        return response()->json($products);
+        $categories = Category::where('store_id', $store->id)->orderBy('name')->get(['id', 'name']);
+        $tags = Tag::where('store_id', $store->id)->orderBy('name')->get(['id', 'name']);
+
+        return response()->json([
+            'products' => $products,
+            'categories' => $categories,
+            'tags' => $tags
+        ]);
     }
 
 
@@ -139,7 +170,7 @@ class ProductController extends Controller
                     }
                 }
 
-                $variationProduct->name = $product->name . ' - ' . implode(' ', $sufix);
+                $variationProduct->name = $product->name . ' - [ ' . implode(', ', array: $sufix) . ' ]';
                 $variationProduct->save();
             }
         }

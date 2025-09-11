@@ -1,7 +1,7 @@
 import { api } from '@/lib/axios'
 import type { Cart } from '@/types/cart'
 import { defineStore } from 'pinia'
-import { computed, ref, watch, watchEffect } from 'vue'
+import { computed, ref } from 'vue'
 import { useNotify } from '@/composables/useNotify'
 import { useAuthStore } from './auth'
 
@@ -18,11 +18,11 @@ export const useCartStore = defineStore('cart', () => {
     const loading = ref<boolean>(false)
 
     const itemCount = computed(() => {
-    if (!cart.value?.items?.length) return 0;
+        if (!cart.value?.items?.length) return 0;
 
-    return cart.value.items.reduce((total, storeGroup) => {
-        return total + (storeGroup.items?.reduce((sum, item) => sum + item.quantity, 0) || 0)
-    }, 0);
+        return cart.value.items.reduce((total, storeGroup) => {
+            return total + (storeGroup.items?.reduce((sum, item) => sum + item.quantity, 0) || 0)
+        }, 0);
     });
 
     const subTotal = computed(() =>
@@ -33,14 +33,43 @@ export const useCartStore = defineStore('cart', () => {
         }, 0) || 0
     )
 
-    const total = computed(() => {
-        const subtotal = subTotal.value
-        const taxAmount = (cart.value?.tax || 0) / 100 * subtotal
-        const discount = cart.value?.discount || 0
+    // const bogoDiscount = computed(() => {
+    //     if (!cart.value) return 0;
 
-        return subtotal + taxAmount - discount
-    })
+    //     return cart.value.items.reduce((storeSum, storeGroup) => {
+    //         return storeSum + storeGroup.items.reduce((itemSum, item) => {
+    //         const bogo = item.discount?.type === 'bogo' ? item.discount.bogo : null;
+    //         if (!bogo) return itemSum;
 
+    //         const { bogoX, bogoY } = bogo;
+    //         if (!bogoX || !bogoY) return itemSum;
+
+    //         const freeItems = Math.floor(item.quantity / bogoX) * bogoY;
+
+    //         return itemSum + freeItems * item.price_at_addition;
+    //         }, 0);
+    //     }, 0);
+    // });
+
+    const discountTotal = computed(() =>
+        cart.value?.items?.reduce((storeSum, storeGroup) => {
+            return storeSum + storeGroup.items.reduce((itemSum, item) => {
+            if (item.discount && item.discount.type !== 'bogo' && item.discount_price) {
+                const discountPerItem = item.price_at_addition - item.discount_price;
+                return itemSum + discountPerItem * item.quantity;
+            }
+            return itemSum;
+            }, 0);
+        }, 0) || 0
+    );
+
+    // const discountTotal = computed(() => otherDiscount.value );
+
+    const total = computed(() => subTotal.value - discountTotal.value)
+
+    const getStoreIds = () =>{
+        return cart.value?.items.map(group => group.store_id)
+    }
 
     const getCartItems = async () => {
         loading.value = true
@@ -103,10 +132,12 @@ export const useCartStore = defineStore('cart', () => {
 
     return {
         cart,
-        itemCount,
         subTotal,
+        discountTotal,
         total,
+        itemCount,
         loading,
+        getStoreIds,
         getCartItems,
         addToCart,
         removeItem

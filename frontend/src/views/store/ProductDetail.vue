@@ -71,7 +71,6 @@ const {
 
 const route = useRoute()
 
-
 onMounted(() => {
     if(!productData.value.item) {
         getProductData(Number(route.params.id))

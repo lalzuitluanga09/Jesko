@@ -18,6 +18,8 @@ return new class extends Migration
             $table->string('thumbnail_path')->nullable();
             $table->boolean('is_primary')->default(false);
             $table->timestamps();
+
+            $table->index('product_id', 'idx_product_images_product_id');
         });
     }
 

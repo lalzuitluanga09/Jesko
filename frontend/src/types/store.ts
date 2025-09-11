@@ -14,6 +14,13 @@ interface Store {
     products_count: number,
     ratings: number,
     theme?: string,
+    owner: {
+        name: string
+        phone: string
+    }
+    location: string
+    active_sale: string
+    isNew: boolean
 }
 
 interface StoreCategory {

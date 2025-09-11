@@ -3,7 +3,7 @@
     <div v-if="isDialogOpen" class="w-full h-[100vh] bg-black/20 fixed inset-0 z-10"></div>
     <Transition name="slide">
       <div v-if="isDialogOpen" class="fixed inset-0 flex justify-end z-20" @click.self="close('self')">
-        <div class="bg-white dark:bg-gray-700 w-full max-w-5xl p-8 rounded-lg shadow-xl overflow-y-auto">
+        <div class="bg-white dark:bg-gray-700 w-full max-w-3xl p-8 rounded-lg shadow-xl overflow-y-auto">
           <h1 class="text-2xl font-semibold mb-6 text-gray-800 dark:text-gray-100">
             {{ editId == 0 ? 'Add' : 'Edit' }} Product
           </h1>

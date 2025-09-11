@@ -5,24 +5,19 @@
         <div class="space-x-2 flex flex-wrap items-center">
             <TableSearch title="Search by name" v-model="filter.searchTerm"/>
             <DropdownBtn ref="statusDropdownRef" title="Status" :options="options" @select="(event) => filter.status = event"/>
-            <DropdownBtn ref="categoryDropdownRef" title="Category" :options="categories" @select="(event) => filter.category = event"/>
-            <DropdownBtn ref="tagDropdownRef" title="Tag" :options="tags" @select="(event) => filter.tag = event"/>
+            <DropdownBtn ref="categoryDropdownRef" title="Category" :options="allCategories" @select="(event) => filter.category = event"/>
+            <DropdownBtn ref="tagDropdownRef" title="Tag" :options="allTags" @select="(event) => filter.tag = event"/>
             <ClearBtn @clear="clear" v-if="filter.searchTerm || filter.category || filter.status || filter.tag "/>
         </div>
         <AddBtn title="Add Product" @click="openAddDialog"/>
-
     </div>
-    <SimpleTable :columns="columns" :rows="paginatedItems" :with-status="true" :with-action="true" :withView="true"
-        @delete-row="deleteData()" @edit-item="editData($event)" @view-item="viewProduct($event)" @prev="currentPage--" @next="currentPage++"
-        :totalPages="totalPages" :currentPage="currentPage"
-        />
+    <ProductTable />
 </div>
 <AddProductDialog />
 <ViewProductDialog />
 </template>
 
 <script setup lang="ts">
-import SimpleTable from '@/components/admin/SimpleTable.vue';
 import AddBtn from '@/components/buttons/AddBtn.vue';
 import ClearBtn from '@/components/buttons/ClearBtn.vue';
 import DropdownBtn from '@/components/buttons/DropdownBtn.vue';
@@ -31,34 +26,17 @@ import ViewProductDialog from '@/components/dialogs/view/ViewProductDialog.vue';
 import TableSearch from '@/components/search/TableSearch.vue';
 import { useProduct } from '@/composables/useProduct';
 import { onMounted, ref } from 'vue';
-import { useCategory } from '@/composables/useCategory';
-import { useTag } from '@/composables/useTag';
+import ProductTable from '@/components/admin/ProductTable.vue';
 
 const {
     filter,
-    columns,
     options,
-    currentPage,
-    totalPages,
-    paginatedItems,
+    allCategories,
+    allTags,
     openAddDialog,
     getData,
-    viewProduct,
-    editData,
-    deleteData,
     clearFilter,
-    filterData
  } = useProduct()
-
- const { 
-    data: categories,
-    getData: getCategories 
-} = useCategory();
-
- const { 
-    data: tags,
-    getData: getTags 
-} = useTag();
 
 const statusDropdownRef = ref()
 const categoryDropdownRef = ref()
@@ -72,10 +50,7 @@ const clear = () => {
 }
 
  onMounted(() => {
-    getData()
-    getCategories()
-    getTags()
-    
+    getData()    
  })
 
 </script>

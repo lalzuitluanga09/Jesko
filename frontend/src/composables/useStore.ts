@@ -127,7 +127,7 @@ const pageNumbers = computed(() => {
   const range = [];
   const maxVisible = 5;
   let start = Math.max(current - 2, 1);
-  let end = Math.min(start + maxVisible - 1, total);
+  const end = Math.min(start + maxVisible - 1, total);
 
   if (end - start < maxVisible - 1) {
     start = Math.max(end - maxVisible + 1, 1);
@@ -178,6 +178,7 @@ export function useStore() {
       }
     } catch (error) {
       notifyError('Error fetching data')
+      console.error(error)
     } finally {
       loading.value = false
     }
@@ -190,6 +191,7 @@ export function useStore() {
       topStores.value = res.data
     } catch (error) {
       notifyError('Error fetching data')
+      console.error(error)
     } finally {
       loadTopStore.value = false
     }
@@ -207,6 +209,7 @@ export function useStore() {
       productData.value.related_products = res.data.related_products || []
     } catch (error) {
       notifyError('Error fetching data')
+      console.error(error)
     } finally {
       loading.value = false
     }
@@ -223,6 +226,7 @@ export function useStore() {
       fixPriceRange(res.data.max_price)
     } catch (error) {
       notifyError('Error fetching data')
+      console.error(error)
     } finally {
       loadStoreData.value = false
     }
@@ -248,6 +252,7 @@ export function useStore() {
       pagination.value.total = res.data.total
     } catch (error) {
       notifyError('Error fetching data')
+      console.error(error)
     } finally {
       loadProduct.value = false
     }

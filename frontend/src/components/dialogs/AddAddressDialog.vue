@@ -3,7 +3,7 @@
         <div v-if="isOpen" class="fixed inset-0 flex items-center justify-center bg-black/20 backdrop-blur-sm z-50"
             @click.self="closeDialog">
             <div
-                class="bg-white/90 dark:bg-gray-700/90 w-full max-w-md mx-2 rounded-lg shadow-lg p-4 md:p-6 space-y-4 max-h-[90vh] overflow-y-auto">
+                class="bg-white/80 dark:bg-gray-700/80 w-full max-w-md mx-2 rounded-lg shadow-lg p-4 md:p-6 space-y-4 max-h-[90vh] overflow-y-auto">
                 <h2 class="text-lg font-semibold text-gray-800 dark:text-gray-100 text-center mb-2">
                     <span>{{ isEditing ? 'Edit Address' : 'Add New Address' }}</span>
                 </h2>

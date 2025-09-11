@@ -9,9 +9,15 @@
 <script setup lang="ts">
 import OrderHeader from '@/components/order/OrderHeader.vue';
 import OrderList from '@/components/order/OrderList.vue';
+import { useOrder } from '@/composables/useOrder';
+import { onMounted } from 'vue';
 
+const {
+  getOrders
+} = useOrder()
+
+onMounted(() => {
+  getOrders()
+})
 
 </script>
-
-<style scoped>
-</style>

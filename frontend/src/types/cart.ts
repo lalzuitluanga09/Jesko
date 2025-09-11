@@ -8,6 +8,16 @@ interface CartItem {
   product_image?: string
   product_price?: number,
   product_categories?: string []
+  discount?: {
+    name: string
+    type: string
+    value: number,
+    bogo?: {
+      bogoX: number
+      bogoY: number
+    }
+  }
+  discount_price?: number
 }
 
 interface GroupedItems {
@@ -20,10 +30,6 @@ interface GroupedItems {
 interface Cart {
   id: number
   status: string
-  subTotal: number
-  tax: number
-  discount: number
-  total: number
   items: GroupedItems[]
 }
 

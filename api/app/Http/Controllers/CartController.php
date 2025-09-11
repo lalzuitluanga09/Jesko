@@ -20,12 +20,12 @@ class CartController extends Controller
 
         $grouped = $cart->items->groupBy('store_id')->map(function ($items, $storeId) {
             $store = $items->first()->store ?? $items->first()->product->store;
-
             return [
                 'store_id' => $store->id,
                 'store_name' => $store->name,
                 'store_slug' => $store->slug,
                 'items' => $items->map(function ($item) {
+                    $sale = $item->product->activeSale->first();
                     return [
                         'id' => $item->id,
                         'product_id' => $item->product_id,
@@ -34,7 +34,19 @@ class CartController extends Controller
                         'product_name' => $item->product->name ?? null,
                         'product_image' => $item->product->image ?? null,
                         'product_price' => $item->product->price ?? null,
-                        'product_categories' => $item->product->categories->pluck('name')
+                        'product_categories' => $item->product->categories->pluck('name'),
+                        'discount' => $sale ? [
+                            'name' => $sale->name,
+                            'type' => $sale->discount_type,
+                            'value' => round($sale->discount_value, 2),
+                            'bogo' => $sale->discount_type === 'bogo' ? json_decode($sale->rules) : null
+                        ] : null,
+                        'discount_price' => $sale && $sale->discount_value > 0
+                            ? ($sale->discount_type === 'percentage'
+                                ? round($item->product->price * (1 - $sale->discount_value / 100), 2)
+                                : max(0, round($item->product->price - $sale->discount_value, 2)))
+                            : null,
+
                     ];
                 })->values()
             ];
@@ -59,7 +71,9 @@ class CartController extends Controller
 
         $cart = $user->carts()->firstOrCreate(
             ['status' => 'active'],
-            ['status' => 'active']
+            [
+                'status' => 'active'
+            ]
         );
 
         $cartItem = $cart->items()->where('product_id', $product->id)->first();
@@ -88,8 +102,8 @@ class CartController extends Controller
         }
 
         $deleted = CartItem::where('cart_id', $cart->id)
-                    ->where('product_id', $id)
-                    ->delete();
+            ->where('product_id', $id)
+            ->delete();
 
         if ($deleted) {
             return response()->json(['status' => 'deleted'], 200);

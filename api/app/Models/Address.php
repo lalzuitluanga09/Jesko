@@ -17,10 +17,13 @@ class Address extends Model
         'phone',
         'address',
         'landmark',
-        'district_id',
         'postal_code',
         'city',
         'is_default',
+        'district_id',
+        'city_id',
+        'state_id',
+        'country_id',
     ];
 
     public function user(): BelongsTo

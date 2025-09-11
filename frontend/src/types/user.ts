@@ -26,7 +26,8 @@ interface UserStore {
 interface UserMeta {
     followings: number[],
     cart_items: number[],
-    wishlists: number []
+    wishlists: number [],
+    pendingOrders: number
 }
 
 export type { User, UserStore, UserMeta };

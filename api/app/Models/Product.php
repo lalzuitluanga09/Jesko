@@ -2,6 +2,7 @@
 
 namespace App\Models;
 
+use Illuminate\Database\Eloquent\Casts\Attribute;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
@@ -102,5 +103,64 @@ class Product extends Model
     {
         return $this->wishlist()->where('user_id', $user->id)->exists();
     }
+
+    public function orderItems(): HasMany
+    {
+        return $this->hasMany(OrderItem::class);
+    }
+
+    public function sales(): BelongsToMany
+    {
+        return $this->belongsToMany(Sale::class, 'sale_products')
+            ->withTimestamps()
+            ->withPivot('sale_price');
+    }
+
+    public function activeSale(): BelongsToMany
+    {
+        return $this->belongsToMany(Sale::class, 'sale_products')
+            ->where('sales.start_at', '<=', now())
+            ->where('sales.end_at', '>=', now())
+            ->withTimestamps();
+    }
+
+    public function getActiveSale()
+    {
+        $sale = $this->activeSale()->first();
+
+        if ($sale) {
+            return $sale;
+        }
+
+        return $this->categories()
+            ->with(['activeSale' => function ($q) {
+                $q->where('sales.start_at', '<=', now())
+                ->where('sales.end_at', '>=', now());
+            }])
+            ->get()
+            ->pluck('activeSale')
+            ->flatten()
+            ->first();
+    }
+
+    public function getDiscountedPrice()
+    {
+        $sale = $this->getActiveSale();
+
+        if (!$sale) {
+            return $this->price;
+        }
+
+        if ($sale->discount_type === 'percentage') {
+            return round($this->price - ($this->price * ($sale->discount_value / 100)), 2);
+        }
+
+        if ($sale->discount_type === 'fixed') {
+            return max($this->price - $sale->discount_value, 0);
+        }
+
+        return $this->price;
+    }
+
 
 };

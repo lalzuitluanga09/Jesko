@@ -10,15 +10,21 @@
                             <label for="checkbox-all-search" class="sr-only">checkbox</label>
                         </div>
                     </th>
-                    <th scope="col" class="px-6 py-3" v-for="col in columns" :key="col">{{ col }}</th>
-                    <th scope="col" class="px-6 py-3 text-left" v-if="withStatus">Status</th>
-                    <th scope="col" class="px-6 py-3 text-center" v-if="withAction">Action</th>
+                    <th scope="col" class="px-6 py-3">Name</th>
+                    <th scope="col" class="px-6 py-3">Slug</th>
+                    <th scope="col" class="px-6 py-3">Products</th>
+                    <th scope="col" class="px-6 py-3 text-center">Action</th>
                 </tr>
             </thead>
             <tbody>
                 <tr v-if="rows.length === 0">
-                    <td :colspan="columns.length + (withStatus ? 1 : 0) + (withAction ? 1 : 0) + 1" class="text-center py-6 text-gray-500">
-                        No data
+                    <td :colspan="5" class="text-center py-6 text-gray-500">
+                        No data found!
+                    </td>
+                </tr>
+                <tr v-else-if="loading">
+                    <td :colspan="5" class="text-center py-6 text-gray-500">
+                        <Loading />
                     </td>
                 </tr>
                 <tr v-else v-for="(row, i) in rows" :key="i"
@@ -28,57 +34,17 @@
                             <input id="checkbox-table-search-1" type="checkbox"
                                 class="w-4 h-4 text-blue-600 bg-gray-100 border-gray-300 rounded-sm focus:ring-blue-500 dark:focus:ring-blue-600 dark:ring-offset-gray-800 dark:focus:ring-offset-gray-800 focus:ring-2 dark:bg-gray-700 dark:border-gray-600" />
                         </div>
-                        <div v-if="row['type'] === 'variable'" class="absolute top-4 -right-2 flex items-center space-x-1">
-                            <div class="relative group cursor-help">
-                                <span class="mdi mdi-hexagon-multiple text-lg"></span>
-                                <span
-                                class="invisible opacity-0 group-hover:visible group-hover:opacity-100 absolute left-full ml-2 top-1/2 -translate-y-1/2 transition duration-200 text-xs bg-gray-800 text-white px-2 py-1 rounded shadow whitespace-nowrap"
-                                >
-                                Variable Product
-                                </span>
-
-                            </div>
-                        </div>
                     </td>
-                    <td
-                        class="px-6 py-4"
-                        :class="{ 'cursor-pointer': withView }"
-                        v-for="col in columns"
-                        :key="col"
-                        @click="withView && viewItem(row.id)"
-                    >
-                        {{ row[col.toLowerCase()] }}
-                    </td>
-                    <td class="px-6 py-4 cursor-pointer" v-if="withStatus" @click="withView && viewItem(row.id)">
-                        <span
-                            v-if="row['status'] === 'active' || row['status'] === 'Completed'"
-                            class="inline-flex items-center px-3 py-1 text-xs font-medium rounded-lg bg-green-100 text-green-800 border border-green-200 shadow"
-                        >
-                            <span class="w-2 h-2 mr-2 rounded-full bg-green-500 inline-block"></span>
-                            {{ row['status'] }}
-                        </span>
-                        <span
-                            v-else-if="row['status'] === 'draft' || row['status'] === 'Pending'"
-                            class="inline-flex items-center px-3 py-1 text-xs font-medium rounded-lg bg-yellow-100 text-yellow-800 border border-yellow-200 shadow"
-                        >
-                            <span class="w-2 h-2 mr-2 rounded-full bg-yellow-400 inline-block"></span>
-                            {{ row['status'] }}
-                        </span>
-                        <span
-                            v-else
-                            class="inline-flex items-center px-3 py-1 text-xs font-medium rounded-lg bg-red-100 text-red-700 border border-red-200 shadow"
-                        >
-                            <span class="w-2 h-2 mr-2 rounded-full bg-red-400 inline-block"></span>
-                            {{ row['status'] }}
-                        </span>
-                    </td>
-                    <td class="px-6 py-4 text-sm flex gap-2 items-center justify-center" v-if="withAction">
-                        <button @click="editItem(row)"
-                            class="cursor-pointer bg-blue-500 text-white px-2 py-1 rounded-md shadow hover:bg-blue-700">
-                            <span class="mdi mdi-square-edit-outline pr-1"></span>Edit
+                    <td class="px-6 py-4">{{ row.name }}</td>
+                    <td class="px-6 py-4">{{ row.slug }}</td>
+                    <td class="px-6 py-4">{{ row.productsCount }}</td>
+                    <td class="px-6 py-4 text-sm flex gap-2 items-center justify-center">
+                        <button @click="editItem(row)" title="Edit"
+                            class="cursor-pointer bg-blue-500 text-white px-2 py-0.5 rounded-full shadow hover:bg-blue-700">
+                            <span class="mdi mdi-square-edit-outline text-lg"></span>
                         </button>
-                        <button @click="deleteItem(row.id)" 
-                            class="cursor-pointer text-white px-1.5 rounded-full bg-red-500 shadow hover:bg-red-400">
+                        <button @click="deleteItem(row.id)"  title="Delete"
+                            class="cursor-pointer text-white px-2 py-0.5 rounded-full bg-red-500 shadow hover:bg-red-400">
                             <span class="mdi mdi-trash-can text-lg"></span>
                         </button>
                     </td>
@@ -91,7 +57,7 @@
                 class="text-sm font-normal text-gray-500 dark:text-gray-400 mb-4 md:mb-0 block w-full md:inline md:w-auto">Showing
                 <span class="font-semibold text-gray-900 dark:text-white">1-{{ rows.length }}</span> of
                 <span class="font-semibold text-gray-900 dark:text-white">{{ rows.length }}</span></span>
-            <ul class="inline-flex -space-x-px rtl:space-x-reverse text-sm h-8">
+            <ul class="inline-flex -space-x-px rtl:space-x-reverse text-sm h-8" v-if="rows.length > 10">
                 <li>
                     <button
                         @click="prev"
@@ -136,6 +102,7 @@
 <script setup lang="ts">
 import ConfirmDeleteDialog from '../dialogs/ConfirmDeleteDialog.vue';
 import { useConfirmDialog } from '@/composables/useConfirmDialog';
+import Loading from '../others/Loading.vue';
 
 const {
     isOpen,
@@ -143,12 +110,8 @@ const {
 } = useConfirmDialog()
 
 const props = defineProps<{
-  columns: string[],
   rows: Record<string, any>[],
   loading?: boolean,
-  withView: boolean,
-  withStatus: boolean
-  withAction: boolean,
   currentPage: number,
   totalPages: number
 }>();
@@ -161,17 +124,12 @@ const deleteItem = (id: number) => {
 const emit = defineEmits<{
     (e: 'deleteRow'): void,
     (e: 'editItem', value: any): void
-    (e: 'viewItem', value: any): void
     (e: 'prev'): void
     (e: 'next'): void
 }>();
 
 const editItem = (row: any) => {
     emit('editItem', row);
-}
-
-const viewItem = (id: number) => {
-    emit('viewItem', id);
 }
 
 const deleteRow = () => {

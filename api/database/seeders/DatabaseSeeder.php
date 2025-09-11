@@ -4,7 +4,12 @@ namespace Database\Seeders;
 
 use App\Models\MarketplaceCategory;
 use App\Models\MarketplaceProduct;
+use App\Models\Order;
+use App\Models\OrderAddress;
+use App\Models\OrderItem;
+use App\Models\Payment;
 use App\Models\Product;
+use App\Models\Sale;
 use App\Models\Store;
 use App\Models\StoreCategory;
 use App\Models\StoreTheme;
@@ -29,20 +34,37 @@ class DatabaseSeeder extends Seeder
         UserProfile::create([
             'user_id' => $user->id,
         ]);
-        
-        Store::create([
-            'name' => 'Jesko Store',
-            'slug' => 'jesko-store',
-            'description' => 'Home for all things nice',
-            'pin' => Hash::make('1234')
-        ]);
 
-        StoreUser::create([
-            'store_id' => 1,
-            'user_id' => 1,
-            'role' => 'owner',
-            'joined_at' => now()
-        ]);
+        $themes = [
+            "slate",
+            "gray",
+            "zinc",
+            "neutral",
+            "stone",
+            "red",
+            "orange",
+            "amber",
+            "yellow",
+            "lime",
+            "green",
+            "emerald",
+            "teal",
+            "cyan",
+            "sky",
+            "blue",
+            "indigo",
+            "violet",
+            "purple",
+            "fuchsia",
+            "pink",
+            "rose"
+        ];
+
+        foreach ($themes as $theme) {
+            StoreTheme::create([
+                'name' => $theme
+            ]);
+        }
 
         $categories = [
             'Electronics',
@@ -67,17 +89,42 @@ class DatabaseSeeder extends Seeder
                 // 'parent_id',
             ]);
         }
+        
+        Store::create([
+            'name' => 'Jesko Store',
+            'slug' => 'jesko-store',
+            'description' => 'Home for all things nice',
+            'pin' => Hash::make('1234'),
+            'category_id' => rand(1, count($categories)),
+            'theme_id' => rand(1, count($themes)),
+        ]);
+
+        StoreUser::create([
+            'store_id' => 1,
+            'user_id' => 1,
+            'role' => 'owner',
+            'joined_at' => now()
+        ]);
 
 
         $faker = Faker::create();
 
         for ($i = 1; $i <= 20; $i++) {
             $name = $faker->unique()->company;
-            Store::create([
+            $store = Store::create([
                 'name' => $name,
                 'slug' => Str::slug($name) . '-' . $i,
                 'description' => $faker->catchPhrase,
                 'pin' => Hash::make('1234'),
+                'category_id' => rand(1, count($categories)),
+                'theme_id' => rand(1, count($themes)),
+            ]);
+
+             StoreUser::create([
+                'store_id' => $store->id,
+                'user_id' => 1,
+                'role' => 'owner',
+                'joined_at' => now()
             ]);
         }
 
@@ -111,36 +158,65 @@ class DatabaseSeeder extends Seeder
             ]);
         }
 
-        $themes = [
-            "slate",
-            "gray",
-            "zinc",
-            "neutral",
-            "stone",
-            "red",
-            "orange",
-            "amber",
-            "yellow",
-            "lime",
-            "green",
-            "emerald",
-            "teal",
-            "cyan",
-            "sky",
-            "blue",
-            "indigo",
-            "violet",
-            "purple",
-            "fuchsia",
-            "pink",
-            "rose"
-        ];
+        // for ($i = 1; $i <= 20; $i++) {
+        //     Order::create([
+        //         'user_id' => 1,
+        //         'store_id' => 1,
+        //         'order_number' => 'ORD0'.$i,
+        //         'status' => 1,
+        //         'subtotal' =>1,
+        //         'tax' => 1,
+        //         'shipping_fee' => 1,
+        //         'discount' => 1,
+        //         'total' => 1,
+        //         'placed_at' => now()
+        //     ]);
+        // }
 
-        foreach ($themes as $theme) {
-            StoreTheme::create([
-                'name' => $theme
-            ]);
-        }
+        // for ($i = 1; $i <= 3; $i++) {
+        //     OrderItem::create([
+        //         'order_id' => 1,
+        //         'product_id' => 1,
+        //         'quantity' => $i,
+        //         'unit_price' => 99,
+        //         'total_price' => 99*$i,
+        //     ]);
+        // }
 
+        // OrderAddress::create([
+        //     'order_id' => 1,
+        //     'type' => 'shipping',
+        //     'label' => 'Home',
+        //     'name' => 'John Carter',
+        //     'phone' => '1234567890',
+        //     'address' => 'H.no 24/2, CV Hospital Road',
+        //     'landmark' => 'Near CV Police Station',
+        //     'postal_code' => '796000',
+        //     'district' => 'Aizawl',
+        //     'city' => 'Aizawl',
+        //     'state' => 'Mizoram',
+        //     'country' => 'India',
+        // ]);
+
+        // Payment::create([
+        //     'order_id' => 1,
+        //     'payment_mode' => 'cod',
+        //     'amount' => 99.99,
+        //     'status' => 'pending'
+        // ]);
+
+        // Sale::create([
+        //     'store_id' => 1,
+        //     'name' => 'Black Friday Sale',
+        //     'type' => 'flash',
+        //     'description' => 'Get 20% off on all products',
+        //     'discount_type' => 'percentage',
+        //     'discount_value' => 20,
+        //     'start_at' => now(),
+        //     'end_at' => now()->addDays(7),
+        //     'status' => 'active'
+        // ]);
     }
 }
+
+

@@ -1,6 +1,14 @@
 <template>
     <div @click.prevent="gotTo"
-        :class="`relative w-full max-w-sm rounded-2xl overflow-hidden bg-white/70 dark:bg-gray-600 cursor-pointer hover:bg-${theme}-50 dark:hover:bg-gray-500 border border-${theme}-200  transition`">
+        :class="`relative w-full max-w-sm rounded-2xl overflow-hidden bg-white/70 dark:bg-gray-600 cursor-pointer hover:bg-${theme}-50 dark:hover:bg-gray-500 border border-${theme}-300  transition`">
+
+        <SaleBadge
+          v-if="item.badge"
+          :title="badgeTitle"
+          :type="item.badge ?? ''"
+          class="absolute top-2 md:top-2.5 left-0"
+        />
+
         <div v-if="!auth.userMeta.wishlists.includes(item.id)" @click.stop="handleWishlistAction('add')" title="Add to Wishlist"
             :class="`absolute top-2 right-2 bg-${theme}-50 hover:bg-${theme}-200 dark:bg-${theme}-500 dark:hover:bg-${theme}-400 rounded-full px-1 md:px-2 md:py-1 z-10 cursor-pointer`">
             <span :class="`mdi mdi-heart-outline text-base md:text-xl text-${theme}-500 dark:text-white`"></span>
@@ -14,7 +22,7 @@
             alt="Store Image">
         <div class="px-3 md:px-4 pt-2 pb-1">
             <div class="text-base font-medium md:mb-1 truncate">{{ item.name }}</div>
-            <p class="text-gray-500 dark:text-gray-400 text-xs md:text-sm truncate">
+            <p class="text-gray-500 dark:text-gray-400 text-xs md:text-sm truncate" v-if="item.category_ids?.length">
                 {{
                     item.category_ids
                         ?.map(id => categories?.find(c => String(c.id) === String(id))?.name)
@@ -24,21 +32,29 @@
             </p>
         </div>
         <div class="relative px-4 pb-2 flex items-center" >
-            <p class="font-medium text-base md:text-lg">₹ {{ toNumber(item.price) }}</p>
-            <button v-if="!auth.userMeta.cart_items.includes(item.id)"
-                @click.stop="handleCartAction('add')"
-                :disabled="cart.loading"
-                title="Add to Cart"
-                :class="`cursor-pointer absolute bottom-3 right-3 bg-${theme}-100 dark:bg-${theme}-500 px-2 py-1 md:px-3 md:py-2 rounded-full hover:bg-${theme}-200 dark:hover:bg-${theme}-400 transition-colors duration-200 flex items-center shadow-sm`">
-                <span :class="`mdi mdi-shopping-outline text-md md:text-xl text-${theme}-500 dark:text-white`"></span>
-            </button>
-             <button v-else
-                @click.stop="handleCartAction('remove')"
-                :disabled="cart.loading"
-                title="Remove from Cart"
-                :class="`cursor-pointer absolute bottom-3 right-3 bg-${theme}-100 dark:bg-${theme}-500 px-2 py-1 md:px-3 md:py-2 rounded-full hover:bg-${theme}-200 dark:hover:bg-${theme}-400 transition-colors duration-200 flex items-center shadow-sm`">
-                <span :class="`mdi mdi-shopping text-md md:text-xl text-${theme}-500 dark:text-white`"></span>
-            </button>
+            <template v-if="item.isSale && item.discount?.type !== 'bogo'">
+              <p class="font-medium text-sm md:text-base line-through text-gray-400 mr-2">₹ {{ toNumber(item.price) }}</p>
+              <p class="font-medium text-base md:text-lg ">₹ {{ toNumber(item.discount_price) }}</p>
+            </template>
+            <template v-else>
+              <p class="font-medium text-base md:text-lg">₹ {{ toNumber(item.price) }}</p>
+            </template>
+            <div v-if="item.type == 'simple'">
+                <button v-if="!auth.userMeta.cart_items.includes(item.id)"
+                  @click.stop="handleCartAction('add')"
+                  :disabled="cart.loading"
+                  title="Add to Cart"
+                  :class="`cursor-pointer absolute bottom-3 right-3 bg-${theme}-100 dark:bg-${theme}-500 px-2 py-1 md:px-3 md:py-2 rounded-full hover:bg-${theme}-200 dark:hover:bg-${theme}-400 transition-colors duration-200 flex items-center shadow-sm`">
+                  <span :class="`mdi mdi-shopping-outline text-md md:text-xl text-${theme}-500 dark:text-white`"></span>
+              </button>
+              <button v-else
+                  @click.stop="handleCartAction('remove')"
+                  :disabled="cart.loading"
+                  title="Remove from Cart"
+                  :class="`cursor-pointer absolute bottom-3 right-3 bg-${theme}-100 dark:bg-${theme}-500 px-2 py-1 md:px-3 md:py-2 rounded-full hover:bg-${theme}-200 dark:hover:bg-${theme}-400 transition-colors duration-200 flex items-center shadow-sm`">
+                  <span :class="`mdi mdi-shopping text-md md:text-xl text-${theme}-500 dark:text-white`"></span>
+              </button>
+            </div>
         </div>
     </div>
 </template>
@@ -54,6 +70,8 @@ import { useAuthStore } from '@/stores/auth';
 import { useNotify } from '@/composables/useNotify';
 import { useWishlist } from '@/stores/wishlist';
 import { useStore } from '@/composables/useStore';
+import SaleBadge from '../badge/SaleBadge.vue';
+import { computed } from 'vue';
 
 const props = defineProps<{
     slug: string | undefined,
@@ -61,6 +79,20 @@ const props = defineProps<{
     categories?: Category[],
     theme?: string
 }>();
+
+const badgeTitle = computed(() => {
+  if (props.item.discount?.type == 'bogo') {
+    return `Buy ${props.item.discount?.rules?.bogoX} get ${props.item.discount?.rules?.bogoY} free`;
+  } else if (props.item.badge == 'green') {
+    return 'New';
+  } else if (props.item.discount?.value) {
+    return props.item.discount?.type === 'percentage'
+      ? `${props.item.discount?.value}% off`
+      : `₹${props.item.discount?.value} off`;
+  } else {
+    return '';
+  }
+});
 
 const cart = useCartStore()
 const auth = useAuthStore()

@@ -14,23 +14,23 @@
           <template v-if="!auth.isLogin">
             <div class="mb-4">
               <label class="block text-gray-700 dark:text-gray-400 text-sm mb-2">Name</label>
-              <input v-model="auth.formData.name" type="text" class="w-full border hover:bg-pink-50 dark:hover:bg-gray-600 border-gray-500 rounded px-3 py-2" required />
+              <input v-model="auth.formData.name" type="text" class="w-full border hover:bg-pink-50 dark:hover:bg-gray-600 border-gray-500 dark:border-gray-400 rounded px-3 py-2" required />
             </div>
             <div class="mb-4">
-              <label class="block text-gray-700 dark:text-gray-400 text-sm mb-2">Phone</label>
-              <input v-model="auth.formData.phone" type="text" inputmode="numeric" pattern="[0-9]*" maxlength="10" @input="auth.formData.phone = ($event.target as HTMLInputElement).value.replace(/\D/g, '').slice(0, 10)" class="w-full border hover:bg-pink-50 dark:hover:bg-gray-600 border-gray-500 rounded px-3 py-2" required />
+              <label class="block text-gray-700 dark:text-gray-400 text-sm mb-2">Phone *</label>
+              <input v-model="auth.formData.phone" type="text" inputmode="numeric" pattern="[0-9]*" maxlength="10" @input="auth.formData.phone = ($event.target as HTMLInputElement).value.replace(/\D/g, '').slice(0, 10)" class="w-full border hover:bg-pink-50 dark:hover:bg-gray-600 border-gray-500 dark:border-gray-400 rounded px-3 py-2" required />
             </div>
           </template>
   
           <!-- Shared fields -->
           <div class="mb-4">
             <label class="block text-gray-700 dark:text-gray-400 text-sm mb-2">Email</label>
-            <input v-model="auth.formData.email" type="email" class="w-full border hover:bg-pink-50 dark:hover:bg-gray-600 border-gray-500 rounded px-3 py-2" required />
+            <input v-model="auth.formData.email" type="email" class="w-full border hover:bg-pink-50 dark:hover:bg-gray-600 border-gray-500 dark:border-gray-400 rounded px-3 py-2" required />
           </div>
   
           <div class="relative mb-4">
             <label class="block text-gray-700 dark:text-gray-400 text-sm mb-2">Password</label>
-            <input v-model="auth.formData.password" :type="isPasswordVisible ? 'text' : 'password'" class="w-full border hover:bg-pink-50 dark:hover:bg-gray-600 border-gray-500 rounded px-3 py-2" required />
+            <input v-model="auth.formData.password" :type="isPasswordVisible ? 'text' : 'password'" class="w-full border hover:bg-pink-50 dark:hover:bg-gray-600 border-gray-500 dark:border-gray-400 rounded px-3 py-2" required />
             <div  @click.stop ="isPasswordVisible = !isPasswordVisible"
                 class="absolute bottom-2 right-0 px-3 cursor-pointer flex items-center text-gray-400 hover:text-black dark:hover:text-white">
                     <span v-if="!isPasswordVisible" class="mdi mdi-eye"></span>
@@ -40,7 +40,7 @@
   
           <div class="mb-4" v-if="!auth.isLogin">
             <label class="block text-gray-700 dark:text-gray-400 text-sm mb-2">Confirm Password</label>
-            <input v-model="auth.formData.password_confirmation" :type="isPasswordVisible ? 'text' : 'password'" class="w-full border hover:bg-pink-50 dark:hover:bg-gray-600 border-gray-500 rounded px-3 py-2" required />
+            <input v-model="auth.formData.password_confirmation" :type="isPasswordVisible ? 'text' : 'password'" class="w-full border hover:bg-pink-50 dark:hover:bg-gray-600 border-gray-500 dark:border-gray-400 rounded px-3 py-2" required />
           </div>
   
           <div class="flex justify-center items-center gap-4 mt-4">

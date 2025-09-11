@@ -12,6 +12,7 @@ import { useAuthStore } from './stores/auth';
 import Notify from './components/notification/Notify.vue';
 import LoginDialog from './components/dialogs/LoginDialog.vue';
 import { useMeta } from './stores/meta';
+import '@vuepic/vue-datepicker/dist/main.css'
 
 const { checkScreenWidth } = useSetting()
 
