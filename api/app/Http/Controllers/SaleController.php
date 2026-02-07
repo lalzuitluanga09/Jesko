@@ -101,6 +101,8 @@ class SaleController extends Controller
         $sale = Sale::findOrFail($id);
         $request['discount_type'] = $request->discountType;
         $request['discount_value'] = $request->discountValue;
+        $request['start_at'] = $request->startDate;
+        $request['end_at'] = $request->endDate;
         $request['rules'] = $request->discountType === 'bogo' ? json_encode(['bogoX' => $request->bogoX, 'bogoY' => $request->bogoY]) : null;
         $sale->update($request->all());
 

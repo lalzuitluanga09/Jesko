@@ -1,0 +1,59 @@
+Light Mode Palette
+
+Primary 60
+Use this as the main brand presence
+Color: #FF4D67
+
+Secondary 30
+Use this as supporting UI color
+Color: #6C63FF
+
+Accent 10
+Use this for highlights and attraction spots only
+Color: #FFD43B
+
+Backgrounds
+Main background: #FFFFFF
+Card or section background: #F8F9FB
+
+Text
+Primary text: #0F172A
+Muted text: #6B7280
+
+Functional
+Success: #2EB872
+Warning: #F5A623
+Error: #FF3B30
+
+
+
+----------------------------------------------
+
+
+Dark Mode Palette
+
+Primary 60
+Dark base mood
+Keep brand feel but adapted for dark UI
+Primary UI presence: #FF4D67
+
+Secondary 30
+Support tone
+Color: #6C63FF
+
+Accent 10
+Highlight pop
+Color: #FFD43B
+
+Backgrounds
+Main background: #0F172A
+Card or elevated content: #111827
+
+Text
+Primary text: #FFFFFF
+Muted text: #CBD5E1
+
+Functional
+Success: #22C55E
+Warning: #FACC15
+Error: #F87171

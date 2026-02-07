@@ -58,12 +58,12 @@
                         </p>
                     </div>
 
-                    <div>
+                    <div v-if="selected?.type != 'variable'">
                         <p class="text-xs text-gray-500 dark:text-gray-400 mb-1 uppercase tracking-wide">Price</p>
                         <p class="font-semibold">₹ {{ selected?.price || '0.00' }}</p>
                     </div>
 
-                    <div>
+                    <div v-if="selected?.type != 'variable'">
                         <p class="text-xs text-gray-500 dark:text-gray-400 mb-1 uppercase tracking-wide">Stock</p>
                         <p class="font-bold">{{ selected?.stock ?? '0' }} <span v-if="toInteger(selected?.stock) < 10" class="bg-amber-100 text-amber-600 px-1.5 py-0.5 rounded text-xs">Low</span></p>
                     </div>
@@ -124,7 +124,7 @@
                         </thead>
                         <tbody>
                             <tr
-                            v-for="(variation, index) in productVariations"
+                            v-for="(variation) in productVariations"
                             :key="variation.id"
                             class="hover:bg-gray-100 dark:hover:bg-gray-700 transition-colors"
                             >

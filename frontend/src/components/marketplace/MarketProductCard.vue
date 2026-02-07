@@ -30,7 +30,8 @@ const gotTo = async () => {
     router.push({
         name: 'item-detail',
         params: {
-            id: props.item.id
+            id: props.item.id,
+            item: props.item.title
         }
     })
 }

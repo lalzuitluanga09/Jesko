@@ -26,7 +26,7 @@
     ></textarea>
   </div>
   <!-- Price & Stock -->
-  <div class="flex flex-col md:flex-row gap-4">
+  <div class="flex flex-col md:flex-row gap-4" v-if="!isVariable && selected?.type !== 'variable'">
     <div class="flex-1">
       <label class="block text-sm font-medium text-gray-700 dark:text-gray-200 mb-1" for="price"
         >Price (₹)</label
@@ -96,6 +96,8 @@ import { nextTick, onMounted, ref } from 'vue';
 const { 
   formData,
   allCategories,
+  selected,
+  isVariable,
   allTags
 } = useProduct()
 

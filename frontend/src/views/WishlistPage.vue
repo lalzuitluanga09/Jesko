@@ -10,11 +10,9 @@
 
 <script setup lang="ts">
 import ProductCard from '@/components/cards/ProductCard.vue';
-import { useAuthStore } from '@/stores/auth';
 import { useWishlist } from '@/stores/wishlist';
 import { onMounted } from 'vue';
 
-const auth = useAuthStore()
 const wishlist = useWishlist()
 
 onMounted(async() => {

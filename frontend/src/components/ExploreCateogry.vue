@@ -31,7 +31,3 @@ const sliderOptions = {
  }
 
 </script>
-
-<style scoped>
-
-</style>

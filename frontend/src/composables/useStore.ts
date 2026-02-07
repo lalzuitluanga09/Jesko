@@ -95,13 +95,15 @@ const mobileFilter = ref<{
 const storeFilter = ref<{
   searchTerm: string,
   category_id: number | null,
-  tags: number[],
-  sort: string,
+  tags: number[], // Optional
+  sort: string, // Optional
+  locations: number [],
 }>({
   searchTerm: '',
   category_id: null,
   tags: [],
   sort: '',
+  locations: []
 })
 
 const sortOptions = [
@@ -161,6 +163,7 @@ export function useStore() {
           page: page,
           category_id: storeFilter.value.category_id,
           searchTerm: storeFilter.value.searchTerm,
+          locations: storeFilter.value.locations
         },
       });
       await delay(300);

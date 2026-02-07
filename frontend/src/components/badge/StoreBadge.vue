@@ -1,9 +1,10 @@
 <template>
     <div
         :class="badgeClass"
-        class="inline-flex text-xs items-center px-1.5 rounded-b-full font-semibold shadow-md gap-1 text-white border border-white/30 backdrop-blur-sm"
+        class="inline-flex text-xs truncate items-center px-1.5 rounded-b-full font-semibold shadow-md gap-1 text-white border border-white/30 backdrop-blur-sm"
     >
-        <p class="pl-1 font-medium">{{ title }}</p>
+    <span class="mdi mdi-creation pl-1"></span>
+        <p class="font-medium">{{ title }}</p>
     <span class="mdi mdi-creation pr-1"></span>
     </div>
 </template>

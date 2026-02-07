@@ -1,6 +1,6 @@
 <template>
     <div class="flex items-center p-4 dark:bg-gray-700 hover:bg-amber-50 dark:hover:bg-gray-600 rounded-xl border border-gray-200 shadow-sm gap-3 cursor-pointer">
-        <img src="/images/product.png" alt="Product" class="w-20 h-20 object-cover rounded-lg border border-gray-100" @click="handleClick"/>
+        <img :src="item.product_image ? storageUrl(item.product_image) : '/images/product.png'"  alt="Product" class="w-20 h-20 object-cover rounded-lg border border-gray-100" @click="handleClick"/>
         <div class="flex-1 min-w-0" @click="handleClick">
             <h3 class="text-base font-semibold truncate"> {{ item.product_name }}</h3>
             <p class="text-sm text-gray-400 truncate">
@@ -52,11 +52,20 @@ import router from '@/router';
 import { useCartStore } from '@/stores/cart';
 import type { CartItem } from '@/types/cart';
 import { computed, ref } from 'vue';
+import { useNotify } from '@/composables/useNotify';
+import { storageUrl } from '@/config';
+import { useStore } from '@/composables/useStore';
+
+const {
+  notifyWarning
+} = useNotify()
 
 const props = defineProps<{
     item: CartItem,
     slug: string
 }>();
+
+const { getProductData } = useStore();
 
 const discount = computed(() => props.item.discount);
 const discountType = computed(() => discount.value?.type || null);
@@ -91,8 +100,12 @@ const originalPrice = computed(() => Math.round(props.item.price_at_addition));
 const localQuantity = ref(props.item.quantity);
 
 const increase = () => {
-  localQuantity.value++;
-  emitUpdate();
+  if(localQuantity.value < props.item.stock) {
+    localQuantity.value++;
+    emitUpdate();
+  } else {
+    notifyWarning('Maximum order limit reached');
+  }
 };
 
 const decrease = () => {
@@ -113,6 +126,7 @@ const emitUpdate = () => {
 const cart = useCartStore()
 
 const handleClick = () => {
+  getProductData(props.item.product_id)
     router.push({
         name: 'product-detail',
         params: {

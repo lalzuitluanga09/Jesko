@@ -3,6 +3,7 @@ import { defineStore } from 'pinia'
 import type { StoreCategory } from '@/types/store'
 import { api } from '@/lib/axios'
 import { useStoreSetting } from '@/composables/useStoreSetting'
+import type { Location } from '@/types/location'
 
 export const useMeta = defineStore('meta', () => {
 
@@ -17,12 +18,15 @@ export const useMeta = defineStore('meta', () => {
             name: string,
         }[]>([])
 
+    const locations = ref<Location []>([])
+
     const getMeta = async () => {
         loading.value = true
         try {
             const res = await api.get('/meta');
             storeCategories.value = res.data.store_categories
             storeThemes.value = res.data.store_themes
+            locations.value = res.data.locations
         } catch (error) {
             console.log(error)
         } finally {
@@ -31,12 +35,11 @@ export const useMeta = defineStore('meta', () => {
         }
     }
 
-
     return {
         loading,
         storeCategories,
         storeThemes,
+        locations,
         getMeta
-
     }
 })

@@ -121,6 +121,7 @@ class Product extends Model
         return $this->belongsToMany(Sale::class, 'sale_products')
             ->where('sales.start_at', '<=', now())
             ->where('sales.end_at', '>=', now())
+            ->where('sales.status', 'active')
             ->withTimestamps();
     }
 
@@ -135,7 +136,8 @@ class Product extends Model
         return $this->categories()
             ->with(['activeSale' => function ($q) {
                 $q->where('sales.start_at', '<=', now())
-                ->where('sales.end_at', '>=', now());
+                ->where('sales.end_at', '>=', now())
+                ->where('sales.status', 'active');
             }])
             ->get()
             ->pluck('activeSale')

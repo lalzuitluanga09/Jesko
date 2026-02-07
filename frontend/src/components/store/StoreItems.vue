@@ -2,7 +2,7 @@
     <div v-if="loadProduct" class="flex w-full min-h-[50vh] justify-center items-center px-4 pt-2 pb-4  border border-gray-300 rounded-2xl">
         <Loading />
     </div>
-    <div v-else :class="`flex flex-col w-full px-4 pt-2 pb-4 border border-${storeData.data?.theme}-300 rounded-2xl`">
+    <div v-else :class="`flex flex-col w-full px-4 pt-2 pb-4 dark:bg-bg-soft-dark border border-${storeData.data?.theme}-300 rounded-2xl`">
         <div v-if="pagination.total > 0">
             <p :class="`text-${storeData.data?.theme}-500 dark:text-white text-xs md:text-sm ml-2 mb-2`">Showing {{ pagination.from }}-{{ pagination.to }} of {{ pagination.total }} results</p>
             <div class="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-2">

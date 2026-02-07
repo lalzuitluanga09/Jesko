@@ -30,7 +30,7 @@ class ProductController extends Controller
             ->when($searchTerm, function ($q) use ($searchTerm) {
                 $q->where(function ($query) use ($searchTerm) {
                     $query->where('name', 'like', "%{$searchTerm}%")
-                        ->orWhere('sku', 'like', "%{$searchTerm}%"); // optional: search by sku
+                        ->orWhere('sku', 'like', "%{$searchTerm}%");
                 });
             })
             ->when($status, function ($q) use ($status) {
@@ -38,12 +38,12 @@ class ProductController extends Controller
             })
             ->when($categoryId, function ($q) use ($categoryId) {
                 $q->whereHas('categories', function ($c) use ($categoryId) {
-                    $c->where('categories.id', $categoryId); // ✅ qualify with table
+                    $c->where('categories.id', $categoryId);
                 });
             })
             ->when($tagId, function ($q) use ($tagId) {
                 $q->whereHas('tags', function ($t) use ($tagId) {
-                    $t->where('tags.id', $tagId); // ✅ qualify with table
+                    $t->where('tags.id', $tagId);
                 });
             })
             ->paginate(10,['id', 'name', 'price', 'stock', 'sku', 'status', 'type']);
@@ -81,8 +81,7 @@ class ProductController extends Controller
         $productData['type'] = 'simple';
 
 
-        $productData['sku'] = $storeSlug . '-' . $productData['sku'];
-
+        $productData['sku'] = $storeSlug . '-' . ($productData['sku'] ?? $productData['name']);
 
         $product = Product::create($productData);
 
@@ -143,6 +142,8 @@ class ProductController extends Controller
                     'values' => $variation['values'],
                 ];
             }
+            $stocks = 0;
+            $price = 0;
 
             foreach ($variationItems as $item) {
                 $variationProduct = Product::create([
@@ -157,6 +158,8 @@ class ProductController extends Controller
                 ]);
 
                 $sufix = [];
+                $stocks += $item['stock'];
+                $price = $price == 0 ? $item['price'] : min($price, $item['price']);
 
                 foreach ($item['values'] as $i => $value) {
                     $sufix [] = $value;
@@ -170,9 +173,13 @@ class ProductController extends Controller
                     }
                 }
 
-                $variationProduct->name = $product->name . ' - [ ' . implode(', ', array: $sufix) . ' ]';
-                $variationProduct->save();
+                $variationProduct->name = $product->name . ' - ( ' . implode(', ', array: $sufix) . ' )';
+                $variationProduct->sku = $variationProduct->sku ?? ($product->sku . '-' . implode('-', array: $sufix));
+                $variationProduct->save();  
             }
+            $product->stock = $stocks;
+            $product->price = $price;
+            $product->save();
         }
 
         return response()->json(['status' => 'success'], 201);

@@ -2,6 +2,8 @@
 
 namespace Database\Seeders;
 
+use App\Models\Country;
+use App\Models\District;
 use App\Models\MarketplaceCategory;
 use App\Models\MarketplaceProduct;
 use App\Models\Order;
@@ -10,6 +12,7 @@ use App\Models\OrderItem;
 use App\Models\Payment;
 use App\Models\Product;
 use App\Models\Sale;
+use App\Models\State;
 use App\Models\Store;
 use App\Models\StoreCategory;
 use App\Models\StoreTheme;
@@ -65,26 +68,23 @@ class DatabaseSeeder extends Seeder
                 'name' => $theme
             ]);
         }
+    $categories = [
+        ['name' => 'Fashion',     'icon' => 'mdi-tshirt-crew'],
+        ['name' => 'Beauty',      'icon' => 'mdi-lipstick'],
+        ['name' => 'Electronics', 'icon' => 'mdi-cellphone'],
+        ['name' => 'Home',        'icon' => 'mdi-home-outline'],
+        ['name' => 'Food',        'icon' => 'mdi-food'],
+        ['name' => 'Crafts',      'icon' => 'mdi-palette'],
+        ['name' => 'Sports',      'icon' => 'mdi-basketball'],
+        ['name' => 'Others',      'icon' => 'mdi-dots-horizontal'],
+    ];
 
-        $categories = [
-            'Electronics',
-            'Fashion',
-            'Furniture',
-            'Personal Care',
-            'Books & Stationery',
-            'Food',
-            'Toys',
-            'Sports',
-            'Health & Wellness',
-            'Pet Supplies',
-            'Handmade & Crafts',
-        ];
 
         foreach ($categories as $category) {
             StoreCategory::create([
-                'name' => $category,
-                'slug' => Str::slug($category),
-                // 'icon' => ,
+                'name' => $category['name'],
+                'slug' => Str::slug($category['name']),
+                'icon' => $category['icon'],
                 'is_active' => true,
                 // 'parent_id',
             ]);
@@ -107,48 +107,48 @@ class DatabaseSeeder extends Seeder
         ]);
 
 
-        $faker = Faker::create();
+        // $faker = Faker::create();
 
-        for ($i = 1; $i <= 20; $i++) {
-            $name = $faker->unique()->company;
-            $store = Store::create([
-                'name' => $name,
-                'slug' => Str::slug($name) . '-' . $i,
-                'description' => $faker->catchPhrase,
-                'pin' => Hash::make('1234'),
-                'category_id' => rand(1, count($categories)),
-                'theme_id' => rand(1, count($themes)),
-            ]);
+        // for ($i = 1; $i <= 20; $i++) {
+        //     $name = $faker->unique()->company;
+        //     $store = Store::create([
+        //         'name' => $name,
+        //         'slug' => Str::slug($name) . '-' . $i,
+        //         'description' => $faker->catchPhrase,
+        //         'pin' => Hash::make('1234'),
+        //         'category_id' => rand(1, count($categories)),
+        //         'theme_id' => rand(1, count($themes)),
+        //     ]);
 
-             StoreUser::create([
-                'store_id' => $store->id,
-                'user_id' => 1,
-                'role' => 'owner',
-                'joined_at' => now()
-            ]);
-        }
+        //      StoreUser::create([
+        //         'store_id' => $store->id,
+        //         'user_id' => 1,
+        //         'role' => 'owner',
+        //         'joined_at' => now()
+        //     ]);
+        // }
 
 
-        for ($i = 1; $i <= 20; $i++) {
-            $name = $faker->unique()->name;
-            Product::create([
-                'store_id' => 1,
-                'name' => $name,
-                'price' => 99,
-                'stock' => 10,
-                'status' => 'active'
-            ]);
-        }
+        // for ($i = 1; $i <= 20; $i++) {
+        //     $name = $faker->unique()->name;
+        //     Product::create([
+        //         'store_id' => 1,
+        //         'name' => $name,
+        //         'price' => 99,
+        //         'stock' => 10,
+        //         'status' => 'active'
+        //     ]);
+        // }
 
-        for ($i = 1; $i <= 20; $i++) {
-            $name = $faker->unique()->name;
-            MarketplaceProduct::create([
-                'user_id' => 1,
-                'title' => $name,
-                'price' => 123,
-                'condition' => 'new'
-            ]);
-        }
+        // for ($i = 1; $i <= 20; $i++) {
+        //     $name = $faker->unique()->name;
+        //     MarketplaceProduct::create([
+        //         'user_id' => 1,
+        //         'title' => $name,
+        //         'price' => 123,
+        //         'condition' => 'new'
+        //     ]);
+        // }
 
         $items = ['Electronics', 'Fashion', 'Automobile', 'Furniture', 'Toys', 'Books & Stationery', 'Food', 'Cosmetics', 'Others'];
 
@@ -216,6 +216,24 @@ class DatabaseSeeder extends Seeder
         //     'end_at' => now()->addDays(7),
         //     'status' => 'active'
         // ]);
+
+
+        $country = Country::create([
+            'name' => 'India',
+            'iso_code' => 'IN',
+            'phone_code' => '+91',
+            'currency' => 'INR'
+        ]);
+
+        $state = State::create([
+            'name' => 'Mizoram',
+            'country_id' => $country->id
+        ]);
+
+        District::create([
+            'name' => 'Aizawl',
+            'state_id' => $state->id
+        ]);
     }
 }
 

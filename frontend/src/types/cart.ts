@@ -3,6 +3,7 @@ interface CartItem {
   product_id: number
   store_id: number
   quantity: number
+  stock: number
   price_at_addition: number
   product_name?: string
   product_image?: string

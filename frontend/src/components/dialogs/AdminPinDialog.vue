@@ -27,7 +27,7 @@
                         v-model="pin"
                         @input="pin = pin.replace(/\D/g, '')"
                         @keydown.enter.stop="handleSubmit"
-                        class="w-full px-4 py-2 pr-10 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-pink-400"
+                        class="w-full px-4 py-2 pr-10 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-primary"
                         />
                         <button  @click="isPasswordVisible = !isPasswordVisible"
                             class="absolute inset-y-0 right-0 px-3 flex items-center text-gray-600 hover:text-black dark:hover:text-white">
@@ -36,7 +36,7 @@
                         </button>
                     </div>
                     <button @click="handleSubmit"
-                        class="w-full py-2 bg-pink-500 text-white font-medium rounded-lg hover:bg-pink-600 transition-colors cursor-pointer"
+                        class="w-full py-2 bg-primary text-white font-medium rounded-lg hover:bg-primary-hover transition-colors cursor-pointer"
                     >
                     <Loading v-if="loading"/>
                     <span v-else>
@@ -78,8 +78,6 @@ const props = defineProps<{
 const { isPinDialogOpen } = useStore()
 const { isPinVerify, checkPin } = useAdmin()
 const { notifyError } = useNotify()
-
-const auth = useAuthStore()
 
 const pin = ref<string>('')
 const loading = ref(false)

@@ -30,9 +30,10 @@ class CartController extends Controller
                         'id' => $item->id,
                         'product_id' => $item->product_id,
                         'quantity' => $item->quantity,
+                        'stock' => $item->product->stock,
                         'price_at_addition' => $item->price_at_addition,
                         'product_name' => $item->product->name ?? null,
-                        'product_image' => $item->product->image ?? null,
+                        'product_image' => $item->product->defaultImage->image_path ?? null,
                         'product_price' => $item->product->price ?? null,
                         'product_categories' => $item->product->categories->pluck('name'),
                         'discount' => $sale ? [

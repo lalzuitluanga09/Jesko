@@ -1,6 +1,6 @@
 <template>
     <div @click.prevent="gotTo"
-        :class="`relative w-full max-w-sm rounded-2xl overflow-hidden bg-white/70 dark:bg-gray-600 cursor-pointer hover:bg-${theme}-50 dark:hover:bg-gray-500 border border-${theme}-300  transition`">
+        :class="`relative w-full max-w-sm rounded-2xl overflow-hidden cursor-pointer hover:bg-${theme}-50 dark:hover:bg-bg-dark border border-${theme}-300  transition`">
 
         <SaleBadge
           v-if="item.badge"
@@ -34,10 +34,10 @@
         <div class="relative px-4 pb-2 flex items-center" >
             <template v-if="item.isSale && item.discount?.type !== 'bogo'">
               <p class="font-medium text-sm md:text-base line-through text-gray-400 mr-2">₹ {{ toNumber(item.price) }}</p>
-              <p class="font-medium text-base md:text-lg ">₹ {{ toNumber(item.discount_price) }}</p>
+              <p class="font-medium text-base md:text-lg ">₹{{ toNumber(item.discount_price) }}</p>
             </template>
             <template v-else>
-              <p class="font-medium text-base md:text-lg">₹ {{ toNumber(item.price) }}</p>
+              <p class="font-medium text-base md:text-lg">₹{{ toNumber(item.price) }}</p>
             </template>
             <div v-if="item.type == 'simple'">
                 <button v-if="!auth.userMeta.cart_items.includes(item.id)"
@@ -107,8 +107,8 @@ const gotTo = () => {
     router.push({
         name: 'product-detail',
         params: {
-            storeslug: props.slug,
-            id: props.item.id
+          storeslug: props.slug,
+          id: props.item.id,
         }
     })
 }

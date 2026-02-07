@@ -1,10 +1,10 @@
 <template>
     <div @click="goTo"
-        class="flex justify-between items-center gap-3 border-gray-100 dark:border-white/10 border-2 px-4 py-2 rounded-lg hover:bg-gray-100 dark:hover:bg-gray-600 transition-colors cursor-pointer">
+        class="flex justify-between items-center gap-2 border-gray-100 dark:border-bg-soft-dark border-2 px-4 py-2 hover:bg-gray-100 dark:hover:bg-bg-soft-dark transition-colors cursor-pointer">
         <div class="flex gap-4 items-center">
             <i :class="icon" class="text-xl text-gray-500"></i>
             <span class="text-base font-medium text-gray-800 dark:text-white/50">{{ title }}</span>
-            <span v-if="badge !== undefined" class="ml-2 inline-flex items-center justify-center px-2 py-0.5 rounded-full text-xs font-semibold bg-pink-500 text-white">
+            <span v-if="badge !== undefined" class="ml-2 inline-flex items-center justify-center px-2 py-0.5 rounded-full text-xs font-semibold bg-primary text-white">
                 {{ badge }}
             </span>
         </div>

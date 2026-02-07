@@ -8,7 +8,7 @@
                     class="w-24 h-24 md:w-28 md:h-28 rounded-full object-cover border-4 border-white shadow-sm" />
                 <h2 class="text-sm md:text-base font-semibold py-4 line-clamp-2">{{ item.store.name }}</h2>
                 <button @click.stop="openDialog(item.store)"
-                    class="mt-auto px-3 py-1 md:px-4 md:py-2 cursor-pointer bg-pink-500 text-white font-medium text-sm rounded-lg hover:bg-pink-600 transition-colors w-full">
+                    class="mt-auto px-3 py-1 md:px-4 md:py-2 cursor-pointer bg-primary text-white font-medium text-sm rounded-lg hover:bg-primary-hover transition-colors w-full">
                     Go to Dashboard
                     <span class="mdi mdi-arrow-right ml-2"></span>
                 </button>

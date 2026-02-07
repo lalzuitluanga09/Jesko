@@ -20,17 +20,27 @@ const router = createRouter({
         {
           path: '/marketplace',
           name: 'marketplace',
-          component: () => import('@/views/Marketplace.vue'),
+          component: () => import('@/views/MarketplacePage.vue'),
         },
         {
           path: '/cart',
           name: 'cart',
-          component: () => import('@/views/Cart.vue'),
+          component: () => import('@/views/CartPage.vue'),
         },
         {
           path: '/account',
           name: 'account',
-          component: () => import('@/views/Account.vue'),
+          component: () => import('@/views/AccountPage.vue'),
+        },
+        {
+          path: '/about',
+          name: 'about',
+          component: () => import('@/views/AboutPage.vue'),
+        },
+        {
+          path: '/policy',
+          name: 'policy',
+          component: () => import('@/views/PolicyPage.vue'),
         },
         {
           path: '/checkout',
@@ -40,12 +50,12 @@ const router = createRouter({
         {
           path: '/favourites',
           name: 'favourite',
-          component: () => import('@/views/Wishlist.vue'),
+          component: () => import('@/views/WishlistPage.vue'),
         },
         {
           path: '/notifications',
           name: 'notification',
-          component: () => import('@/views/Notification.vue'),
+          component: () => import('@/views/NotificationPage.vue'),
         },
 
         //Store Pages
@@ -55,14 +65,14 @@ const router = createRouter({
           component: () => import('@/views/store/Home.vue'),
         },
         {
-          path: '/store/:storeslug/products/:id',
+          path: '/store/:storeslug/product/:id',
           name: 'product-detail',
           component: () => import('../views/store/ProductDetail.vue'),
         },
 
         //Marketplace
         {
-          path: '/marketplace/item/:id',
+          path: '/marketplace/:item/:id',
           name: 'item-detail',
           component: () => import('@/views/marketplace/ItemDetail.vue'),
         },

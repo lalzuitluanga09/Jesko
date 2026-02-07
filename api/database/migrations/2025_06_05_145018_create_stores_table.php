@@ -15,7 +15,6 @@ return new class extends Migration
             $table->id();
             $table->string('name')->unique();
             $table->string('slug')->unique();
-            $table->string('pin')->nullable();
             $table->string('logo')->nullable();
             $table->text('description')->nullable();
             $table->string('cover_image')->nullable();
@@ -24,8 +23,11 @@ return new class extends Migration
             $table->timestamp('launch_at')->nullable()->default(null);
             $table->unsignedBigInteger('category_id')->nullable();
             $table->unsignedBigInteger('theme_id')->nullable();
+            $table->unsignedBigInteger('location_id')->nullable();
             $table->foreign('category_id')->references('id')->on('store_categories')->onDelete('set null');
             $table->foreign('theme_id')->references('id')->on('store_themes')->onDelete('set null');
+            $table->foreign('location_id')->references('id')->on('districts')->onDelete('set null');
+            $table->string('pin')->nullable();
             $table->timestamps();
             $table->softDeletes();
         });

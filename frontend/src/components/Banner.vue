@@ -1,5 +1,5 @@
 <template>
-    <div class="rounded-2xl md:rounded-4xl overflow-hidden md:mt-6">
+    <div class="rounded-2xl md:rounded-3xl overflow-hidden md:mt-6">
         <Splide :options="bannerOptions" aria-label="My Favorite Images">
             <SplideSlide
                 v-for="(color, idx) in ['#FFCDD2', '#BBDEFB', '#C8E6C9', '#FFF9C4', '#F8BBD0']"

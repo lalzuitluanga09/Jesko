@@ -50,7 +50,7 @@
   
           <p class="mt-4 text-sm text-center text-gray-600 dark:text-gray-300">
             {{ auth.isLogin ? "Don't have an account?" : "Already have an account?" }}
-            <button class="text-pink-600 dark:text-pink-400 ml-1 underline cursor-pointer hover:text-pink-700 dark:hover:text-pink-500" type="button" @click="auth.toggleMode">
+            <button class="text-primary ml-1 underline cursor-pointer hover:text-primary-hover" type="button" @click="auth.toggleMode">
               {{ auth.isLogin ? 'Register' : 'Login' }}
             </button>
           </p>
@@ -63,7 +63,7 @@
 
 
 <script setup lang="ts">
-import { nextTick, onBeforeUnmount, onMounted, ref, watch } from 'vue';
+import { onBeforeUnmount, onMounted, ref } from 'vue';
 import SimpleBtn from '../buttons/SimpleBtn.vue';
 import { useAuthStore } from '@/stores/auth';
 

@@ -9,6 +9,55 @@
 
 @theme {  
     --font-ubuntu: Ubuntu, sans-serif;
+    /* ===============================
+        Brand Colors
+        =============================== */
+
+    --color-primary: #FF4D67;        /* Coral – main CTA */
+    --color-primary-hover: #FF3553;
+
+    --color-secondary: #6C63FF;      /* Violet – support */
+    --color-secondary-hover: #5A4FFF;
+
+    --color-accent: #FFD43B;         /* Yellow – highlights */
+
+    /* ===============================
+        Light Mode Base
+        =============================== */
+
+    --color-bg: #FFFFFF;
+    --color-bg-soft: #F8F9FB;
+
+    --color-text: #0F172A;
+    --color-text-muted: #6B7280;
+
+    /* ===============================
+        Dark Mode Base
+        =============================== */
+
+    --color-bg-dark: #0F172A;
+    --color-bg-soft-dark: #222836;
+    /* --color-bg-soft-dark: #111827; */
+
+    --color-text-dark: #FFFFFF;
+    --color-text-muted-dark: #CBD5E1;
+
+    /* ===============================
+        Status / Utility
+        =============================== */
+
+    --color-success: #2EB872;
+    --color-warning: #F5A623;
+    --color-error: #FF3B30;
+    --color-info: #3498DB;
+
+    /* ===============================
+        Dark Mode Status
+        =============================== */
+
+    --color-success-dark: #22C55E;
+    --color-warning-dark: #FACC15;
+    --color-error-dark: #F87171;
 }
 
 

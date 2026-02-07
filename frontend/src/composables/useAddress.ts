@@ -144,7 +144,7 @@ export function useAddress() {
       }
     }
 
-    const deleteAddress = async (id: number | null) => {
+    const deleteAddress = async (id: number | undefined) => {
       if (!id) {
         notifyError('Invalid address ID');
         return;

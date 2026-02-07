@@ -25,4 +25,9 @@ class District extends Model
     {
         return $this->hasMany(MarketplaceProduct::class, 'location_id');
     }
+
+    public function stores(): HasMany
+    {
+        return $this->hasMany(Store::class, 'location_id');
+    }
 }

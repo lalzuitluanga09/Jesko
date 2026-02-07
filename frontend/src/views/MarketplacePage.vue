@@ -21,7 +21,7 @@
                             ?.join(', ') || '—'
                     }}
                 </p>
-                <p class="text-gray-600 dark:text-gray-400 text-xs md:text-sm ml-2 md:ml-0">Showing {{ pagination.from
+                <p v-if="pagination.total > 0" class="text-gray-600 dark:text-gray-400 text-xs md:text-sm ml-2 md:ml-0">Showing {{ pagination.from
                     }}-{{ pagination.to }} of {{ pagination.total }} results</p>
             </div>
             <div v-if="pagination.total > 0"

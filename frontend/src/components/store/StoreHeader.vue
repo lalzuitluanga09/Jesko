@@ -1,10 +1,15 @@
 <template>
-  <div class="w-full border border-gray-300 rounded-t-2xl md:rounded-2xl overflow-hidden shadow-sm bg-white dark:bg-gray-700 relative">
-    <div class="h-20 sm:h-28 bg-gray-300 dark:bg-gray-800 flex items-center justify-center text-white font-semibold text-base sm:text-lg">
-      Map Placeholder or Banner
+  <div class="w-full border border-gray-300 rounded-t-2xl md:rounded-2xl overflow-hidden shadow-sm dark:bg-bg-soft-dark relative">
+    <div class="h-20 sm:h-28 bg-gray-200 dark:bg-gray-600 flex items-center justify-center text-gray-500 dark:text-white font-semibold text-base sm:text-lg">
+      <img
+        v-if="storeData.data?.cover_image"
+        :src="storageUrl(storeData.data.cover_image)"
+        alt="Store Cover Image"
+        class="absolute top-0 left-0 w-full h-20 sm:h-28 object-cover"
+      />
     </div>
 
-    <div class="absolute top-10 left-4 sm:left-8 z-10">
+    <div class="absolute top-14 left-4 sm:left-8 z-10">
       <img
         :src="storeData.data?.logo ? storageUrl(storeData.data.logo) : '/images/logo.png'"
         alt="Store Logo"

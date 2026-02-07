@@ -2,7 +2,7 @@
     <div class="bg-white dark:bg-gray-800 rounded-xl p-2">
         <h1 class="text-xl font-semibold ml-4 py-4">All Payments</h1>
         <div class="flex items-center gap-2  mx-1 md:mx-4 pb-4">
-            <TableSearch title="Search by order id" v-model="filter.searchTerm"/>
+            <TableSearch title="Search by order/payment id" v-model="filter.searchTerm"/>
             <DropdownBtn ref="statusDropdownRef" title="Status" :options="paymentStatusOptions" @select="(event) => filter.status = event"/>
             <DropdownBtn ref="modeDropdownRef" title="Payment Mode" :options="paymentModeOptions" @select="(event) => filter.paymentMode = event"/>
             <VueDatePicker

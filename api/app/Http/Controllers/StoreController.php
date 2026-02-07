@@ -19,12 +19,17 @@ class StoreController extends Controller
     {
         $categoryId = $request->query('category_id');
         $searchTerm = $request->query('searchTerm');
+        $locationIds = $request->query('locations');
+
         $stores = Store::with(['activeSale', 'storeTheme:id,name', 'owner'])
             ->when($categoryId, function ($q) use ($categoryId) {
                 $q->where('category_id', $categoryId);
             })
             ->when($searchTerm, function ($q) use ($searchTerm) {
                 $q->where('name', 'like', '%' . $searchTerm . '%');
+            })
+            ->when($locationIds, function ($q) use ($locationIds) {
+                $q->whereIn('location_id', $locationIds);
             })
             ->withCount(['followers', 'products'])
             ->paginate(16);
@@ -129,13 +134,7 @@ class StoreController extends Controller
             $product->tag_ids = $product->tags->pluck('id')->toArray();
             $product->default_image_url = $product->defaultImage()->value('image_path');
 
-            $active_sale = $product->activeSale->first()
-                ? $product->activeSale->first()->toArray()
-                : (
-                    ($categorySale = $product->categories->flatMap->activeSale->first())
-                    ? $categorySale->toArray()
-                    : null
-                );
+            $active_sale = $product->getActiveSale();
 
             $product->isSale = $active_sale ? true : false;
             $product->discount = [

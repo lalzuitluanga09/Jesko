@@ -1,7 +1,7 @@
 <template>
     <div
         @click="goTo"
-        :class="`relative group w-full max-w-sm rounded-3xl bg-white dark:bg-gray-700 hover:bg-${store.theme}-50 dark:hover:bg-gray-600 cursor-pointer border border-gray-200 dark:border-gray-600 shadow-lg transition-all duration-200`"
+        :class="`relative group w-full max-w-sm rounded-3xl bg-white dark:bg-gray-700 hover:bg-${store.theme}-50 dark:hover:bg-gray-600 border border-gray-200 dark:border-gray-600 shadow-lg transition-all duration-200`"
     >
     <div :class="`flex justify-center items-center pt-6 pb-2 bg-gradient-to-b from-${store.theme}-50 to-transparent dark:from-gray-800 rounded-t-3xl`">
         <img
@@ -36,7 +36,7 @@
             <button
                 v-if="auth.isAuthenticated"
                 @click.stop="handleFollow(store.id)"
-                :class="`bg-${store.theme}-100 dark:bg-${store.theme}-500 px-3 py-1.5 rounded-full hover:bg-${store.theme}-200 dark:hover:bg-${store.theme}-400 transition-colors duration-200 flex items-center gap-2 text-sm font-semibold shadow`"
+                :class="`bg-${store.theme}-100 dark:bg-${store.theme}-500 px-3 py-1.5 rounded-full hover:bg-${store.theme}-200 dark:hover:bg-${store.theme}-400 transition-colors duration-200 flex items-center gap-2 text-sm font-semibold shadow cursor-pointer`"
                 :title="auth.userMeta.followings.includes(store.id) ? 'Unfollow' : 'Follow'"
             >
                 <span v-if="auth.userMeta.followings.includes(store.id)" :class="`mdi mdi-store-check text-lg text-${store.theme}-600 dark:text-gray-100`"></span>

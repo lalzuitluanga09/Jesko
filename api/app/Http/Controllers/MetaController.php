@@ -2,8 +2,10 @@
 
 namespace App\Http\Controllers;
 
+use App\Models\District;
 use App\Models\StoreCategory;
 use App\Models\StoreTheme;
+
 
 class MetaController extends Controller
 {
@@ -15,9 +17,12 @@ class MetaController extends Controller
 
         $storeThemes = StoreTheme::select('name', 'id')->get();
 
+        $locations = District::select('name', 'id')->get();
+
         return response()->json([
             'store_categories' => $storeCategories,
-            'store_themes' => $storeThemes
+            'store_themes' => $storeThemes,
+            'locations' => $locations
         ]);
     }
 }

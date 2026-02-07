@@ -12,30 +12,30 @@
                         <div>
                             <label class="block text-sm font-medium text-gray-700 dark:text-gray-400">Label</label>
                             <input type="text" placeholder="e.g. Home, Work" v-model="formData.label"
-                                class="mt-1 w-full px-3 py-2 border border-gray-400 rounded-md focus:outline-none focus:ring-pink-500 focus:border-pink-500" />
+                                class="mt-1 w-full px-3 py-2 border border-gray-400 rounded-md focus:outline-none focus:ring-primary focus:border-primary" />
                         </div>
                         <div>
                             <label class="block text-sm font-medium text-gray-700 dark:text-gray-400">Name *</label>
                             <input type="text" placeholder="e.g. John Doe" v-model="formData.name" required
-                                class="mt-1 w-full px-3 py-2 border border-gray-400 rounded-md focus:outline-none focus:ring-pink-500 focus:border-pink-500" />
+                                class="mt-1 w-full px-3 py-2 border border-gray-400 rounded-md focus:outline-none focus:ring-primary focus:border-primary" />
                         </div>
                         <div>
                             <label class="block text-sm font-medium text-gray-700 dark:text-gray-400">Phone *</label>
                             <input type="text" placeholder="e.g. 1234567890" v-model="formData.phone" required
                                 inputmode="numeric" pattern="[0-9]*" maxlength="10"
                                 @input="formData.phone = ($event.target as HTMLInputElement).value.replace(/\D/g, '').slice(0, 10)"      
-                                class="mt-1 w-full px-3 py-2 border border-gray-400 rounded-md focus:outline-none focus:ring-pink-500 focus:border-pink-500" />
+                                class="mt-1 w-full px-3 py-2 border border-gray-400 rounded-md focus:outline-none focus:ring-primary focus:border-primary" />
                         </div>
                         <div>
                             <label class="block text-sm font-medium text-gray-700 dark:text-gray-400">Address *</label>
                             <textarea rows="3" placeholder="Street, Area, City" v-model="formData.address" required
-                                class="mt-1 w-full px-3 py-2 border border-gray-400 rounded-md focus:outline-none focus:ring-pink-500 focus:border-pink-500"></textarea>
+                                class="mt-1 w-full px-3 py-2 border border-gray-400 rounded-md focus:outline-none focus:ring-primary focus:border-primary"></textarea>
                         </div>
 
                         <div>
                             <label class="block text-sm font-medium text-gray-700 dark:text-gray-400">Landmark (Optional)</label>
                             <input type="text" placeholder="e.g. Home, Work" v-model="formData.landmark"
-                                class="mt-1 w-full px-3 py-2 border border-gray-400 rounded-md focus:outline-none focus:ring-pink-500 focus:border-pink-500" />
+                                class="mt-1 w-full px-3 py-2 border border-gray-400 rounded-md focus:outline-none focus:ring-primary focus:border-primary" />
                         </div>
 
                         <div class="grid grid-cols-2 gap-2">
@@ -44,18 +44,18 @@
                                 <input type="text" placeholder="e.g. 796001" v-model="formData.postal_code"
                                      inputmode="numeric" pattern="[0-9]*" maxlength="6"
                                     @input="formData.postal_code = ($event.target as HTMLInputElement).value.replace(/\D/g, '').slice(0, 6)"
-                                    class="mt-1 w-full px-3 py-2 border border-gray-400 rounded-md focus:outline-none focus:ring-pink-500 focus:border-pink-500" />
+                                    class="mt-1 w-full px-3 py-2 border border-gray-400 rounded-md focus:outline-none focus:ring-primary focus:border-primary" />
                             </div>
                             <div>
                                 <label class="block text-sm font-medium text-gray-700 dark:text-gray-400">Town / City</label>
                                 <input type="text" placeholder="e.g. Aizawl" v-model="formData.city"
-                                    class="mt-1 w-full px-3 py-2 border border-gray-400 rounded-md focus:outline-none focus:ring-pink-500 focus:border-pink-500" />
+                                    class="mt-1 w-full px-3 py-2 border border-gray-400 rounded-md focus:outline-none focus:ring-primary focus:border-primary" />
                             </div>
                         </div>
                         <div>
                             <label class="block text-sm font-medium text-gray-600 dark:text-gray-400">District</label>
                             <select v-model="formData.districtId"
-                                class="mt-1 px-4 py-2 block w-full border border-gray-400 rounded-md shadow-sm focus:ring-pink-500 focus:border-pink-500">
+                                class="mt-1 px-4 py-2 block w-full border border-gray-400 rounded-md shadow-sm focus:ring-primary focus:border-primary">
                                 <option :value="null">Select Option</option>
                                 <option value="option1">Option 1</option>
                                 <option value="option2">Option 2</option>
@@ -79,7 +79,7 @@
                                 @click="closeDialog">
                                 Cancel
                             </button>
-                            <button type="submit" class="px-4 py-2 text-sm text-white bg-pink-600 hover:bg-pink-700 rounded-md cursor-pointer">
+                            <button type="submit" class="px-4 py-2 text-sm text-white bg-primary hover:bg-primary-hover rounded-md cursor-pointer">
                                 <Loading v-if="loading" class="inline-block mr-2" />
                                 <span v-else>{{ isEditing ? 'Update' : 'Submit' }}</span>
                             </button>

@@ -27,6 +27,7 @@ class Store extends Model
         'launch_at',
         'category_id',
         'theme_id',
+        'location_id',
         'pin'
     ];
 

@@ -31,7 +31,7 @@
     <!-- Add Address Button -->
     <div class="text-center">
       <button @click="openDialog"
-        class="bg-pink-600 hover:bg-pink-700 text-white px-6 py-2 rounded-md shadow-md transition">
+        class="bg-primary hover:bg-primary-hover text-white px-6 py-2 rounded-md shadow-md transition">
         + Add New Address
       </button>
     </div>

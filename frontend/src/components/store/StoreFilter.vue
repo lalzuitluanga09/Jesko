@@ -1,5 +1,5 @@
 <template>
-    <aside :class="`sm:w-52 lg:w-72 bg-white dark:bg-gray-700 p-6 rounded-xl border border-${storeData.data?.theme}-300 space-y-8 mr-1`">
+    <aside :class="`sm:w-52 lg:w-72 dark:bg-bg-soft-dark p-6 rounded-xl border border-${storeData.data?.theme}-300 space-y-8 mr-1`">
         <div>
             <label class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2" for="search">Search</label>
             <div class="flex">

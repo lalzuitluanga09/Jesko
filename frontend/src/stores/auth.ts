@@ -28,7 +28,7 @@ export const useAuthStore = defineStore('auth', () => {
   const formData = ref<{
     name: string,
     email: string,
-    phone: string,
+    phone: number | null,
     password: string,
     password_confirmation: string,
     date_of_birth?: Date,
@@ -38,7 +38,7 @@ export const useAuthStore = defineStore('auth', () => {
   }>({
     name: '',
     email: '',
-    phone: '',
+    phone: null,
     password: '',
     password_confirmation: '',
     date_of_birth: undefined,

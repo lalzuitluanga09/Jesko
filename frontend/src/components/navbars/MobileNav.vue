@@ -1,8 +1,8 @@
 <template>
-    <nav class="fixed bottom-0 left-0 w-full bg-white/40 dark:bg-gray-700/80 backdrop-blur-xs flex justify-around items-center py-2 z-50 border-t">
+    <nav class="fixed bottom-0 left-0 w-full bg-bg-soft dark:bg-bg-soft-dark backdrop-blur-xs flex justify-around items-center py-2 z-50 shadow-md">
       <RouterLink @click="switchTab('home')" class="py-2 px-4 flex-1 text-center" :to="{ name: 'home'}"><i class="mdi mdi-home-outline text-2xl"/></RouterLink>
-      <RouterLink @click="switchTab('explore')" class="py-2 px-4 flex-1 text-center" :to="{ name: 'explore' }"><i class="mdi mdi-compass-outline text-2xl"/></RouterLink>
-      <RouterLink @click="switchTab('marketplace')" class="py-2 px-4 flex-1 text-center" :to="{ name: 'marketplace' }"><i class="mdi mdi-storefront-outline text-2xl"/></RouterLink>
+      <RouterLink @click="switchTab('explore')" class="py-2 px-4 flex-1 text-center" :to="{ name: 'explore' }"><i class="mdi mdi-magnify text-2xl"/></RouterLink>
+      <!-- <RouterLink @click="switchTab('marketplace')" class="py-2 px-4 flex-1 text-center" :to="{ name: 'marketplace' }"><i class="mdi mdi-storefront-outline text-2xl"/></RouterLink> -->
       <RouterLink @click="switchTab('cart')" class="py-2 px-4 flex-1 text-center" :to="{ name: 'cart' }"><i class="mdi mdi-shopping-outline text-2xl"/></RouterLink>
       <RouterLink @click="switchTab('account')" class="py-2 px-4 flex-1 text-center" :to="{ name: 'account' }"><i class="mdi mdi-account-circle-outline text-2xl"/></RouterLink>
     </nav>
@@ -19,7 +19,6 @@ const currentTab = ref('')
 const { saveRoute, getRoute } = useTabRoutes()
 
 function switchTab(tabName: string) {
-  // Save route if leaving marketplace or account
   if (currentTab.value === 'marketplace' || currentTab.value === 'account') {
     saveRoute(currentTab.value)
   }
@@ -38,8 +37,8 @@ function switchTab(tabName: string) {
 
 <style scoped>
   nav a.router-link-exact-active {
-    color: palevioletred;
-    border-bottom: 1px solid palevioletred;
+    color: #FF4D67;
+    border-bottom: 1px solid #FF4D67;
   }
 
 </style>
