@@ -21,7 +21,7 @@
                   type="text"
                   v-model="couponForm.code"
                   required
-                  class="w-full px-3 py-2 border rounded focus:outline-none focus:ring-2 focus:ring-blue-500 dark:bg-gray-800 dark:border-gray-600 dark:text-gray-100"
+                  class="w-full px-3 py-2 border border-gray-300 rounded focus:outline-none focus:ring-2 focus:ring-blue-500 dark:bg-gray-800 dark:border-gray-600 dark:text-gray-100"
                   placeholder="e.g., SUMMER15"
                 />
               </div>
@@ -46,7 +46,7 @@
                 <select
                   v-model="couponForm.discountType"
                   required
-                  class="w-full px-3 py-2 border rounded focus:outline-none focus:ring-2 focus:ring-blue-500 dark:bg-gray-800 dark:border-gray-600 dark:text-gray-100"
+                  class="w-full px-3 py-2 border border-gray-300 rounded focus:outline-none focus:ring-2 focus:ring-blue-500 dark:bg-gray-800 dark:border-gray-600 dark:text-gray-100"
                 >
                   <option value="percentage">Percentage</option>
                   <option value="fixed">Fixed</option>
@@ -76,7 +76,7 @@
                   v-model.number="couponForm.minOrderValue"
                   required
                   min="1"
-                  class="w-full px-3 py-2 border rounded focus:outline-none focus:ring-2 focus:ring-blue-500 dark:bg-gray-800 dark:border-gray-600 dark:text-gray-100"
+                  class="w-full px-3 py-2 border border-gray-300 dark:border-gray-600 rounded focus:outline-none focus:ring-2 focus:ring-blue-500 dark:bg-gray-800 dark:text-gray-100"
                   placeholder="e.g., 15 or 100"
                 />
               </div>
@@ -89,7 +89,7 @@
                   v-model.number="couponForm.maxDiscountValue"
                   required
                   min="1"
-                  class="w-full px-3 py-2 border rounded focus:outline-none focus:ring-2 focus:ring-blue-500 dark:bg-gray-800 dark:border-gray-600 dark:text-gray-100"
+                  class="w-full px-3 py-2 border border-gray-300 dark:border-gray-600 rounded focus:outline-none focus:ring-2 focus:ring-blue-500 dark:bg-gray-800 dark:text-gray-100"
                   placeholder="e.g., 15 or 100"
                 />
               </div>
@@ -101,7 +101,7 @@
                   type="number"
                   v-model.number="couponForm.usageLimit"
                   min="1"
-                  class="w-full px-3 py-2 border rounded focus:outline-none focus:ring-2 focus:ring-blue-500 dark:bg-gray-800 dark:border-gray-600 dark:text-gray-100"
+                  class="w-full px-3 py-2 border border-gray-300 dark:border-gray-600 rounded focus:outline-none focus:ring-2 focus:ring-blue-500 dark:bg-gray-800 dark:text-gray-100"
                   placeholder="Total uses (optional)"
                 />
               </div>
@@ -113,7 +113,7 @@
                   type="number"
                   v-model.number="couponForm.perUserLimit"
                   min="1"
-                  class="w-full px-3 py-2 border rounded focus:outline-none focus:ring-2 focus:ring-blue-500 dark:bg-gray-800 dark:border-gray-600 dark:text-gray-100"
+                  class="w-full px-3 py-2 border border-gray-300 dark:border-gray-600 rounded focus:outline-none focus:ring-2 focus:ring-blue-500 dark:bg-gray-800 dark:text-gray-100"
                   placeholder="Total uses (optional)"
                 />
               </div>
@@ -158,7 +158,7 @@
                   type="text"
                   :value="`Used ${couponForm.usedCount || 0} of ${couponForm.usageLimit || '∞'}`"
                   disabled
-                  class="w-full px-3 py-2 border rounded bg-gray-100 dark:bg-gray-800 dark:border-gray-600 dark:text-gray-400"
+                  class="w-full px-3 py-2 border rounded bg-gray-300 dark:bg-gray-800 dark:border-gray-600 dark:text-gray-400"
                 />
               </div>
             </div>

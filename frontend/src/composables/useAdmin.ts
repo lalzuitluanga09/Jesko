@@ -21,6 +21,7 @@ export function useAdmin() {
             'store_id': storeId 
           })
           currentStore.value = res.data.store
+          storeSlug.value = res.data.store.slug
           isPinVerify.value = true
           notifySuccess('Access granted')
       } catch (error) {
@@ -43,6 +44,7 @@ export function useAdmin() {
       try {
         const res = await adminApi.get(`/${storeSlug.value}/current-store`);
           currentStore.value = res.data
+          storeSlug.value = res.data.slug
           isPinVerify.value = true
       } catch (error) {
         notifyError('Error fetching data')

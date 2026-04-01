@@ -1,7 +1,7 @@
 <template>
   <div ref="dropdownRef" class="relative inline-block w-42 text-sm">
     <button
-      class="w-full dark:bg-gray-700 border border-gray-300 dark:border-gray-500 rounded-md px-2 py-1 text-left cursor-pointer focus:outline-none focus:ring-1 focus:ring-pink-500"
+      class="w-full dark:bg-gray-700 border border-gray-300 dark:border-gray-500 rounded-md px-2 py-1 text-left cursor-pointer focus:outline-none focus:ring-1 focus:ring-primary"
       @click="isOpen = !isOpen"
     >
     <span class="mdi mdi-sort-variant"></span>
@@ -31,7 +31,7 @@
 <script setup lang="ts">
 import { ref, onMounted, onUnmounted } from 'vue'
 
-const props = defineProps<{
+defineProps<{
   value: string | null,
   options: any[]
 }>()

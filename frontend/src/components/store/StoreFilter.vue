@@ -22,7 +22,7 @@
             <select
                 id="sort"
                 v-model="filter.sort"
-                :class="`w-full px-3 py-2 border border-${storeData.data?.theme}-300 dark:bg-gray-700 rounded`"
+                :class="`w-full px-3 py-2 border border-${storeData.data?.theme}-300 dark:bg-gray-800 rounded`"
             >
                 <option value="relevance">Relevance</option>
                 <option value="price_low_high">Price: Low to High</option>
@@ -44,7 +44,7 @@
                 <li
                 v-for="category in storeData.categories"
                 :key="category.id"
-                :class="`hover:bg-${storeData.data?.theme}-50 dark:hover:bg-${storeData.data?.theme}-500 px-2 py-1 rounded`"
+                :class="`hover:bg-${storeData.data?.theme}-100 dark:hover:bg-${storeData.data?.theme}-600 px-2 py-1 rounded`"
                 >
                 <input
                     type="checkbox"
@@ -71,8 +71,8 @@
                 @click="selectTag(tag.id)"
                 class="px-2 py-1 rounded text-sm cursor-pointer transition"
                 :class="filter.tags.includes(tag.id)
-                    ? `bg-${storeData.data?.theme}-200 dark:bg-${storeData.data?.theme}-500`
-                    : `bg-${storeData.data?.theme}-50 dark:bg-gray-600 text-gray-700 dark:text-gray-300 hover:bg-${storeData.data?.theme}-200 dark:hover:bg-${storeData.data?.theme}-500 select-none`"
+                    ? `bg-${storeData.data?.theme}-200 dark:bg-${storeData.data?.theme}-600`
+                    : `bg-${storeData.data?.theme}-50 border border-${storeData.data?.theme}-300 dark:hover:text-white dark:bg-gray-800 text-gray-700 dark:text-gray-400 hover:bg-${storeData.data?.theme}-200 dark:hover:bg-${storeData.data?.theme}-600 select-none`"
                 >
                 # {{ tag.name }}
                 </span>
@@ -81,14 +81,14 @@
         </div>
         <div :class="`relative text-${storeData.data?.theme}-400 dark:text-gray-300`">
             <button @click="handleFilter"
-                :class="`inline-flex items-center gap-1 px-2 py-1 text-sm hover:bg-${storeData.data?.theme}-100 dark:hover:bg-${storeData.data?.theme}-500 dark:hover:text-white font-medium border border-${storeData.data?.theme}-400 rounded-xl shadow-md active:scale-95 transition-transform duration-150 ease-in-out`">
+                :class="`inline-flex items-center gap-1 pl-1 pr-2 py-1 text-sm hover:bg-${storeData.data?.theme}-100 dark:hover:bg-${storeData.data?.theme}-500 dark:hover:text-white font-medium border border-${storeData.data?.theme}-400 rounded-xl shadow-md active:scale-95 transition-transform duration-150 ease-in-out`">
                 <span class="mdi mdi-check text-lg"></span>
                 Apply
             </button>
 
             <button @click="reset"
                 v-if="filter.searchTerm || filter.sort != 'relevance' || filter.categories.length > 0 || filter.tags.length > 0 || filter.price_range[0] > 0 || filter.price_range[1] < maxPrice"
-                :class="`absolute right-0 inline-flex items-center gap-1 px-2 py-1 text-sm font-medium hover:bg-${storeData.data?.theme}-100 dark:hover:bg-${storeData.data?.theme}-500 text-${storeData.data?.theme}-400 dark:hover:text-white border border-${storeData.data?.theme}-400 rounded-xl shadow active:scale-95 transition-transform duration-150 ease-in-out`">
+                :class="`absolute right-0 inline-flex items-center gap-1 pl-1 pr-2 py-1 text-sm font-medium hover:bg-${storeData.data?.theme}-100 dark:hover:bg-${storeData.data?.theme}-500 text-${storeData.data?.theme}-400 dark:hover:text-white border border-${storeData.data?.theme}-400 rounded-xl shadow active:scale-95 transition-transform duration-150 ease-in-out`">
                 <span class="mdi mdi-close-circle text-lg"></span>
                 Reset
             </button>

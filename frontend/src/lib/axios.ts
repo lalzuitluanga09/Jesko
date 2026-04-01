@@ -6,6 +6,12 @@ export const api = axios.create({
   withXSRFToken: true,
 })
 
+export const sessionApi = axios.create({
+  baseURL: 'http://localhost:8000',
+  withCredentials: true,
+  withXSRFToken: true
+})
+
 export const adminApi = axios.create({
   baseURL: 'http://localhost:8000/api/admin',
   withCredentials: true,

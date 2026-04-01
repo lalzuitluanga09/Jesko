@@ -19,6 +19,7 @@ interface UserStore {
         id: number,
         name: string,
         slug: string,
+        theme: string,
         logo: string
     }
 }

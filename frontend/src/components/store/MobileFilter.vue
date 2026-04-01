@@ -1,8 +1,8 @@
 <template>
-    <div class="flex items-center">
-        <SearchBar v-model="filter.searchTerm" @clear="clearSearch" @search="applyFilter"/>
-        <div class="border border-gray-400 px-3 py-2 rounded-lg  cursor-pointer" @click="openFilterDialog">
-            <span class="mdi mdi-filter-outline text-xl text-gray-500"></span>
+    <div class="flex items-center ">
+        <SearchBar v-model="filter.searchTerm" :theme="storeData.data?.theme" @clear="clearSearch" @search="applyFilter"/>
+        <div :class="`border border-${storeData.data?.theme}-400 px-3 py-1.5 rounded-lg  cursor-pointer`" @click="openFilterDialog">
+            <span :class="`mdi mdi-filter-outline text-xl text-${storeData.data?.theme}-400`"></span>
         </div>
     </div>
     <div>
@@ -12,7 +12,7 @@
         <Transition name="slide">
             <div v-if="filterOpen" class="fixed inset-x-0 bottom-0 flex items-end justify-center z-30 min-h-screen"
                 @click.self="closeFilterDialog">
-                <div class="bg-white/80 dark:bg-gray-700/80 backdrop-blur-sm rounded-t-2xl shadow-lg p-6 w-full mb-16">
+                <div class="bg-white/80 dark:bg-gray-700/80 backdrop-blur-sm rounded-t-2xl shadow-lg p-4 w-full mb-14">
                     <div class="flex justify-between">
                         <h2 class="text-xl font-semibold mb-4">Filters</h2>
                         <SelectBtn
@@ -20,21 +20,21 @@
                             :options="sortOptions" @select="(event) => mobileFilter.sort = event" />
                     </div>
                     <div class="mb-4">
-                        <label for="price-range" class="block text-gray-700 dark:text-gray-400 mb-1">Price Range</label>
-                        <VueSlider v-model="mobileFilter.price_range" tooltip="hover" :min="0" :max="maxPrice"
+                        <label for="price-range" :class="`block text-${storeData.data?.theme}-600 dark:text-${storeData.data?.theme}-400 mb-1`">Price Range</label>
+                        <VueSlider v-model="mobileFilter.price_range" tooltip="hover" :min="0" :max="maxPrice" :process-style="{ backgroundColor: colorMatch[storeData.data?.theme || 'neutral'] }" :tooltip-style="{ backgroundColor: colorMatch[storeData.data?.theme || 'neutral'] }"
                             :enableCross="false"/>
-                        <div class="flex justify-between text-xs text-gray-500 mt-1">
+                        <div class="flex justify-between text-xs text-gray-600 dark:text-gray-300 mt-1">
                             <span>₹ {{ mobileFilter.price_range[0] }}</span>
                             <span>₹{{ mobileFilter.price_range[1] }}</span>
                         </div>
                     </div>
                     <div class="mb-4">
-                        <label class="block text-gray-700 dark:text-gray-400 mb-1">Category</label>
+                    <label :class="`block text-${storeData.data?.theme}-600 dark:text-${storeData.data?.theme}-400 mb-1`">Category</label>
                         <div class="flex flex-wrap gap-2">
-                            <div class="border px-3 py-1.5 rounded-2xl dark:text-gray-300 text-sm cursor-pointer select-none"
+                            <div class="border border-gray-400 px-3 py-1.5 rounded-xl text-gray-600 dark:text-gray-300 text-sm cursor-pointer select-none"
                                 :class="[
                                     mobileFilter.categories.includes(category.id)
-                                        ? 'bg-pink-200 dark:bg-gray-800 '
+                                        ? `bg-${storeData.data?.theme}-200 dark:bg-${storeData.data?.theme}-700 dark:text-gray-700`
                                         : ''
                                 ]" v-for="category in storeData.categories" :key="category.id"
                                 @click="selectCategory(category.id)">
@@ -43,12 +43,12 @@
                         </div>
                     </div>
                     <div class="mb-4">
-                        <label class="block text-gray-700 dark:text-gray-400 mb-1">Tag</label>
+                        <label :class="`block text-${storeData.data?.theme}-600 dark:text-${storeData.data?.theme}-400 mb-1`">Tag</label>
                         <div class="flex flex-wrap gap-2">
-                            <div class="border px-2 py-1 rounded-2xl dark:text-gray-300 text-sm cursor-pointer select-none"
+                            <div class="border border-gray-400 px-2 py-1 rounded-xl text-gray-600 dark:text-gray-300 text-sm cursor-pointer select-none"
                                 :class="[
                                     mobileFilter.tags.includes(tag.id)
-                                        ? 'bg-pink-200 dark:bg-gray-800 '
+                                        ? `bg-${storeData.data?.theme}-200 dark:bg-${storeData.data?.theme}-700 dark:text-gray-700`
                                         : ''
                                 ]" v-for="tag in storeData.tags" :key="tag.id" @click="selectTag(tag.id)">
                                 # {{ tag.name }}
@@ -58,17 +58,17 @@
                     <div class="flex items-center justify-between flex-wrap gap-2">
                         <button
                             v-if="mobileFilter.sort !== 'relevance' || mobileFilter.categories.length > 0 || mobileFilter.tags.length > 0 || mobileFilter.price_range[0] != 0 || mobileFilter.price_range[1] != maxPrice"
-                            class="bg-gray-100 dark:bg-transparent text-pink-700 dark:text-pink-300 border border-pink-400 px-3 py-1 rounded-xl"
+                            :class="`text-${storeData.data?.theme}-600 dark:text-${storeData.data?.theme}-300 border border-${storeData.data?.theme}-400 px-3 py-1 rounded-lg`"
                             @click="reset">
                             Reset
                         </button>
                         <div class="flex space-x-2 ml-auto">
                             <button
-                                class="bg-gray-100 dark:bg-transparent text-gray-700 dark:text-gray-200 border border-gray-400 px-4 py-2 rounded-lg shadow"
+                                class="text-gray-700 dark:text-gray-200 border border-gray-400 px-4 py-2 rounded-lg shadow"
                                 @click="closeFilterDialog">
-                                Cancel
+                                Close
                             </button>
-                            <button class="bg-pink-600 text-white px-4 py-2 rounded-lg border border-gray-400 shadow"
+                            <button :class="`bg-${storeData.data?.theme || 'neutral'}-400 dark:bg-${storeData.data?.theme || 'neutral'}-700 text-white px-4 py-2 rounded-lg border border-gray-400 shadow`"
                                 @click="apply">
                                 Apply
                             </button>
@@ -86,6 +86,7 @@ import SelectBtn from '../buttons/SelectBtn.vue';
 import SearchBar from '../search/SearchBar.vue';
 import { useStore } from '@/composables/useStore';
 import VueSlider from 'vue-3-slider-component';
+import { useTheme } from '@/composables/useTheme';
 
 const {
     storeData,
@@ -100,6 +101,8 @@ const {
 } = useStore()
 
 const maxPrice = ref<number>(0);
+const { colorMatch } = useTheme()
+
 
 onMounted(() => {
     maxPrice.value = mobileFilter.value.price_range[1]

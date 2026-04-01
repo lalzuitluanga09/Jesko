@@ -20,6 +20,8 @@ class SaleController extends Controller
 
         $storeId = Store::where('slug', $storeSlug)->value('id');
 
+        $this->updateExpiredSales($storeSlug);
+
         $sales = Sale::where('store_id', $storeId)
             ->when($searchTerm, fn($q) => $q->where('name', 'like', "%{$searchTerm}%"))
             ->when($type, fn($q) => $q->where('type', $type))
@@ -46,6 +48,7 @@ class SaleController extends Controller
                 ]
             );
 
+
         $products = Product::where('store_id', $storeId)->orderBy('name')->get(['id', 'name']);
         $categories = Category::where('store_id', $storeId)->orderBy('name')->get(['id', 'name']);
 
@@ -54,6 +57,21 @@ class SaleController extends Controller
             'products' => $products,
             'categories' => $categories
         ]);
+    }
+
+    public function updateExpiredSales($storeSlug)
+    {
+        $storeId = Store::where('slug', $storeSlug)->value('id');
+
+        if (!$storeId) {
+            return;
+        }
+
+        Sale::where('store_id', $storeId)
+            ->where('status', 'active')
+            ->where('end_at', '<', now())
+            ->update(['status' => 'expired']);
+
     }
 
     public function store(Request $request, $storeSlug)

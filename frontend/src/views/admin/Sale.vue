@@ -45,7 +45,8 @@ import { useSale } from '@/composables/useSale';
 import ClearBtn from '@/components/buttons/ClearBtn.vue';
 import ViewSaleDialog from '@/components/dialogs/view/ViewSaleDialog.vue';
 import { useSetting } from '@/composables/useSetting';
-import { onMounted, ref } from 'vue';
+import { ref, watch } from 'vue';
+import { useAdmin } from '@/composables/useAdmin';
 
 const {
     filter,
@@ -57,6 +58,7 @@ const {
 } = useSale()
 
 const { isDark } = useSetting()
+const { storeSlug } = useAdmin()
 
 const typeDropdownRef = ref()
 const statusDropdownRef = ref()
@@ -67,11 +69,11 @@ const clear = () => {
     statusDropdownRef.value.reset()
 }
 
-onMounted(async() => {
-    await getSalesData()
-})
+watch(storeSlug, async (newSlug) => {
+    if(newSlug) {
+        await getSalesData()
+    }
+},
+    { immediate: true }
+)
 </script>
-
-<style scoped>
-
-</style>

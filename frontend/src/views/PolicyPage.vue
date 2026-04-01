@@ -1,6 +1,6 @@
 <template>
     <div class="max-w-4xl mx-auto px-6 py-12 text-gray-800 dark:text-gray-200">
-        <header class="mb-8">
+        <header class="mb-8 text-center">
             <h1 class="text-3xl font-bold mb-2">Policies</h1>
             <p class="text-gray-600 dark:text-gray-400">Overview of Terms of Service, Privacy Policy, Refund & Cancellation, and Shipping & Delivery.</p>
         </header>

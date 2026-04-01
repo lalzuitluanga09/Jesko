@@ -125,24 +125,56 @@ class Product extends Model
             ->withTimestamps();
     }
 
-    public function getActiveSale()
+    public function getActiveSale(int $quantity = 1)
     {
-        $sale = $this->activeSale()->first();
+        $now = now();
 
-        if ($sale) {
-            return $sale;
-        }
+        $productSales = $this->sales()
+            ->where('start_at', '<=', $now)
+            ->where('end_at', '>=', $now)
+            ->where('status', 'active')
+            ->get();
 
-        return $this->categories()
-            ->with(['activeSale' => function ($q) {
-                $q->where('sales.start_at', '<=', now())
-                ->where('sales.end_at', '>=', now())
-                ->where('sales.status', 'active');
+        $categorySales = $this->categories()
+            ->with(['sales' => function ($q) use ($now) {
+                $q->where('start_at', '<=', $now)
+                ->where('end_at', '>=', $now)
+                ->where('status', 'active');
             }])
             ->get()
-            ->pluck('activeSale')
-            ->flatten()
-            ->first();
+            ->pluck('sales')
+            ->flatten();
+
+        $allSales = $productSales->merge($categorySales);
+
+        if ($allSales->isEmpty()) {
+            return null;
+        }
+
+        $bogoSale = $allSales->firstWhere('discount_type', 'bogo');
+
+        if ($bogoSale) {
+            return $bogoSale;
+        }
+
+        $price = $this->price;
+
+        return $allSales->sortBy(function ($sale) use ($price, $quantity) {
+
+            $discount = 0;
+
+            if ($sale->discount_type === 'percentage') {
+                $discount = $price * ($sale->discount_value / 100) * $quantity;
+            }
+
+            elseif ($sale->discount_type === 'fixed') {
+                $discount = min($sale->discount_value, $price) * $quantity;
+            }
+
+            $originalTotal = $price * $quantity;
+
+            return $originalTotal - $discount;
+        })->first();
     }
 
     public function getDiscountedPrice()
@@ -150,18 +182,24 @@ class Product extends Model
         $sale = $this->getActiveSale();
 
         if (!$sale) {
-            return $this->price;
+            return round((float) $this->price, 2);
         }
 
         if ($sale->discount_type === 'percentage') {
-            return round($this->price - ($this->price * ($sale->discount_value / 100)), 2);
+            return round(
+                (float) $this->price * (1 - $sale->discount_value / 100),
+                2
+            );
         }
 
         if ($sale->discount_type === 'fixed') {
-            return max($this->price - $sale->discount_value, 0);
+            return max(
+                round((float) $this->price - $sale->discount_value, 2),
+                0
+            );
         }
 
-        return $this->price;
+        return round((float) $this->price, 2);
     }
 
 

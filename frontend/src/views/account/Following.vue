@@ -1,5 +1,5 @@
 <template>
-    <div class="flex flex-col gap-4 w-full px-2 py-6">
+    <div class="relative flex flex-col gap-4 w-full max-w-6xl min-h-[60vh] mx-auto px-2 py-6">
         <h1 class="text-lg md:text-2xl font-bold text-center">My Following</h1>
         <p class="text-sm text-center text-gray-600 dark:text-gray-400">Total Stores: {{ followedStores.length }}</p>
         <div v-if="loading">
@@ -7,6 +7,9 @@
         </div>
         <div v-else class="flex-1 grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 gap-2 md:gap-4 md:mx-10">
             <StoreCard v-for="item in followedStores" :key="item.id" :store="item" />
+            <div class="absolute inset-0 flex items-center justify-center text-center py-8 text-gray-500 dark:text-gray-400" v-if="followedStores.length === 0">
+                No followed stores found.
+            </div>
         </div>
     </div>
 </template>

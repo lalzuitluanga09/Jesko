@@ -2,9 +2,7 @@
 
 namespace App\Http\Controllers;
 
-use App\Models\Order;
 use App\Models\Store;
-use App\Models\StoreFollower;
 use App\Models\Wishlist;
 use Illuminate\Http\Request;
 
@@ -13,17 +11,39 @@ class UserController extends Controller
     public function getFollowedStores(Request $request)
     {
         $user = $request->user();
+
         $followedStores = $user->followedStores()
-            ->withCount(['followers', 'products'])->get();
+            ->with([
+                'storeTheme:id,name',
+                'activeSale:id,store_id,name',
+                'owner:users.id,name,phone',
+                'location:id,name'
+            ])
+            ->withCount(['followers', 'products'])
+            ->get();
 
         $followedStores->transform(function ($store) {
-            $store['theme'] = $store->storeTheme ? $store->storeTheme->name : null;
+            $store['theme'] = $store->storeTheme?->name;
+            $store['active_sale'] = $store->activeSale?->name;
+            $store['isNew'] = $store->launch_at?->gt(now()->subMonth()) ?? false;
+
+            $store['owner'] = $store->owner ? [
+                'name' => $store->owner->name,
+                'phone' => $store->owner->phone,
+            ] : null;
+
+            $store['location'] = $store->location ? [
+                'id' => $store->location->id,
+                'name' => $store->location->name,
+            ] : null;
 
             unset($store->storeTheme);
+            unset($store->activeSale);
             unset($store->theme_id);
+
             return $store;
         });
-        
+
         return response()->json($followedStores);
     }
 
@@ -53,8 +73,26 @@ class UserController extends Controller
         $user = $request->user();
 
         $userStores = $user->storeUsers()
-            ->with('store:id,name,slug,logo')
-            ->get(['id', 'store_id', 'role', 'status', 'joined_at']);
+            ->with([
+                'store:id,name,slug,logo,theme_id',
+                'store.storeTheme:id,name'
+            ])
+            ->get(['id', 'store_id', 'role', 'status', 'joined_at'])
+            ->map(function ($storeUser) {
+                return [
+                    'id' => $storeUser->id,
+                    'role' => $storeUser->role,
+                    'status' => $storeUser->status,
+                    'joined_at' => $storeUser->joined_at,
+                    'store' => [
+                        'id' => $storeUser->store->id,
+                        'name' => $storeUser->store->name,
+                        'slug' => $storeUser->store->slug,
+                        'logo' => $storeUser->store->logo,
+                        'theme' => optional($storeUser->store->storeTheme)->name,
+                    ],
+                ];
+            });
 
         $userProfile = $user->profile()->where('user_id', $user->id)->first(['id', 'user_id', 'date_of_birth', 'gender', 'profile_image']);
 

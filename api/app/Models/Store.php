@@ -103,6 +103,18 @@ class Store extends Model
         return $this->hasMany(Order::class);
     }
 
+    public function customers()
+    {
+        return $this->hasManyThrough(
+            User::class,
+            Order::class,
+            'store_id', // Foreign key on orders table
+            'id',       // Foreign key on users table
+            'id',       // Local key on stores table
+            'user_id'   // Local key on orders table
+        )->distinct();
+    }
+    
     public function coupons(): HasMany
     {
         return $this->hasMany(Coupon::class);
@@ -116,9 +128,14 @@ class Store extends Model
     public function activeSale(): HasOne
     {
         return $this->hasOne(Sale::class)
-                    ->where('status', 'active')
-                    ->where('start_at', '<=', Carbon::now())
-                    ->where('end_at', '>=', Carbon::now())
-                    ->orderBy('start_at', 'desc');
+            ->where('status', 'active')
+            ->where('start_at', '<=', now())
+            ->where('end_at', '>=', now())
+            ->latest('start_at');
+    }
+
+    public function location(): BelongsTo
+    {
+        return $this->belongsTo(District::class, 'location_id');
     }
 }

@@ -1,8 +1,8 @@
 <template>
     <div class="mt-10 rounded-2xl md:rounded-3xl relative bg-bg-soft dark:bg-bg-soft-dark shadow">
-        <h1 class="absolute -top-5 left-5 px-2 py-0.5 md:px-4 md:py-1 rounded-xl md:rounded-3xl bg-bg-soft shadow text-gray-700 text-base lg:text-xl font-extrabold">
+        <h2 class="absolute -top-5 left-5 px-3 py-0.5 rounded-xl md:rounded-3xl bg-bg-soft shadow text-gray-700 text-md lg:text-lg font-extrabold">
             Top Stores
-        </h1>
+        </h2>
         <div class="lg:mx-8 lg:mt-10 md:mx-4 mx-2 pt-10">
             <Splide :options="bannerOptions" aria-label="Top Stores">
               <div v-if="loadTopStore" class="flex w-full items-center justify-center min-h-42">

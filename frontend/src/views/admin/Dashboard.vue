@@ -1,21 +1,40 @@
 <template>
     <div class="bg-white dark:bg-gray-800 p-5 rounded-xl cursor-default">
-        <div class="flex flex-wrap gap-3 mb-4 text-sm text-gray-500 dark:text-gray-400">
-            <button
-                class="px-2 py-1 rounded-lg cursor-pointer bg-white/30 dark:bg-gray-700/30 shadow-md border border-gray-200 dark:border-gray-700 hover:bg-amber-50 dark:hover:bg-gray-700 transition">Today</button>
-            <button
-                class="px-2 py-1 rounded-lg cursor-pointer bg-white/30 dark:bg-gray-700/30 shadow-md border border-gray-200 dark:border-gray-700 hover:bg-amber-50 dark:hover:bg-gray-700 transition">This
-                Week</button>
-            <button
-                class="px-2 py-1 rounded-lg cursor-pointer bg-white/30 dark:bg-gray-700/30 shadow-md border border-gray-200 dark:border-gray-700 hover:bg-amber-50 dark:hover:bg-gray-700 transition">This
-                Month</button>
-            <button
-                class="px-2 py-1 rounded-lg cursor-pointer bg-white/30 dark:bg-gray-700/30 shadow-md border border-gray-200 dark:border-gray-700 hover:bg-amber-50 dark:hover:bg-gray-700 transition">This
-                Year</button>
-            <button
-                class="px-2 py-1 rounded-lg cursor-pointer bg-white/30 dark:bg-gray-700/30 shadow-md border border-gray-200 dark:border-gray-700 hover:bg-amber-50 dark:hover:bg-gray-700 transition">Custom
-                Range</button>
-        </div>
+    <div class="flex flex-wrap gap-3 mb-4 text-sm text-gray-500 dark:text-gray-400">
+
+        <button @click="setFilter('today')"
+            :class="[
+                baseClass,
+                dashboard.filter === 'today' ? activeClass : inactiveClass
+            ]">
+            Today
+        </button>
+
+        <button @click="setFilter('last_7_days')"
+            :class="[
+                baseClass,
+                dashboard.filter === 'last_7_days' ? activeClass : inactiveClass
+            ]">
+            Last 7 Days
+        </button>
+
+        <button @click="setFilter('this_month')"
+            :class="[
+                baseClass,
+                dashboard.filter === 'this_month' ? activeClass : inactiveClass
+            ]">
+            This Month
+        </button>
+
+        <button @click="setFilter('this_year')"
+            :class="[
+                baseClass,
+                dashboard.filter === 'this_year' ? activeClass : inactiveClass
+            ]">
+            This Year
+        </button>
+
+    </div>
 
         <div class="grid grid-cols-2 md:grid-cols-4 gap-4 mb-4 text-sm md:text-base ">
             <!-- Total Sales Card -->
@@ -25,8 +44,9 @@
                     class="absolute -top-6 -right-6 opacity-20 text-blue-300 dark:text-blue-700 text-8xl pointer-events-none select-none">
                     <i class="mdi mdi-cash-multiple"></i>
                 </div>
-                <span
-                    class="text-3xl md:text-4xl font-extrabold text-blue-700 dark:text-blue-200 drop-shadow mb-2">0</span>
+                <span class="text-3xl md:text-4xl font-extrabold text-blue-700 dark:text-blue-200 drop-shadow mb-2">
+                    ₹{{ Number(dashboard.meta.total_sales).toLocaleString('en-IN', { maximumFractionDigits: 0 }) }}
+                </span>
                 <div class="flex items-center mt-1">
                     <i class="mdi mdi-cash-multiple mr-2 text-2xl md:text-3xl text-blue-600 dark:text-blue-300"></i>
                     <span class="text-base md:text-lg font-medium text-blue-900 dark:text-blue-100">Total Sales</span>
@@ -40,7 +60,8 @@
                     <i class="mdi mdi-timer-sand"></i>
                 </div>
                 <span
-                    class="text-3xl md:text-4xl font-extrabold text-yellow-700 dark:text-yellow-200 drop-shadow mb-2">0</span>
+                    class="text-3xl md:text-4xl font-extrabold text-yellow-700 dark:text-yellow-200 drop-shadow mb-2">{{
+                        dashboard.meta.pending_orders }}</span>
                 <div class="flex items-center mt-1">
                     <i class="mdi mdi-timer-sand mr-2 text-2xl md:text-3xl text-yellow-600 dark:text-yellow-300"></i>
                     <span class="text-base md:text-lg font-medium text-yellow-900 dark:text-yellow-100">Pending
@@ -54,8 +75,10 @@
                     class="absolute -top-6 -right-6 opacity-20 text-green-300 dark:text-green-700 text-8xl pointer-events-none select-none">
                     <i class="mdi mdi-warehouse"></i>
                 </div>
-                <span
-                    class="text-3xl md:text-4xl font-extrabold text-green-700 dark:text-green-200 drop-shadow mb-2">0</span>
+                <span class="text-3xl md:text-4xl font-extrabold text-green-700 dark:text-green-200 drop-shadow mb-2">
+                    ₹{{ Number(dashboard.meta.current_stock_value).toLocaleString('en-IN', { maximumFractionDigits: 0 })
+                    }}
+                </span>
                 <div class="flex items-center mt-1">
                     <i class="mdi mdi-warehouse mr-2 text-2xl md:text-3xl text-green-600 dark:text-green-300"></i>
                     <span class="text-base md:text-lg font-medium text-green-900 dark:text-green-100">Stock Value</span>
@@ -69,7 +92,8 @@
                     <i class="mdi mdi-package-variant-closed"></i>
                 </div>
                 <span
-                    class="text-3xl md:text-4xl font-extrabold text-purple-700 dark:text-purple-200 drop-shadow mb-2">0</span>
+                    class="text-3xl md:text-4xl font-extrabold text-purple-700 dark:text-purple-200 drop-shadow mb-2">{{
+                        dashboard.meta.total_products }}</span>
                 <div class="flex items-center mt-1">
                     <i
                         class="mdi mdi-package-variant-closed mr-2 text-2xl md:text-3xl text-purple-600 dark:text-purple-300"></i>
@@ -85,10 +109,7 @@
                     <h2 class="text-lg font-semibold mb-4 text-sky-700 dark:text-sky-200">
                         <i class="mdi mdi-finance text-lg mr-1"></i>Sales Chart
                     </h2>
-                    <DropdownBtn title="Select"
-                        :options="[{ label: 'Option 1', value: 'option1' }, { label: 'Option 2', value: 'option2' }]" />
                 </div>
-                <!-- <span class="text-gray-400 dark:text-gray-500">[Sales/Revenue Chart]</span> -->
                 <SalesChart />
 
             </div>
@@ -96,7 +117,6 @@
                 <h2 class="text-lg font-semibold mb-4 text-cyan-700 dark:text-cyan-200 text-center">
                     <i class="mdi mdi-sitemap text-lg mr-1"></i>Sales by Category
                 </h2>
-                <!-- <span class="text-gray-400 dark:text-gray-500">[Category Distribution Pie Chart]</span> -->
                 <PieChart />
             </div>
         </div>
@@ -117,9 +137,32 @@ import PieChart from '@/components/admin/dashboard/PieChart.vue';
 import RecentOrders from '@/components/admin/dashboard/RecentOrders.vue';
 import SalesChart from '@/components/admin/dashboard/SalesChart.vue';
 import TopProducts from '@/components/admin/dashboard/TopProducts.vue';
-import DropdownBtn from '@/components/buttons/DropdownBtn.vue';
+import { useAdmin } from '@/composables/useAdmin';
+import { useDashboard } from '@/stores/dashboard';
+import { watch } from 'vue';
+
+const dashboard = useDashboard()
+
+const { storeSlug } = useAdmin()
+
+watch(storeSlug, async (newSlug) => {
+    if (newSlug) {
+        await dashboard.fetchData()
+    }
+},
+    { immediate: true }
+)
+
+const baseClass = 'px-2 py-1 rounded-lg cursor-pointer shadow-md border transition';
+
+const activeClass = 'bg-blue-500 text-white border-blue-500 hover:bg-blue-700';
+
+const inactiveClass = 'bg-white/30 dark:bg-gray-700/30 border-gray-200 dark:border-gray-700 hover:bg-blue-50 dark:hover:bg-gray-700';
+
+const setFilter = (value: string) => {
+    dashboard.filter = value;
+    dashboard.fetchData(value);
+};
 
 
 </script>
-
-<style scoped></style>

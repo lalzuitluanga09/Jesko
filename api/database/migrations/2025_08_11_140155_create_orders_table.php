@@ -20,7 +20,7 @@ return new class extends Migration
             
             $table->enum('status', [
                 'pending',
-                'processing',
+                'confirmed',
                 'shipped',
                 'out_for_delivery',
                 'delivered',
@@ -40,6 +40,7 @@ return new class extends Migration
 
             $table->foreignId('coupon_id')->nullable()->constrained('coupons')->onDelete('set null');
             $table->decimal('coupon_discount', 10, 2)->default(0);
+            $table->json('coupon_snapshot')->nullable();
 
             $table->timestamps();
             $table->softDeletes();

@@ -18,8 +18,9 @@ import SimpleTable from '@/components/admin/SimpleTable.vue';
 import AddBtn from '@/components/buttons/AddBtn.vue';
 import AddTagDialog from '@/components/dialogs/AddTagDialog.vue';
 import TableSearch from '@/components/search/TableSearch.vue';
+import { useAdmin } from '@/composables/useAdmin';
 import { useTag } from '@/composables/useTag';
-import { onMounted } from 'vue';
+import { watch } from 'vue';
 
 const {
     searchInput,
@@ -33,9 +34,15 @@ const {
     getData
 } = useTag()
 
-onMounted(() => {
-    getData()
-})
+const { storeSlug } = useAdmin()
+
+watch(storeSlug, async (newSlug) => {
+    if(newSlug) {
+        await getData()
+    }
+},
+    { immediate: true }
+)
 
 </script>
 

@@ -3,47 +3,48 @@
         <table class="w-full border border-gray-300 text-sm text-left rtl:text-right text-gray-500 dark:text-gray-400">
             <thead class="text-xs border-y border-gray-300 text-gray-700 uppercase bg-gray-50 dark:bg-gray-700 dark:text-gray-400">
                 <tr>
-                    <th scope="col" class="p-4">
+                    <!-- <th scope="col" class="p-4">
                         <div class="flex items-center">
                             <input id="checkbox-all-search" type="checkbox"
                                 class="w-4 h-4 text-blue-600 bg-gray-100 border-gray-300 rounded-sm focus:ring-blue-500 dark:focus:ring-blue-600 dark:ring-offset-gray-800 dark:focus:ring-offset-gray-800 focus:ring-2 dark:bg-gray-700 dark:border-gray-600" />
                             <label for="checkbox-all-search" class="sr-only">checkbox</label>
                         </div>
-                    </th>
+                    </th> -->
                     <th scope="col" class="px-6 py-3">Order Number</th>
                     <th scope="col" class="px-6 py-3">Amount</th>
                     <th scope="col" class="px-6 py-3">Payment Mode</th>
                     <th scope="col" class="px-6 py-3">Gateway</th>
                     <th scope="col" class="px-6 py-3">Transaction ID</th>
                     <th scope="col" class="px-6 py-3">Paid at</th>
-                    <th scope="col" class="px-6 py-3 text-left">Status</th>
+                    <th scope="col" class="px-6 py-3">Status</th>
+                    <th scope="col" class="px-6 py-3 text-center">Actions</th>
                 </tr>
             </thead>
             <tbody>
                 <tr v-if="payments.length === 0">
-                    <td :colspan="8" class="text-center py-6 text-gray-500">
+                    <td :colspan="7" class="text-center py-6 text-gray-500">
                         No data found!
                     </td>
                 </tr>
                 <tr v-else-if="loadingData">
-                    <td :colspan="8" class="text-center py-6 text-gray-500">
+                    <td :colspan="7" class="text-center py-6 text-gray-500">
                         <Loading />
                     </td>
                 </tr>
                 <tr v-else v-for="row in payments" :key="row.id"
                     class="bg-white border-b dark:bg-gray-800 dark:border-gray-700 border-gray-200 hover:bg-blue-50 dark:hover:bg-gray-700">
-                    <td class="w-4 p-4">
+                    <!-- <td class="w-4 p-4">
                         <div class="flex items-center">
                             <input id="checkbox-table-search-1" type="checkbox"
                                 class="w-4 h-4 text-blue-600 bg-gray-100 border-gray-300 rounded-sm focus:ring-blue-500 dark:focus:ring-blue-600 dark:ring-offset-gray-800 dark:focus:ring-offset-gray-800 focus:ring-2 dark:bg-gray-700 dark:border-gray-600" />
                         </div>
-                    </td>
+                    </td> -->
                     <td class="px-6 py-4">{{ row.order_number }}</td>
                     <td class="px-6 py-4">₹ {{ row.amount }}</td>
                     <td class="px-6 py-4">{{ row.payment_mode }}</td>
-                    <td class="px-6 py-4">{{ row.gateway }}</td>
-                    <td class="px-6 py-4">{{ row.transaction_id }}</td>
-                    <td class="px-6 py-4">{{ formatToDatetime(row.paid_at) }}</td>
+                    <td class="px-6 py-4">{{ row.gateway ?? "-" }}</td>
+                    <td class="px-6 py-4">{{ row.transaction_id ?? "-" }}</td>
+                    <td class="px-6 py-4">{{ formatToDatetime(row.paid_at) ?? "-" }}</td>
                     <td class="px-6 py-4">
                         <span
                             v-if="row.status === 'pending'"
@@ -66,6 +67,16 @@
                             <span class="w-2 h-2 mr-2 rounded-full bg-red-400 inline-block"></span>
                             {{ row.status }}
                         </span>
+                    </td>
+                    <td class="text-center">
+                        <button title="Mark as paid" @click="markPaid(row.id)" v-if="row.status === 'pending'"
+                            class="cursor-pointer bg-blue-500 text-white px-2 py-0.5 rounded-full shadow hover:bg-blue-700">
+                            <span class="mdi mdi-check-all text-lg"></span>
+                        </button>
+                        <button title="Mark unpaid" @click="markUnpaid(row.id)" v-else
+                            class="cursor-pointer bg-amber-500 text-white px-2 py-0.5 rounded-full shadow hover:bg-amber-700">
+                            <span class="mdi mdi-close-box text-lg"></span>
+                        </button>
                     </td>
                 </tr>
             </tbody>
@@ -116,7 +127,9 @@ const {
     payments,
     loadingData,
     pagination,
-    getPayments
+    getPayments,
+    markPaid,
+    markUnpaid
 } = usePayment()
 
 const prev = () => {

@@ -110,7 +110,7 @@
                     <input type="radio" value="all" v-model="saleForm.applyTo" class="peer sr-only" />
                     <span class="px-4 py-2 rounded-lg border border-gray-300 dark:border-gray-600 bg-white dark:bg-gray-800 text-gray-500 dark:text-gray-300 font-medium transition-all duration-200
                         peer-checked:bg-blue-600 peer-checked:text-white peer-checked:border-blue-600
-                        hover:bg-gray-100 dark:hover:bg-gray-700">
+                         hover:border-blue-600 dark:hover:bg-gray-700">
                       All Products
                     </span>
                   </label>
@@ -118,7 +118,7 @@
                     <input type="radio" value="individual" v-model="saleForm.applyTo" class="peer sr-only" />
                     <span class="px-4 py-2 rounded-lg border border-gray-300 dark:border-gray-600 bg-white dark:bg-gray-800 text-gray-500 dark:text-gray-300 font-medium transition-all duration-200
                         peer-checked:bg-blue-600 peer-checked:text-white peer-checked:border-blue-600
-                        hover:bg-gray-100 dark:hover:bg-gray-700">
+                         hover:border-blue-600 dark:hover:bg-gray-700">
                       Individual Products
                     </span>
                   </label>
@@ -126,7 +126,7 @@
                     <input type="radio" value="categories" v-model="saleForm.applyTo" class="peer sr-only" />
                     <span class="px-4 py-2 rounded-lg border border-gray-300 dark:border-gray-600 bg-white dark:bg-gray-800 text-gray-500 dark:text-gray-300 font-medium transition-all duration-200
                         peer-checked:bg-blue-600 peer-checked:text-white peer-checked:border-blue-600
-                        hover:bg-gray-100 dark:hover:bg-gray-700">
+                         hover:border-blue-600 dark:hover:bg-gray-700">
                       Categories
                     </span>
                   </label>
@@ -150,32 +150,41 @@
                 <VueSelect :options="allCategories" v-model="saleForm.selectedCategories" multiple
                   :reduce="(category: { id: number }) => category.id" label="name" />
               </div>
-              <div class="flex text-xs md:text-sm">
-                <button type="button" :class="[
-                  'px-4 py-2 rounded-l-md font-medium border border-gray-300 transition-all duration-200 cursor-pointer',
-                  saleForm.status === 'draft'
-                    ? 'bg-gray-500 text-white '
-                    : 'bg-white dark:bg-gray-700 text-gray-700 dark:text-gray-200',
-                ]" @click="saleForm.status = 'draft'">
-                  Draft
-                </button>
-                <button type="button" :class="[
-                  'px-4 py-2 rounded-r-md font-medium border border-gray-300 transition-all duration-200 cursor-pointer',
-                  saleForm.status === 'active'
-                    ? 'bg-blue-600 text-white '
-                    : 'bg-white dark:bg-gray-700 text-gray-700 dark:text-gray-200',
-                ]" @click="saleForm.status = 'active'">
-                  Active
-                </button>
+              <div class="flex items-center pt-1">
+                <input
+                  id="isDraft"
+                  type="checkbox"
+                  v-model="isDraft"
+                  class="sr-only"
+                />
+
+                <label
+                  for="isDraft"
+                  :class="[
+                    'flex items-center gap-2 px-2 py-1 rounded-md text-sm font-medium cursor-pointer transition-all duration-200',
+                    isDraft
+                      ? 'bg-blue-100 text-blue-600 ring-1 ring-blue-200 dark:bg-blue-800/60 dark:text-white'
+                      : 'ring-1 ring-gray-300 bg-gray-50 hover:bg-blue-50 hover:text-blue-600 text-gray-600 dark:text-gray-300 dark:bg-gray-800 dark:hover:text-white dark:hover:bg-blue-900'
+                  ]"
+                >
+                  <i
+                    :class="[
+                      'mdi text-lg',
+                      isDraft ? 'mdi-checkbox-marked-outline' : 'mdi-checkbox-blank-outline'
+                    ]"
+                  ></i>
+
+                  Save as Draft
+                </label>
               </div>
             </div>
             <div class="flex justify-end gap-3 pt-6">
               <button type="button" @click="closeAddDialog"
-                class="px-5 py-2 rounded border border-gray-300 dark:border-gray-600 bg-white dark:bg-gray-700 text-gray-700 dark:text-gray-200 hover:bg-gray-100 dark:hover:bg-gray-600 transition">
+                class="px-5 py-2 rounded border border-gray-300 dark:border-gray-600 bg-white dark:bg-gray-700 text-gray-700 dark:text-gray-200 hover:bg-gray-100 dark:hover:bg-gray-600 cursor-pointer transition">
                 Cancel
               </button>
               <button type="submit"
-                class="px-5 py-2 rounded bg-blue-600 text-white hover:bg-blue-700 transition font-semibold">
+                class="px-5 py-2 rounded bg-blue-600 text-white hover:bg-blue-700 transition font-semibold cursor-pointer">
                 {{ selectedSale ? 'Update' : 'Create' }}
               </button>
             </div>
@@ -192,6 +201,7 @@ import { useSale } from '@/composables/useSale';
 import VueDatePicker from '@vuepic/vue-datepicker';
 import { useSetting } from '@/composables/useSetting';
 import VueSelect from "vue-select"
+import { computed } from 'vue';
 
 const {
   allProducts,
@@ -205,6 +215,13 @@ const {
 } = useSale()
 
 const { isDark } = useSetting()
+
+const isDraft = computed({
+  get: () => saleForm.value.status === 'draft',
+  set: (val) => {
+    saleForm.value.status = val ? 'draft' : 'active'
+  }
+})
 
 </script>
 

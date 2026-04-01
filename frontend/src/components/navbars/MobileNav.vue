@@ -3,6 +3,7 @@
       <RouterLink @click="switchTab('home')" class="py-2 px-4 flex-1 text-center" :to="{ name: 'home'}"><i class="mdi mdi-home-outline text-2xl"/></RouterLink>
       <RouterLink @click="switchTab('explore')" class="py-2 px-4 flex-1 text-center" :to="{ name: 'explore' }"><i class="mdi mdi-magnify text-2xl"/></RouterLink>
       <!-- <RouterLink @click="switchTab('marketplace')" class="py-2 px-4 flex-1 text-center" :to="{ name: 'marketplace' }"><i class="mdi mdi-storefront-outline text-2xl"/></RouterLink> -->
+      <RouterLink @click="switchTab('followings')" class="py-2 px-4 flex-1 text-center" :to="{ name: 'followings' }"><i class="mdi mdi-storefront-check-outline text-2xl"/></RouterLink>
       <RouterLink @click="switchTab('cart')" class="py-2 px-4 flex-1 text-center" :to="{ name: 'cart' }"><i class="mdi mdi-shopping-outline text-2xl"/></RouterLink>
       <RouterLink @click="switchTab('account')" class="py-2 px-4 flex-1 text-center" :to="{ name: 'account' }"><i class="mdi mdi-account-circle-outline text-2xl"/></RouterLink>
     </nav>

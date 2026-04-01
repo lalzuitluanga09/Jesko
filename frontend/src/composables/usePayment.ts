@@ -9,10 +9,12 @@ import { debounce } from 'chart.js/helpers'
 const { storeSlug } = useAdmin()
 
 const {
+  notifySuccess,
   notifyError
 } = useNotify()
 
 const loadingData = ref<boolean>(false)
+const markingPaid = ref<boolean>(false)
 
 const payments = ref<Payment[]>([])
 
@@ -104,6 +106,37 @@ export function usePayment() {
   )
 
 
+  const markPaid = async(id: number) => {
+    if (markingPaid.value) return
+    markingPaid.value = true
+    try {
+      await adminApi.put(`/${storeSlug.value}/payments/${id}/mark-paid`)
+      notifySuccess('Payment marked as paid')
+      getPayments(pagination.value.current_page)
+    } catch (error) {
+      notifyError('Error marking payment as paid')
+      console.log(error)
+    } finally {
+      markingPaid.value = false
+    }
+  }
+
+  const markUnpaid = async(id: number) => {
+    if (markingPaid.value) return
+    markingPaid.value = true
+    try {
+      await adminApi.put(`/${storeSlug.value}/payments/${id}/mark-unpaid`)
+      notifySuccess('Payment marked as unpaid')
+      getPayments(pagination.value.current_page)
+    } catch (error) {
+      notifyError('Error marking payment as unpaid')
+      console.log(error)
+    } finally {
+      markingPaid.value = false
+    }
+  }
+
+
   return {
     loadingData,
     filter,
@@ -112,6 +145,8 @@ export function usePayment() {
     pagination,
     payments,
     getPayments,
-    clearFilter
+    clearFilter,
+    markPaid,
+    markUnpaid
   }
 }

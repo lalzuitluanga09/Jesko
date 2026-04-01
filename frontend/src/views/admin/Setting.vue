@@ -146,13 +146,16 @@
 </template>
 
 <script setup lang="ts">
+import { useAdmin } from '@/composables/useAdmin';
 import { useStoreSetting } from '@/composables/useStoreSetting';
 import { storageUrl } from '@/config';
 import { useMeta } from '@/stores/meta';
-import { onMounted, ref } from 'vue';
+import { ref, watch } from 'vue';
 
 const logoInputKey = ref(Date.now());
 const coverInputKey = ref(Date.now());
+
+const { storeSlug } = useAdmin()
 
 const {
     form,
@@ -199,9 +202,13 @@ const removeCover = () => {
   coverInputKey.value = Date.now(); 
 }
 
-onMounted(async() => {
-    await getMeta();
-    updateForm()
-})
+watch(storeSlug, async (newSlug) => {
+    if(newSlug) {
+        await getMeta()
+        updateForm()
+    }
+},
+    { immediate: true }
+)
 
 </script>

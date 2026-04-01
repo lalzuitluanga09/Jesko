@@ -1,5 +1,5 @@
 <template>
-    <div class="flex flex-col w-full max-w-6xl mx-auto">
+    <div class="flex flex-col w-full max-w-6xl mx-auto min-h-[60vh]">
         <div class="text-2xl font-bold flex justify-center py-2 md:py-4">My Cart</div>
         <div v-if="cart.itemCount == 0" class="flex flex-col items-center justify-center py-12 rounded-xl my-8">
             <span class="mdi mdi-cart-outline text-4xl py-4"></span>
@@ -34,7 +34,7 @@
                         <hr class="border-gray-300 dark:border-gray-600 my-2" />
                         <div class="flex justify-between items-center text-lg font-bold">
                             <span class="text-gray-800 dark:text-gray-100">Total</span>
-                            <span class="text-pink-600 dark:text-pink-500">₹{{ cart.total.toFixed(2) }}</span>
+                            <span class="text-primary">₹{{ cart.total.toFixed(2) }}</span>
                         </div>
                     </div>
                     <SimpleBtn title="Checkout" type="primary" class="w-full py-2 mt-2"

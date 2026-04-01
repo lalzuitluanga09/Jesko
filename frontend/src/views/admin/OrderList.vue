@@ -38,11 +38,12 @@ import TableSearch from '@/components/search/TableSearch.vue';
 import { useOrder } from '@/composables/useOrder';
 import VueDatePicker from '@vuepic/vue-datepicker';
 import '@vuepic/vue-datepicker/dist/main.css'
-import { onMounted } from 'vue';
+import { watch } from 'vue';
 import { useSetting } from '@/composables/useSetting';
 import DropdownBtn from '@/components/buttons/DropdownBtn.vue';
 import { ref } from 'vue';
 import UpdateOrderStatusDialog from '@/components/dialogs/UpdateOrderStatusDialog.vue';
+import { useAdmin } from '@/composables/useAdmin';
 
 const {
     filter,
@@ -53,9 +54,15 @@ const {
 
 const { isDark } = useSetting()
 
-onMounted(async() => {
-    await getData()
-})
+const { storeSlug } = useAdmin()
+
+watch(storeSlug, async (newSlug) => {
+    if(newSlug) {
+        await getData()
+    }
+},
+    { immediate: true }
+)
 
 const statusDropdownRef = ref()
 

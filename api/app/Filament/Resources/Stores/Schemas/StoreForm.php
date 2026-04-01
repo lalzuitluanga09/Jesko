@@ -4,6 +4,7 @@ namespace App\Filament\Resources\Stores\Schemas;
 
 use App\Models\District;
 use App\Models\StoreTheme;
+use App\Models\User;
 use Filament\Forms\Components\DateTimePicker;
 use Filament\Forms\Components\FileUpload;
 use Filament\Forms\Components\Select;
@@ -38,19 +39,33 @@ class StoreForm
                     ->required(),
                 Toggle::make('is_featured')
                     ->required(),
-                DateTimePicker::make('joined_at')->seconds(false),
+                DateTimePicker::make('launch_at')
+                    ->seconds(false),
                 Select::make('category_id')
                     ->relationship('category', 'name'),
                 
-                Select::make('Theme')
+                Select::make('theme_id')
+                    ->label('Theme')
                     ->options($themes),
-                Select::make('Location')
+                Select::make('location_id')
+                    ->label('Location')
                     ->options($locations),
-                TextInput::make('pin'),
+                TextInput::make('pin')
+                    ->password()
+                    ->revealable()
+                    ->afterStateHydrated(fn ($component) => $component->state(''))
+                    ->dehydrated(fn ($state) => filled($state)),
                 Select::make('owner_id')
                     ->label('Store Owner')
-                    ->relationship('owner', 'email')
-                    ->searchable(),
+                    ->searchable()
+                    ->getSearchResultsUsing(fn (string $search) =>
+                        User::where('email', 'like', "%{$search}%")
+                            ->limit(50)
+                            ->pluck('email', 'id')
+                    )
+                    ->getOptionLabelUsing(fn ($value): ?string =>
+                        User::find($value)?->email
+                    )
             ]);
     }
 }

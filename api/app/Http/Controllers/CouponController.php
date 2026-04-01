@@ -19,6 +19,8 @@ class CouponController extends Controller
 
         $storeId = Store::where('slug', $storeSlug)->value('id');
 
+        $this->updateStatus($storeId);
+
         $coupons = Coupon::where('store_id', $storeId)
             ->when($searchTerm, fn($q) => $q->where('code', 'like', "%{$searchTerm}%"))
             ->when($type, fn($q) => $q->where('discount_type', $type))
@@ -69,8 +71,9 @@ class CouponController extends Controller
             'used_count'        => $data['usedCount'] ?? 0,
             'start_at'          => $data['startAt'] ? Carbon::parse($data['startAt']) : null,
             'end_at'            => $data['endAt'] ? Carbon::parse($data['endAt']) : null,
-            'status'            => 'active',
         ]);
+
+        $coupon->status = $coupon->start_at && Carbon::parse($coupon->start_at)->isFuture() ? 'inactive' : 'active';
 
         return response()->json(['message' => 'Coupon created successfully', 'coupon_id' => $coupon->id], 201);
     }
@@ -107,7 +110,7 @@ class CouponController extends Controller
     }
 
 
-    public function applyCoupon(Request $request)
+    public function checkCoupons(Request $request)
     {
         $code = $request->code;
         $storeIds = $request->storeIds;
@@ -142,5 +145,25 @@ class CouponController extends Controller
             'valid' => true,
             'coupons' => $coupons
         ]);
+    }
+
+    public function updateStatus($storeId)
+    {
+        Coupon::where('store_id', $storeId)
+            ->get()
+            ->each(function ($coupon) {
+
+                $status = $coupon->start_at && Carbon::parse($coupon->start_at)->isFuture()
+                    ? 'inactive'
+                    : ($coupon->end_at && Carbon::parse($coupon->end_at)->isPast()
+                        ? 'expired'
+                        : 'active');
+
+                if ($coupon->status !== $status) {
+                    $coupon->update([
+                        'status' => $status
+                    ]);
+                }
+            });
     }
 }

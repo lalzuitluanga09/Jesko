@@ -7,15 +7,15 @@
                     class="bg-white dark:bg-gray-800/80 w-full max-w-md mx-2 rounded-2xl shadow-2xl overflow-y-auto border border-gray-200 dark:border-gray-700 text-center">
                     <div v-if="!isOrderConfirmed" class="p-4 space-y-4">
                         <section class="rounded-xl p-6 border border-gray-300 dark:border-gray-700">
-                            <h2 class="text-lg font-semibold text-pink-600 flex items-center justify-center gap-2">
-                                <span class="mdi mdi-check-circle text-pink-600 text-xl"></span>
+                            <h2 class="text-lg font-semibold text-primary flex items-center justify-center gap-2">
+                                <span class="mdi mdi-check-circle text-primary text-xl"></span>
                                 Confirm & Pay
                             </h2>
                             <p class="text-sm text-gray-600 dark:text-gray-300 mt-2">
                                 Please confirm your order and proceed with payment.
                             </p>
                             <div class="mt-4 space-y-2">
-                                <h2 class="text-2xl font-bold">₹{{ cart.total }}</h2>
+                                <h2 class="text-2xl font-bold">₹{{ cart.total - additionDiscount  }}</h2>
                                 <p class="text-sm text-gray-600 dark:text-gray-300">Payment Method:
                                     <span class="font-semibold">{{ paymentMode == 'cod' ? 'Cash on Delivery' : (paymentMode == 'upi' ? 'UPI' : 'Card') }}</span></p>
                                 <p class="text-sm text-gray-600 dark:text-gray-300">Total Items: <span
@@ -74,6 +74,7 @@
 import { useOrder } from '@/composables/useOrder';
 import { useAuthStore } from '@/stores/auth';
 import { useCartStore } from '@/stores/cart';
+import { useCoupon } from '@/composables/useCoupon';
 
 const auth = useAuthStore()
 
@@ -88,6 +89,10 @@ const {
     goToCart,
     goToMyOrders
 } = useOrder()
+
+const {
+    additionDiscount
+} = useCoupon()
 
 </script>
 

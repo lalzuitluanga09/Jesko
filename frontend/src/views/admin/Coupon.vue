@@ -44,9 +44,10 @@ import ClearBtn from '@/components/buttons/ClearBtn.vue';
 import CouponTable from '@/components/admin/CouponTable.vue';
 import AddCouponDialog from '@/components/dialogs/AddCouponDialog.vue';
 import ViewCouponDialog from '@/components/dialogs/view/ViewCouponDialog.vue';
-import { onMounted } from 'vue';
+import { watch } from 'vue';
 import { useSetting } from '@/composables/useSetting';
 import { ref } from 'vue';
+import { useAdmin } from '@/composables/useAdmin';
 
 const {
     filter,
@@ -58,6 +59,7 @@ const {
 } = useCoupon()
 
 const {isDark} = useSetting()
+const { storeSlug } = useAdmin()
 
 const typeDropdownRef = ref()
 const statusDropdownRef = ref()
@@ -68,8 +70,12 @@ const clear = () => {
     statusDropdownRef.value.reset()
 }
 
-onMounted(() => {
-    getCoupons()
-})
+watch(storeSlug, async (newSlug) => {
+    if(newSlug) {
+        await getCoupons()
+    }
+},
+    { immediate: true }
+)
 
 </script>

@@ -2,7 +2,7 @@
     <div v-if="loading">
         <DataLoader />
     </div>
-    <div v-else>
+    <div v-else class="min-h-[60vh]">
         <div class="max-w-5xl mx-auto p-2 md:p-6 grid grid-cols-1 md:grid-cols-2 gap-4 md:gap-8 rounded-lg">
             <div class="relative flex items-center rounded-xl overflow-clip">
                 <ImageSlider :images="productData.images"/>
@@ -13,20 +13,32 @@
             <div class="border-b border-gray-300 dark:border-gray-500 mb-4">
                 <nav class="flex space-x-2 md:space-x-4">
                     <button class="py-2 px-4 font-medium"
-                        :class="activeTab === 'description' ? 'border-b-2 border-pink-500 text-pink-600' : 'text-gray-500 dark:text-gray-300'"
+                        :class="[
+                            activeTab === 'description'
+                                ? `border-b-2 border-${productData.seller?.theme}-400 text-${productData.seller?.theme}-600`
+                                : 'text-gray-500 dark:text-gray-300'
+                            ]"
                         @click="activeTab = 'description'">
                         Description
                     </button>
-                    <button class="py-2 px-4 font-medium"
-                        :class="activeTab === 'details' ? 'border-b-2 border-pink-500 text-pink-600' : 'text-gray-500 dark:text-gray-300'"
+                    <!-- <button class="py-2 px-4 font-medium"
+                        :class="[
+                            activeTab === 'details'
+                                ? `border-b-2 border-${productData.seller?.theme}-400 text-${productData.seller?.theme}-600`
+                                : 'text-gray-500 dark:text-gray-300'
+                            ]"
                         @click="activeTab = 'details'">
                         Details
                     </button>
                     <button class="py-2 px-4 font-medium"
-                        :class="activeTab === 'reviews' ? 'border-b-2 border-pink-500 text-pink-600' : 'text-gray-500 dark:text-gray-300'"
+                        :class="[
+                            activeTab === 'reviews'
+                                ? `border-b-2 border-${productData.seller?.theme}-400 text-${productData.seller?.theme}-600`
+                                : 'text-gray-500 dark:text-gray-300'
+                            ]"
                         @click="activeTab = 'reviews'">
                         Reviews
-                    </button>
+                    </button> -->
                 </nav>
             </div>
             <div class="px-2">
@@ -44,7 +56,7 @@
                 </div>
             </div>
         </div>
-        <OtherProducts title="Similar Products" :products="productData.related_products" v-if="productData.related_products.length > 0"/>
+        <OtherProducts title="Similar Products" :theme="productData.seller?.theme" :products="productData.related_products" v-if="productData.related_products.length > 0"/>
     </div>
     <ViewImageSlider />
 </template>

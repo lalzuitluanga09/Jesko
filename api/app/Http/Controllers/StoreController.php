@@ -54,6 +54,10 @@ class StoreController extends Controller
                             'name' => $store->owner->name,
                             'phone' => $store->owner->phone,
                         ] : null,
+                    'location' => $store->location ? [
+                            'id' => $store->location->id,
+                            'name' => $store->location->name,
+                        ] : null,
                     'isNew' => $store->launch_at && $store->launch_at->gt(now()->subMonth()) ? true : false,
                 ];
             });
@@ -144,11 +148,8 @@ class StoreController extends Controller
                 'rules' => isset($active_sale['rules']) ? json_decode($active_sale['rules'], true) : null,
             ];
 
-            $product->discount_price = $product->isSale && $product->discount['value'] > 0
-                ? ($product->discount['type'] === 'percentage'
-                    ? round($product->price * (1 - $product->discount['value'] / 100), 2)
-                    : max(0, round($product->price - $product->discount['value'], 2)))
-                : null;
+            $product->discount_price = $product->getDiscountedPrice() < $product->price
+                    ? $product->getDiscountedPrice() : null;
 
             $badge = null;
             if ($product->isSale) {
@@ -177,18 +178,39 @@ class StoreController extends Controller
             'is_published',
             'is_featured',
             'launch_at',
+            'location_id',
             'theme_id'
         ])
-            ->withCount(['followers', 'products'])
-            ->orderBy('followers_count', 'desc')
-            ->limit(10)
-            ->get();
-
+        ->with([
+            'storeTheme:id,name',
+            'activeSale:id,store_id,name',
+            'owner:users.id,name,phone',
+            'location:id,name'
+        ])
+        ->withCount(['followers', 'products'])
+        ->orderBy('followers_count', 'desc')
+        ->limit(10)
+        ->get();
         $topStores->transform(function ($store) {
-            $store['theme'] = $store->storeTheme ? $store->storeTheme->name : null;
+            $store['theme'] = $store->storeTheme?->name;
+            $store['active_sale'] = $store->activeSale?->name;
+            $store['isNew'] = $store->launch_at?->gt(now()->subMonth()) ?? false;
+
+            $store['owner'] = $store->owner ? [
+                'name' => $store->owner->name,
+                'phone' => $store->owner->phone,
+            ] : null;
+
+            $store['location'] = $store->location ? [
+                'id' => $store->location->id,
+                'name' => $store->location->name,
+            ] : null;
 
             unset($store->storeTheme);
+            unset($store->activeSale);
+            unset($store->location_id);
             unset($store->theme_id);
+
             return $store;
         });
 
@@ -213,7 +235,15 @@ class StoreController extends Controller
             ->firstOrFail();
 
         $store['theme'] = $store->storeTheme?->name;
+        $activeSale = $store->activeSale ? $store->activeSale->toArray() : null;
+        $store['active_sale'] = $activeSale['name'] ?? null;
+        $store['sale'] = $activeSale ? [
+            'type' => $activeSale['discount_type'] ?? null,
+            'value' => isset($activeSale['discount_value']) ? round($activeSale['discount_value'], 2) : null,
+        ] : null;
+
         unset($store->storeTheme);
+        unset($store->activeSale);
 
         $owner = StoreUser::with('user:id,name,email,phone')
             ->where('store_id', $store->id)
@@ -265,13 +295,7 @@ class StoreController extends Controller
             $product->category_ids = $product->categories->pluck('id')->toArray();
             $product->tag_ids = $product->tags->pluck('id')->toArray();
 
-            $active_sale = $product->activeSale->first()
-                ? $product->activeSale->first()->toArray()
-                : (
-                    ($categorySale = $product->categories->flatMap->activeSale->first())
-                    ? $categorySale->toArray()
-                    : null
-                );
+            $active_sale = $product->getActiveSale();
 
             $product->isSale = $active_sale ? true : false;
             $product->discount = [
@@ -280,11 +304,8 @@ class StoreController extends Controller
                 'value' => isset($active_sale['discount_value']) ? round($active_sale['discount_value'], 2) : 0,
                 'rules' => isset($active_sale['rules']) ? json_decode($active_sale['rules'], true) : null,
             ];
-            $product->discount_price = $product->isSale && $product->discount['value'] > 0
-                ? ($product->discount['type'] === 'percentage'
-                    ? round($product->price * (1 - $product->discount['value'] / 100), 2)
-                    : max(0, round($product->price - $product->discount['value'], 2)))
-                : null;
+            $product->discount_price = $product->getDiscountedPrice() < $product->price
+                    ? $product->getDiscountedPrice() : null;
 
             $badge = null;
             if ($product->isSale) {
@@ -302,8 +323,13 @@ class StoreController extends Controller
                 'id',
                 'name',
                 'slug',
+                'theme_id'
             ])
             ->firstOrFail();
+
+        $seller->theme = $seller->storeTheme ? $seller->storeTheme->name : null;
+        unset($seller->storeTheme);
+        unset($seller->theme_id);
 
         $images = ProductImage::where('product_id', $product->id)
             ->orderByDesc('is_primary')
@@ -350,6 +376,7 @@ class StoreController extends Controller
 
         $related_products = Product::where('store_id', $product->store_id)
             ->where('status', 'active')
+            ->whereNull('parent_id')
             ->where('id', '!=', $product->id)
             ->inRandomOrder()
             ->take(4)

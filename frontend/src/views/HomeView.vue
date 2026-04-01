@@ -1,5 +1,5 @@
 <template>
-  <div>
+  <div class="lg:px-10">
     <Banner />
     <TopStores />
     <!-- <StoreProducts /> -->

@@ -18,8 +18,15 @@ interface Store {
         name: string
         phone: string
     }
-    location: string
+    location: {
+        id: number,
+        name: string,
+    }
     active_sale: string
+    sale? : {
+        type: string,
+        value: number
+    }
     isNew: boolean
 }
 

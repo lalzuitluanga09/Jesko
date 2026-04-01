@@ -6,6 +6,8 @@ use App\Models\Payment;
 use App\Models\Store;
 use Illuminate\Http\Request;
 
+use function Laravel\Prompts\info;
+
 class PaymentController extends Controller
 {
     public function index(Request $request, $storeSlug)
@@ -44,5 +46,25 @@ class PaymentController extends Controller
             );
 
         return response()->json($payments);
+    }
+
+    public function markPaid(Request $request, $stpreslug, $id)
+    {
+        $payment = Payment::findOrFail($id);
+        $payment->status = 'paid';
+        $payment->paid_at = now();
+        $payment->save();
+
+        return response()->json(['message' => 'Payment marked as paid']);
+    }
+
+    public function markUnpaid(Request $request, $storeSlug, $id)
+    {
+        $payment = Payment::findOrFail($id);
+        $payment->status = 'pending';
+        $payment->paid_at = null;
+        $payment->save();
+
+        return response()->json(['message' => 'Payment marked as unpaid']);
     }
 }

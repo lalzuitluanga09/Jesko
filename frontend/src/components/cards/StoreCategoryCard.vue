@@ -1,18 +1,18 @@
 <template>
   <div @click="handleclick"
-    class="w-24 h-24 md:w-34 md:h-34 mx-1 my-2
+    class="w-24 h-24 md:w-32 md:h-32 mx-1 my-2
           border border-gray-300 hover:bg-primary/20
           rounded-4xl shadow dark:hover:bg-bg-soft-dark
           transition-all duration-300 ease-in-out 
           flex flex-col items-center justify-center 
           cursor-pointer group relative overflow-hidden"
           :class="{
-            'bg-amber-50 dark:bg-gray-800': item.id === storeFilter.category_id,
+            'bg-primary/20 dark:bg-gray-800': item.id === storeFilter.category_id,
           }"
   >
 
     <div
-      class="z-10 w-12 h-12 md:w-16 md:h-16 
+      class="z-10 w-12 h-12 md:w-14 md:h-14 
             bg-gradient-to-br from-primary to-primary-hover
           text-white rounded-full 
             flex items-center justify-center 

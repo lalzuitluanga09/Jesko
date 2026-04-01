@@ -4,6 +4,7 @@ import {api} from '@/lib/axios'
 import { useNotify } from '@/composables/useNotify'
 import { type UserStore, type User,type UserMeta } from '@/types/user'
 import { useMeta } from './meta'
+import type { AxiosError } from 'axios'
 
 export const useAuthStore = defineStore('auth', () => {
   const user = ref<User | null>(null)
@@ -53,16 +54,18 @@ export const useAuthStore = defineStore('auth', () => {
     if (loading.value) return
     loading.value = true
 
-    await api.get('sanctum/csrf-cookie', {
-      baseURL: 'http://localhost:8000'
-    })
+    await api.get('sanctum/csrf-cookie', { baseURL: 'http://localhost:8000' })
 
     try {
-      const res = await api.post('/login', formData.value)
-      user.value = res.data.user
+      await api.post('/login', formData.value)
+
+      const userRes = await api.get('/user')
+
+      user.value = userRes.data.user
       isAuthenticated.value = true
-      userStores.value = res.data.userStores
+      userStores.value = userRes.data.userStores ?? []
       isStoreUser.value = userStores.value.length > 0
+
       meta.getMeta()
       closeDialog()
       getUserMeta()
@@ -82,35 +85,48 @@ export const useAuthStore = defineStore('auth', () => {
     })
     loading.value = true
     try {
-      const res = await api.post('/register', formData.value)
-      user.value = res.data.user
+      await api.post('/register', formData.value)
+      
+      const userRes = await api.get('/user')
+      user.value = userRes.data.user
       isAuthenticated.value = true
+
+      meta.getMeta()
       closeDialog()
+      getUserMeta()
       notifySuccess('Registered Successfully')
-    } catch (error) {
-      console.error(error)
+     } catch (err: unknown) {
+        const error = err as AxiosError<any>
+        if (error.response?.status === 422 && error.response.data?.errors) {
+          const msg = Object.values(error.response.data.errors).flat()[0] as string
+          notifyError(msg)
+        } else {
+          notifyError('Unable to register')
+        }
+        console.error(error)
     } finally {
       loading.value = false
       resetData()
     }
   }
 
-const logout = async () => {
-  loading.value = true
-  try {
-    await api.post('/logout')
-    resetData()
-    notifySuccess('Logout Successfully')
-  } catch (error) {
-    console.error(error)
-  } finally {
-    user.value = null
-    isAuthenticated.value = false
-    isStoreUser.value = false
-    userStores.value = []
-    loading.value = false 
+  const logout = async () => {
+    loading.value = true
+    try {
+      await api.post('/logout')
+      await api.get('sanctum/csrf-cookie', { baseURL: 'http://localhost:8000'})
+      resetData()
+      notifySuccess('Logout Successfully')
+    } catch (error) {
+      console.error(error)
+    } finally {
+      user.value = null
+      isAuthenticated.value = false
+      isStoreUser.value = false
+      userStores.value = []
+      loading.value = false 
+    }
   }
-}
 
   const checkAuth = async () => {
     try {
@@ -165,7 +181,7 @@ const logout = async () => {
     formData.value = {
       name: '',
       email: '',
-      phone: '',
+      phone: null,
       password: '',
       password_confirmation: '',
       // date_of_birth: undefined,
@@ -180,7 +196,7 @@ const logout = async () => {
       const form = new FormData()
       form.append('name', formData.value.name)
       form.append('email', formData.value.email)
-      form.append('phone', formData.value.phone)
+      form.append('phone', formData.value.phone ? formData.value.phone.toString() : '')
       if (formData.value.password) {
         form.append('password', formData.value.password)
         form.append('password_confirmation', formData.value.password_confirmation)
@@ -213,7 +229,7 @@ const logout = async () => {
   const initFormData = () => {
     formData.value.name = user.value?.name || ''
     formData.value.email = user.value?.email || ''
-    formData.value.phone = user.value?.phone ? user.value.phone.toString() : ''
+    formData.value.phone = user.value?.phone || null
     formData.value.date_of_birth = user.value?.date_of_birth
     formData.value.gender = user.value?.gender || undefined
   }

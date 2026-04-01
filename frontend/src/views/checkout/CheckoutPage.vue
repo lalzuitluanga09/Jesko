@@ -13,7 +13,7 @@
                 <!-- Items  -->
                 <section
                     class="bg-white dark:bg-gray-800 rounded-2xl shadow-sm p-6 border border-gray-200 dark:border-gray-700">
-                    <h2 class="text-lg font-semibold text-pink-700 dark:text-pink-400 mb-4">
+                    <h2 class="text-lg font-semibold text-primary mb-4">
                         <span class="mdi mdi-package-variant-closed-check"></span> Items
                     </h2>
 
@@ -21,7 +21,7 @@
                         <div v-for="item in cart.cart?.items" :key="item.store_id" class="space-y-4">
                             <div v-for="product in item.items" :key="product.id"
                                 class="flex items-start justify-between border-b border-gray-200 dark:border-gray-700 pb-4">
-                                <img src="/images/product.png" alt="Wireless Earbuds"
+                                <img :src="product.product_image ? storageUrl(product.product_image) : '/images/image.png'" alt="Wireless Earbuds"
                                     class="w-16 h-16 rounded-lg object-cover border border-gray-200 dark:border-gray-700" />
                                 <div class="flex-1 px-4">
                                     <h3 class="text-sm font-medium text-gray-800 dark:text-gray-100">
@@ -70,7 +70,7 @@
                     class="bg-white dark:bg-gray-800 rounded-2xl shadow-sm p-6 border border-gray-200 dark:border-gray-700">
                     <!-- Header -->
                     <div class="flex justify-between items-center">
-                        <h2 class="text-lg font-semibold text-pink-700 dark:text-pink-400">
+                        <h2 class="text-lg font-semibold text-primary mb-2">
                             <span class="mdi mdi-map-marker"></span> Shipping Address
                         </h2>
                         <button v-if="addresses.length > 1" @click="showAddresses = !showAddresses"
@@ -142,45 +142,49 @@
                 <!-- Payment Method -->
                 <section
                     class="bg-white dark:bg-gray-800 rounded-2xl shadow-sm p-6 border border-gray-200 dark:border-gray-700">
-                    <h2 class="text-lg font-semibold space-y-4d text-pink-700 dark:text-pink-400 mb-4">
+                    <h2 class="text-lg font-semibold space-y-4 text-primary mb-4">
                         <span class="mdi mdi-cash"></span> Payment Method
                     </h2>
                     <div class="space-y-3 text-sm font-medium">
                         <label
                             class="flex items-center gap-3 cursor-pointer p-3 border rounded-xl hover:bg-gray-50 dark:hover:bg-gray-700 border-gray-300 dark:border-gray-600">
                             <input type="radio" name="payment" v-model="paymentMode" value="cod"
-                                class="w-4 h-4 text-pink-600 focus:ring-pink-500" />
+                                class="w-4 h-4" />
                             <span class="text-gray-800 dark:text-gray-200">Cash on Delivery (COD)</span>
                         </label>
-                        <label
+                        <label>
+                            <p class="text-xs text-gray-600 dark:text-gray-400 ml-2"><em>Online Payment (Coming Soon)</em></p>
+                        </label>
+                        <!-- <label
                             class="flex items-center gap-3 cursor-pointer p-3 border rounded-xl hover:bg-gray-50 dark:hover:bg-gray-700 border-gray-300 dark:border-gray-600">
-                            <input type="radio" name="payment" v-model="paymentMode" value="upi"
-                                class="w-4 h-4 text-pink-600 focus:ring-pink-500" />
+                            <input type="radio" name="payment" v-model="paymentMode" value="upi" disabled
+                                class="w-4 h-4" />
                             <span class="text-gray-800 dark:text-gray-200">UPI</span>
                         </label>
                         <label
                             class="flex items-center gap-3 cursor-pointer p-3 border rounded-xl hover:bg-gray-50 dark:hover:bg-gray-700 border-gray-300 dark:border-gray-600">
-                            <input type="radio" name="payment" v-model="paymentMode" value="card"
-                                class="w-4 h-4 text-pink-600 focus:ring-pink-500" />
+                            <input type="radio" name="payment" v-model="paymentMode" value="card" disabled
+                                class="w-4 h-4" />
                             <span class="text-gray-800 dark:text-gray-200">Credit/Debit Card</span>
-                        </label>
+                        </label> -->
                     </div>
                 </section>
             </div>
 
+            <!----- Coupon Section ----->
             <div class="flex flex-col gap-2 col-span-2 mt-3 md:mt-0 md:h-fit md:sticky md:top-2">
                 <section
                     class="bg-white dark:bg-gray-800 rounded-2xl shadow-sm p-6 border border-gray-200 dark:border-gray-700">
-                    <h2 class="text-lg font-semibold text-pink-700 dark:text-pink-400 mb-4">
+                    <h2 class="text-lg font-semibold text-primary mb-4">
                         <span class="mdi mdi-ticket-percent"></span> Apply Coupon
                     </h2>
 
                     <div class="flex gap-2">
                         <input type="text" placeholder="Enter coupon code" v-model="couponCode"
-                            class="flex-1 px-4 py-2 border border-gray-300 rounded-xl text-gray-700 dark:text-gray-300 dark:bg-gray-900 dark:border-gray-700 focus:outline-none focus:ring-2 focus:ring-pink-400" />
+                            class="flex-1 px-4 py-2 border border-gray-300 rounded-xl text-gray-700 dark:text-gray-300 dark:bg-gray-900 dark:border-gray-700 focus:outline-none focus:ring-2 focus:ring-primary" />
 
                         <button @click="check"
-                            class="px-4 py-2 bg-pink-600 hover:bg-pink-700 text-white rounded-xl shadow-sm transition-colors cursor-pointer">
+                            class="px-4 py-2 bg-primary hover:bg-primary-hover text-white rounded-xl shadow-sm transition-colors cursor-pointer">
                             <Loading v-if="isCheckingCoupon" />
                             <span v-else>Apply</span>
                         </button>
@@ -194,7 +198,7 @@
                         </p>
                     </div>
 
-                    <div class="mt-4 space-y-2" v-if="appliedCoupons">
+                    <div class="mt-4 space-y-2" v-if="appliedCoupons.length > 0">
                         <div id="coupon-applied-area" v-for="item in appliedCoupons" :key="item.id"
                             class="flex items-center justify-between bg-green-100 dark:bg-green-900 px-4 py-2 rounded-xl ">
                             <span class="text-green-800 dark:text-green-200 text-sm">
@@ -210,7 +214,7 @@
                 <!-- Order Summary -->
                 <section
                     class="bg-white dark:bg-gray-800 rounded-2xl shadow-sm p-6 border border-gray-200 dark:border-gray-700">
-                    <h2 class="text-lg font-semibold text-pink-700 dark:text-pink-400 mb-4">
+                    <h2 class="text-lg font-semibold text-primary mb-4">
                         <span class="mdi mdi-card-text-outline"></span> Order Summary
                     </h2>
                     <div class="space-y-2 text-gray-700 dark:text-gray-300">
@@ -235,7 +239,7 @@
                             <span class="text-neutral-600 dark:text-neutral-400">+ ₹ 0</span>
                         </div>
                         <hr class="my-2 border-gray-300 dark:border-gray-600" />
-                        <div class="flex justify-between font-semibold text-gray-900 dark:text-white">
+                        <div class="flex justify-between font-semibold text-primary">
                             <span>Total</span>
                             <span>₹{{ (cart.total - additionDiscount).toFixed(2) }}</span>
                         </div>
@@ -245,7 +249,7 @@
                 <!-- Continue Button -->
                 <div class="flex justify-center md:justify-end items-center">
                     <button @click="openConfirmDialog"
-                        class="w-full bg-pink-600 hover:bg-pink-700 text-white font-medium px-4 py-2 rounded-lg shadow transition cursor-pointer">
+                        class="w-full bg-primary hover:bg-primary-hover text-white font-medium px-4 py-2 rounded-lg shadow transition cursor-pointer">
                         Continue <span class="mdi mdi-arrow-right"></span>
                     </button>
                 </div>
@@ -265,6 +269,7 @@ import { useAddress } from '@/composables/useAddress';
 import { useCoupon } from '@/composables/useCoupon';
 import { useOrder } from '@/composables/useOrder';
 import { useSetting } from '@/composables/useSetting';
+import { storageUrl } from '@/config';
 import { useCartStore } from '@/stores/cart';
 import { onMounted, ref } from 'vue';
 
@@ -301,12 +306,12 @@ const {
 
 const check = () => {
     if(!isCheckingCoupon.value) {
-        console.log('presseras sin')
         checkCoupon()
     }
 }
 
 onMounted(() => {
+    paymentMode.value = "cod"
     fetchAddresses()
     if (!cart.cart) {
         cart.getCartItems()

@@ -31,7 +31,9 @@ class DatabaseSeeder extends Seeder
         $user = User::factory()->create([
             'name' => 'Test',
             'email' => 'test@mail.com',
-            'password' => Hash::make('test'),
+            'email_verified_at' => now(),
+            'role' => 'admin',
+            'password' => Hash::make('test@123'),
         ]);
 
         UserProfile::create([
@@ -107,26 +109,26 @@ class DatabaseSeeder extends Seeder
         ]);
 
 
-        // $faker = Faker::create();
+        $faker = Faker::create();
 
-        // for ($i = 1; $i <= 20; $i++) {
-        //     $name = $faker->unique()->company;
-        //     $store = Store::create([
-        //         'name' => $name,
-        //         'slug' => Str::slug($name) . '-' . $i,
-        //         'description' => $faker->catchPhrase,
-        //         'pin' => Hash::make('1234'),
-        //         'category_id' => rand(1, count($categories)),
-        //         'theme_id' => rand(1, count($themes)),
-        //     ]);
+        for ($i = 1; $i <= 20; $i++) {
+            $name = $faker->unique()->company;
+            $store = Store::create([
+                'name' => $name,
+                'slug' => Str::slug($name) . '-' . $i,
+                'description' => $faker->catchPhrase,
+                'pin' => Hash::make('1234'),
+                'category_id' => rand(1, count($categories)),
+                'theme_id' => rand(1, count($themes)),
+            ]);
 
-        //      StoreUser::create([
-        //         'store_id' => $store->id,
-        //         'user_id' => 1,
-        //         'role' => 'owner',
-        //         'joined_at' => now()
-        //     ]);
-        // }
+             StoreUser::create([
+                'store_id' => $store->id,
+                'user_id' => 1,
+                'role' => 'owner',
+                'joined_at' => now()
+            ]);
+        }
 
 
         // for ($i = 1; $i <= 20; $i++) {
@@ -150,13 +152,13 @@ class DatabaseSeeder extends Seeder
         //     ]);
         // }
 
-        $items = ['Electronics', 'Fashion', 'Automobile', 'Furniture', 'Toys', 'Books & Stationery', 'Food', 'Cosmetics', 'Others'];
+        // $items = ['Electronics', 'Fashion', 'Automobile', 'Furniture', 'Toys', 'Books & Stationery', 'Food', 'Cosmetics', 'Others'];
 
-        foreach ($items as $item) {
-            MarketplaceCategory::create([
-                'name' => $item
-            ]);
-        }
+        // foreach ($items as $item) {
+        //     MarketplaceCategory::create([
+        //         'name' => $item
+        //     ]);
+        // }
 
         // for ($i = 1; $i <= 20; $i++) {
         //     Order::create([

@@ -5,8 +5,14 @@
             <table class="bg-white dark:bg-gray-900 min-w-full text-sm border border-gray-300">
                 <thead>
                     <tr class="bg-teal-100 dark:bg-gray-800">
-                        <th v-for="header in headers" :key="header" class="px-4 py-2 text-left font-medium text-gray-700 dark:text-gray-500">
-                            {{ header }}
+                        <th class="px-4 py-2 text-left font-medium text-gray-700 dark:text-gray-500">
+                            Order ID
+                        </th>
+                        <th class="px-4 py-2 text-left font-medium text-gray-700 dark:text-gray-500">
+                            Customer
+                        </th>
+                        <th class="px-4 py-2 text-left font-medium text-gray-700 dark:text-gray-500">
+                            Amount
                         </th>
                         <th class="px-4 py-2 text-left font-medium text-gray-700 dark:text-gray-500">
                             Status
@@ -14,15 +20,17 @@
                     </tr>
                 </thead>
                 <tbody>
-                    <tr v-for="(item, idx) in items" :key="idx" class="text-gray-600 border-b dark:text-gray-400 border-b-gray-300 hover:bg-teal-50 dark:hover:bg-gray-700">
-                        <td v-for="key in itemKeys" :key="key" class="px-4 py-2">
-                            {{ item[key] }}
+                    <tr v-for="(item, idx) in dashboard.pendingOrders" :key="idx" class="text-gray-600 border-b dark:text-gray-400 border-b-gray-300 hover:bg-teal-50 dark:hover:bg-gray-700">
+                        <td class="px-4 py-2">{{ item.order_id }}</td>
+                        <td class="px-4 py-2">{{ item.customer_name }}</td>
+                        <td class="px-4 py-2">
+                            ₹{{ Number(item.total_amount).toLocaleString('en-IN', { maximumFractionDigits: 0 }) }}
                         </td>
                         <td class="px-4 py-2">
                             <span
                                 :class="{
-                                    'text-yellow-600': item.status === 'Pending',
-                                    'text-green-600': item.status === 'Completed' || item.status === 'Delivered',
+                                    'text-yellow-600': item.status === 'pending',
+                                    'text-green-600': item.status === 'completed' || item.status === 'delivered',
                                 }"
                                 class="font-medium"
                             >
@@ -30,8 +38,8 @@
                             </span>
                         </td>
                     </tr>
-                    <tr v-if="items.length === 0">
-                        <td :colspan="headers.length" class="px-4 py-2 text-center text-gray-400 dark:text-gray-600">No data available</td>
+                    <tr v-if="dashboard.pendingOrders.length === 0">
+                        <td :colspan="4" class="px-4 py-2 text-center text-gray-400 dark:text-gray-600">No data available</td>
                     </tr>
                 </tbody>
             </table>
@@ -40,19 +48,8 @@
 </template>
 
 <script setup lang="ts">
-import { ref } from 'vue'
+import { useDashboard } from '@/stores/dashboard'
 
-const headers = ['Order ID', 'Customer', 'Amount']
-const itemKeys = ['orderId', 'customer', 'amount'] 
-type OrderItem = { [key: string]: string }
+const dashboard = useDashboard()
 
-const items = ref<OrderItem[]>([
-    { orderId: 'A001', customer: 'Alice', amount: '$120', status: 'Cancelled' },
-    { orderId: 'A002', customer: 'Bob', amount: '$80', status: 'Pending' },
-    { orderId: 'A003', customer: 'Charlie', amount: '$150', status: 'Delivered' },
-    { orderId: 'A003', customer: 'Charlie', amount: '$150', status: 'Delivered' },
-])
 </script>
-
-<style scoped>
-</style>

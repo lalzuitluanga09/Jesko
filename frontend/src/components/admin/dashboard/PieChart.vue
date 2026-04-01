@@ -4,30 +4,36 @@
     </div>
 </template>
 
-<script setup>
+<script setup lang="ts">
+import { useDashboard } from '@/stores/dashboard';
 import Chart from 'primevue/chart';
-import { ref, onMounted } from "vue";
+import { ref, onMounted, computed } from "vue";
+
+const dashboard = useDashboard()
+
+const chartData = computed(() => setChartData());
 
 onMounted(() => {
-    chartData.value = setChartData();
     chartOptions.value = setChartOptions();
 });
 
-const chartData = ref();
+// const chartData = ref();
 const chartOptions = ref();
 
 const setChartData = () => {
-    return {
-        labels: ['Category A', 'Category B', 'Category C', 'Category D', 'Category E'],
-        datasets: [
-            {
-                data: [140, 625, 802, 290, 315],
-                backgroundColor: ['#7EC8E3', '#98D98E', '#FFD580', '#FF8B8B', '#FF9A8B'],
-                hoverBackgroundColor: ['#357ca5', '#4e7c3a', '#bfa13a', '#b23a3a', '#b25a3a']
-            }
-        ]
-    };
-};
+  const count = dashboard.salesCategoryData.length
+
+  return {
+    labels: dashboard.salesCategoryData.map(item => item.category),
+    datasets: [
+      {
+        data: dashboard.salesCategoryData.map(item => item.total_sales),
+        backgroundColor: generateColors(count),
+        hoverBackgroundColor: generateHoverColors(count)
+      }
+    ]
+  }
+}
 
 const setChartOptions = () => {
 
@@ -42,4 +48,19 @@ const setChartOptions = () => {
         }
     };
 };
+
+
+const generateColors = (count: number) => {
+  return Array.from({ length: count }, (_, i) => {
+    const hue = Math.round((360 / count) * i)
+    return `hsl(${hue}, 55%, 60%)`
+  })
+}
+
+const generateHoverColors = (count: number) => {
+  return Array.from({ length: count }, (_, i) => {
+    const hue = Math.round((360 / count) * i)
+    return `hsl(${hue}, 50%, 55%)`
+  })
+}
 </script>

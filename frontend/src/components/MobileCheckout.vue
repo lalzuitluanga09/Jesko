@@ -14,7 +14,7 @@
     <div v-if="step === 1" class="space-y-4">
       <!-- Shipping Address -->
       <section class="rounded-xl p-4 border border-gray-300 shadow-sm">
-        <h2 class="text-base font-semibold text-pink-600 mb-2">
+        <h2 class="text-base font-semibold text-primary mb-2">
           <span class="mdi mdi-map-marker"></span> Shipping Address
         </h2>
         <div v-if="deliveryAddress">
@@ -73,7 +73,7 @@
 
       <!-- Payment Method -->
       <section class="rounded-xl p-4 border border-gray-300 shadow-sm">
-        <h2 class="text-md font-semibold text-pink-600 mb-2">
+        <h2 class="text-md font-semibold text-primary mb-2">
           <span class="mdi mdi-cash"></span> Payment Method
         </h2>
         <div class="space-y-2 text-sm">
@@ -91,7 +91,7 @@
           </label>
         </div>
       </section>
-      <button @click="step = 2" class="w-full bg-pink-600 text-white font-medium py-2 rounded-lg">
+      <button @click="step = 2" class="w-full bg-primary text-white font-medium py-2 rounded-lg">
         Continue <span class="mdi mdi-arrow-right"></span>
       </button>
     </div>
@@ -100,7 +100,7 @@
     <div v-if="step === 2" class="space-y-4">
       <!-- Items -->
       <section class="rounded-xl p-4 border border-gray-300 shadow-sm">
-        <h2 class="text-base font-semibold text-pink-600 mb-2">
+        <h2 class="text-base font-semibold text-primary mb-2">
           <span class="mdi mdi-cart-check"></span> Items
         </h2>
         <div v-for="item in cart.cart?.items" :key="item.store_id">
@@ -146,12 +146,12 @@
 
       <!-- Coupon -->
       <section class="rounded-xl p-4 border border-gray-300 shadow-sm">
-        <h2 class="text-base font-semibold text-pink-600 mb-2">
+        <h2 class="text-base font-semibold text-primary mb-2">
           <span class="mdi mdi-ticket-percent"></span> Apply Coupon
         </h2>
         <div class="flex gap-2 text-sm">
           <input type="text" placeholder="Coupon code" class="flex-1 border border-gray-300 rounded-md px-3 py-2" />
-          <button class="bg-pink-600 text-white px-3 rounded-md">Apply</button>
+          <button class="bg-primary text-white px-3 rounded-md">Apply</button>
         </div>
         <div class="mt-2 text-sm">
           <p class="text-green-600 dark:text-green-400 hidden" id="coupon-success">
@@ -177,7 +177,7 @@
 
       <!-- Order Summary -->
       <section class="rounded-xl p-4 border border-gray-300 shadow-sm">
-        <h2 class="text-base font-semibold text-pink-600 mb-2">
+        <h2 class="text-base font-semibold text-primary mb-2">
           <span class="mdi mdi-card-text-outline"></span> Order Summary
         </h2>
         <div class="space-y-1 text-sm">
@@ -193,7 +193,7 @@
           <div class="flex justify-between"><span>Taxes</span><span class="text-neutral-600 dark:text-neutral-400">+
               ₹0</span></div>
           <hr class="text-gray-300" />
-          <div class="flex justify-between font-semibold">
+          <div class="flex justify-between font-semibold text-primary">
             <span>Total</span><span>₹{{ cart.total.toFixed(2) }}</span>
           </div>
         </div>
@@ -202,7 +202,7 @@
       <div class="flex justify-between gap-2 text-sm">
         <button @click="step = 1" class="flex-1 border border-gray-400 rounded-md py-2"><span
             class="mdi mdi-arrow-left"></span> Back</button>
-        <button @click="step = 3" class="flex-1 bg-pink-600 text-white py-2 rounded-md">Proceed <span
+        <button @click="step = 3" class="flex-1 bg-primary text-white py-2 rounded-md">Proceed <span
             class="mdi mdi-arrow-right"></span></button>
       </div>
     </div>
@@ -226,7 +226,7 @@
       <div v-else class="space-y-4">
         <!-- Confirm & Pay -->
         <div v-if="!isOrderConfirmed" class="rounded-xl p-4 border border-gray-300 shadow-sm text-center">
-          <h2 class="text-base font-semibold text-pink-600">
+          <h2 class="text-base font-semibold text-primary">
             <span class="mdi mdi-check-circle"></span> Confirm & Pay
           </h2>
           <p class="text-sm text-gray-600 dark:text-gray-300 mt-2">
@@ -317,8 +317,8 @@ const step = ref(1)
 
 function stepClass(n: number) {
   return step.value + 1 > n
-    ? "text-pink-600 font-bold"
-    : "text-gray-400";
+    ? "text-primary font-bold"
+    : "text-gray-500";
 }
 
 

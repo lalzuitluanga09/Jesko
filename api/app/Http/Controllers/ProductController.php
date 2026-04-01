@@ -242,9 +242,10 @@ class ProductController extends Controller
     public function update(Request $request, $storeSlug, $id)
     {
         $product = Product::findOrFail($id);
+        $storeId = Store::where('slug', $storeSlug)->value('id');
 
         $productData = $request->product;
-        $productData['store_id'] = 1;
+        $productData['store_id'] = $storeId;
         $productData['parent_id'] = null;
 
         $product->update($productData);

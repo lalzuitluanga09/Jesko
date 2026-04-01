@@ -36,14 +36,11 @@ const selectedOrder = ref<MyOrder | null>(null)
 
 const paymentMode = ref("")
 
-const isDialogOpen = ref<boolean>(false)
-
 const selected = ref<OrderList | null>(null)
 
 const loading = ref<boolean>(false)
 const loadingData = ref<boolean>(false)
 
-const selectedStatus = ref<string>('')
 const orders = ref<OrderList []>([])
 
 const pagination = ref<Pagination>({
@@ -75,20 +72,21 @@ const orderFilter = ref<{
     status: '',
 })
 
-const statusOptions = [
-  { label: 'Pending', value: 'pending' },
-  { label: 'Processing', value: 'processing' },
-  { label: 'Delivered', value: 'delivered' },
-  { label: 'Shipped', value: 'shipped' },
-  { label: 'Cancelled', value: 'cancelled' },
-  { label: 'Refuned', value: 'refunded' },
-]
-
 const orderStatus = ref<string[]>([])
+
+const statusOptions = [
+    { value: 'pending', label: 'Pending' },
+    { value: 'confirmed', label: 'Confirmed' },
+    { value: 'processing', label: 'Processing' },
+    { value: 'shipped', label: 'Shipped' },
+    { value: 'out_for_delivery', label: 'Out for Delivery' },
+    { value: 'delivered', label: 'Delivered' },
+    { value: 'cancelled', label: 'Cancelled' },
+]
 
 const steps = [
   { key: 'pending', label: 'Pending' },
-  { key: 'processing', label: 'Processing' },
+  { key: 'confirmed', label: 'Confirmed' },
   { key: 'shipped', label: 'Shipped' },
   { key: 'out_for_delivery', label: 'Out for Delivery' },
 ]
@@ -168,21 +166,14 @@ export function useOrder() {
         }
       }
 
-      const openUpdateDialog = (item: OrderList) => {
-        selected.value = item
-        selectedStatus.value = selected.value.data.status
-        isDialogOpen.value = true
-      }
-
-      const updateStatus = async() => {
+      const updateStatus = async(id: number, status: string) => {
           loading.value = true
           try {
-            await adminApi.put(`/${storeSlug.value}/orders/${selected.value?.data.id}`, {
-              status: selectedStatus.value 
+            await adminApi.put(`/${storeSlug.value}/orders/${id}`, {
+              status: status
             });
             notifySuccess('Updated Successfully')
-            closeUpdateDialog()
-            getData()
+            update(id, status)
           } catch (error) {
             notifyError('Unable to update')
             console.log(error)
@@ -191,9 +182,19 @@ export function useOrder() {
           }
       }
 
-      const closeUpdateDialog = () => {
-        isDialogOpen.value = false
-        selected.value = null
+      const update = (id: number, status: string) => {
+        orders.value = orders.value.map(order => {
+          if (order.data.id === id) {
+            return {
+              ...order,
+              data: {
+                ...order.data,
+                status: status
+              }
+            }
+          }
+          return order
+        })
       }
 
       const openConfirmDialog = () => {
@@ -210,7 +211,7 @@ export function useOrder() {
       const placeOrder = async () => {
           placingOrder.value = true
           try {
-              await api.post(`/place_order`, {
+              await api.post(`/place-order`, {
                   items: getCartItems(),
                   paymentMode: paymentMode.value,
                   deliveryAddress: deliveryAddress.value?.id,
@@ -218,6 +219,8 @@ export function useOrder() {
               })
               notifySuccess('Order placed successfully')
               isOrderConfirmed.value = true
+              cart.cart = null
+              auth.userMeta.cart_items = []
           } catch (error) {
               notifyError('Error placing order')
               console.log(error)
@@ -291,9 +294,6 @@ export function useOrder() {
         orders,
         pagination,
         filter,
-        isDialogOpen,
-        statusOptions,
-        selectedStatus,
         paymentMode,
         confirmDialogOpen,
         isOrderConfirmed,
@@ -305,6 +305,7 @@ export function useOrder() {
         orderFilter,
         loading,
         loadingData,
+        statusOptions,
         clearFilter,
         openDialog,
         closeDialog,
@@ -312,8 +313,6 @@ export function useOrder() {
         closeViewDialog,
         getData,
         updateStatus,
-        closeUpdateDialog,
-        openUpdateDialog,
         openConfirmDialog,
         placeOrder,
         goToCart,

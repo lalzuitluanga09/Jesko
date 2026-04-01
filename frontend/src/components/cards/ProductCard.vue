@@ -1,6 +1,6 @@
 <template>
     <div @click.prevent="gotTo"
-        :class="`relative w-full max-w-sm rounded-2xl overflow-hidden cursor-pointer hover:bg-${theme}-50 dark:hover:bg-bg-dark border border-${theme}-300  transition`">
+        :class="`relative w-full h-fit max-w-sm rounded-2xl overflow-hidden cursor-pointer hover:bg-${theme}-50 dark:hover:bg-gray-700 border border-${theme}-300  transition`">
 
         <SaleBadge
           v-if="item.badge"
@@ -22,7 +22,7 @@
             alt="Store Image">
         <div class="px-3 md:px-4 pt-2 pb-1">
             <div class="text-base font-medium md:mb-1 truncate">{{ item.name }}</div>
-            <p class="text-gray-500 dark:text-gray-400 text-xs md:text-sm truncate" v-if="item.category_ids?.length">
+            <p class="text-gray-500 dark:text-gray-400 text-xs md:text-sm truncate" v-if="item.category_ids?.length && categories?.length">
                 {{
                     item.category_ids
                         ?.map(id => categories?.find(c => String(c.id) === String(id))?.name)

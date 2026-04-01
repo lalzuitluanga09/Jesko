@@ -16,7 +16,8 @@ const isView = ref<boolean>(false)
 
 const { storeSlug } = useAdmin()
 const { isOpen, itemId } = useConfirmDialog()
-const { cart, getStoreIds } = useCartStore()
+
+const cart = useCartStore()
 
 const coupons = ref<Coupon[]>([])
 const selectedCoupon = ref<Coupon | null>(null)
@@ -97,7 +98,6 @@ const couponForm = ref<{
   startAt: null,
   endAt: null,
 })
-
 
 export function useCoupon() {
 
@@ -289,9 +289,9 @@ export function useCoupon() {
       return
     }
     isCheckingCoupon.value = true
-    const storeIds = getStoreIds()
+    const storeIds = cart.getStoreIds()
     try {
-      const { data } = await api.post("/checkout/apply-coupon", {
+      const { data } = await api.post("/checkout/check-coupon", {
         code: couponCode.value,
         storeIds: storeIds
       })
@@ -304,6 +304,7 @@ export function useCoupon() {
         matchCoupons.value = []
         notifyError(data.message || "Invalid or expired coupon")
       }
+      console.log("Coupon Check Response:", data)
       delayCouponMessage()
     } catch (err) {
       notifyError("Something went wrong")
@@ -312,7 +313,6 @@ export function useCoupon() {
       isCheckingCoupon.value = false
     }
   }
-
 
   const delayCouponMessage = debounce(() => {
     if (isCouponFound.value) {
@@ -325,7 +325,7 @@ export function useCoupon() {
 
     if (!cart) return
 
-    const storeGroup = cart?.items?.find(
+    const storeGroup = cart.cart?.items?.find(
       (group) => group.store_id === coupon.store_id
     )
 
@@ -361,13 +361,13 @@ export function useCoupon() {
     couponDiscounts.value[coupon.store_id] = discount
   }
 
-const additionDiscount = computed(() => {
-  const total = Object.values(couponDiscounts.value).reduce(
-    (a, b) => a + Number(b), 
-    0
-  )
-  return Number(total.toFixed(2))
-})
+  const additionDiscount = computed(() => {
+    const total = Object.values(couponDiscounts.value).reduce(
+      (a, b) => a + Number(b), 
+      0
+    )
+    return Number(total.toFixed(2))
+  })
 
 
   const removeCoupon = (couponId: number) => {

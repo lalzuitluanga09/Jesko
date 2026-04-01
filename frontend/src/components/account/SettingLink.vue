@@ -1,6 +1,6 @@
 <template>
     <div @click="goTo"
-        class="flex justify-between items-center gap-2 border-gray-100 dark:border-bg-soft-dark border-2 px-4 py-2 hover:bg-gray-100 dark:hover:bg-bg-soft-dark transition-colors cursor-pointer">
+        class="flex justify-between items-center gap-2 border-gray-100 dark:border-bg-soft-dark border-2 px-4 py-2 hover:bg-primary/10 dark:hover:bg-primary/20 transition-colors cursor-pointer">
         <div class="flex gap-4 items-center">
             <i :class="icon" class="text-xl text-gray-500"></i>
             <span class="text-base font-medium text-gray-800 dark:text-white/50">{{ title }}</span>

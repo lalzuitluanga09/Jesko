@@ -1,5 +1,6 @@
 interface CartItem {
   id: number
+  parent_id: number | null
   product_id: number
   store_id: number
   quantity: number
@@ -25,6 +26,7 @@ interface GroupedItems {
   store_id: number
   store_name: string
   store_slug: string
+  store_theme: string
   items: CartItem[]
 }
 

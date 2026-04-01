@@ -25,8 +25,9 @@ import AddProductDialog from '@/components/dialogs/AddProductDialog.vue';
 import ViewProductDialog from '@/components/dialogs/view/ViewProductDialog.vue';
 import TableSearch from '@/components/search/TableSearch.vue';
 import { useProduct } from '@/composables/useProduct';
-import { onMounted, ref } from 'vue';
+import { ref, watch } from 'vue';
 import ProductTable from '@/components/admin/ProductTable.vue';
+import { useAdmin } from '@/composables/useAdmin';
 
 const {
     filter,
@@ -42,6 +43,8 @@ const statusDropdownRef = ref()
 const categoryDropdownRef = ref()
 const tagDropdownRef = ref()
 
+const { storeSlug } = useAdmin()
+
 const clear = () => {
     clearFilter()
     statusDropdownRef.value.reset()
@@ -49,9 +52,13 @@ const clear = () => {
     tagDropdownRef.value.reset()
 }
 
- onMounted(() => {
-    getData()    
- })
+watch(storeSlug, async (newSlug) => {
+    if(newSlug) {
+        await getData()
+    }
+},
+    { immediate: true }
+)
 
 </script>
 

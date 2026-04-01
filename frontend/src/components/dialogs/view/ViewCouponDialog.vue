@@ -5,7 +5,12 @@
             <div class="bg-white dark:bg-gray-900 w-full max-w-md p-6 rounded-xl shadow-xl mx-4 border border-gray-200 dark:border-gray-700">
                 <h2 class="text-xl ml-14 font-bold text-gray-800 dark:text-gray-100 mb-6 flex items-center gap-2">
                     <span
-                        class="inline-block bg-green-100 dark:bg-green-900 text-green-700 dark:text-green-300 px-3 py-1 rounded-full text-xs font-semibold tracking-wide shadow-sm">
+                        :class="{
+                            'bg-emerald-100 dark:bg-emerald-900/40 text-emerald-700 dark:text-emerald-400': selectedCoupon?.status === 'active',
+                            'bg-amber-100 dark:bg-amber-900/40 text-amber-700 dark:text-amber-400': selectedCoupon?.status === 'inactive',
+                            'bg-rose-100 dark:bg-rose-900/40 text-rose-700 dark:text-rose-400': selectedCoupon?.status === 'expired'
+                        }"
+                        class="inline-block px-3 py-1 rounded-full text-xs font-semibold tracking-wide shadow-sm">
                         {{ selectedCoupon?.status?.toUpperCase() || 'UNKNOWN' }}
                     </span>
                     <span>Coupon Details</span>

@@ -5,7 +5,7 @@
                 @click.stop="handleWishlistAction(
                 auth.userMeta.wishlists.includes(productData.item?.id || 0) ? 'remove' : 'add'
                 )"
-                class="absolute top-3 right-10 z-30 text-xl text-pink-500 bg-pink-100 hover:bg-pink-200 border border-pink-300 px-1 rounded-lg shadow-sm cursor-pointer transition-colors duration-200"
+                :class="`absolute top-3 right-10 z-30 text-xl text-${productData.seller?.theme}-600 hover:bg-${productData.seller?.theme}-100 border border-${productData.seller?.theme}-400 px-1 rounded-lg shadow-sm cursor-pointer transition-colors duration-200`"
             >
                 <span
                 :class="auth.userMeta.wishlists.includes(productData.item?.id || 0)
@@ -13,12 +13,12 @@
                     : 'mdi mdi-heart-outline'"
                 ></span>
             </button>
-            <button
-                class="absolute right-2 md:right-0 cursor-pointer top-3 text-xl text-pink-500 bg-pink-100 hover:bg-pink-200 border border-pink-300 px-1 rounded-lg">
+            <!-- <button
+                :class="`absolute right-2 md:right-0 cursor-pointer top-3 text-xl text-${productData.seller?.theme}-600 hover:bg-${productData.seller?.theme}-100 border border-${productData.seller?.theme}-400 px-1 rounded-lg`">
                 <span class="mdi mdi-share-variant"></span>
-            </button>
+            </button> -->
             <h1 class="text-xl md:text-3xl font-bold my-2">{{ productData.item?.name }}</h1>
-            <p class="mb-2 text-sm md:text-base text-pink-600 dark:text-pink-400 truncate">
+            <p :class="`mb-2 text-sm md:text-base text-${productData.seller?.theme}-600 truncate`">
                 <span class="font-bold">Seller: </span><span class="hover:underline cursor-pointer" @click="goToStore">{{ productData.seller?.name }}</span>
             </p>
             <p v-if="productData.item?.category_ids ? productData.item?.category_ids?.length > 0 : false" class="text-sm md:text-base text-gray-600 dark:text-gray-400 mb-2"><span class="font-bold">Category:</span>
@@ -39,7 +39,7 @@
             </p>
             <div class="mb-4 flex gap-2 items-center">
               <div>
-                <span class="text-xl md:text-2xl font-semibold text-pink-600 dark:text-pink-500">
+                <span :class="`text-xl md:text-2xl font-semibold text-${productData.seller?.theme}-600`">
                   ₹{{ variantPrice || (productData.item?.isSale && productData.item.discount?.type != 'bogo' ? productData.item?.discount_price : productData.item?.price) }}
                 </span>
                 <span v-if="productData.item?.isSale && productData.item.discount?.type != 'bogo'" class="ml-2 text-sm text-gray-400 line-through" >
@@ -47,7 +47,7 @@
                 </span>
               </div>
               <div :title="productData.item?.discount?.name">
-                <span v-if="badgeTitle" class="border px-2 py-1 rounded-xl text-sm text-red-600 border-red-600 dark:text-gray-300 dark:border-gray-300">
+                <span v-if="badgeTitle" class="border px-2 py-1 rounded-xl text-sm text-primary border-primary dark:text-gray-300 dark:border-gray-300">
                   <span v-if="productData.item?.badge === 'red'" class="mdi mdi-creation "></span>
                   <span v-else-if="productData.item?.badge === 'yellow'" class="mdi mdi-flare "></span>
                   {{ badgeTitle }}
@@ -67,19 +67,19 @@
                           :style="{ backgroundColor: color}"
                           :class="[
                               selectedItems.find(sel => sel[item.name] === color)
-                              ? 'ring-2 ring-offset-2 ring-pink-500'
-                              : 'hover:ring-2 hover:ring-offset-2 hover:ring-gray-500'
+                              ? 'ring-2 ring-offset-2 ring-primary'
+                              : 'hover:ring-2 hover:ring-offset-2 hover:ring-primary/30'
                           ]"
                           ></span>
                   </div>
                   <div class="flex flex-wrap gap-2" v-else>
                       <span v-for="(label, idx) in item.values" :key="idx"
-                          class="px-3 py-1 border border-gray-400 rounded-xl cursor-pointer"
+                          class="px-3 py-1 border border-primary text-primary rounded-xl cursor-pointer"
                           @click="select(item.name, label)"
                           :class="[
                               selectedItems.find(sel => sel[item.name] === label)
-                              ? 'bg-amber-200 dark:bg-gray-500'
-                              : 'hover:bg-amber-50 dark:hover:bg-gray-500'
+                              ? 'bg-primary/20 dark:bg-primary/30'
+                              : 'hover:bg-primary/10 dark:hover:bg-primary/20'
                           ]"
                           >
                           {{ label }}
@@ -94,19 +94,19 @@
                         <label class="block mb-2 font-medium">Quantity</label>
                         <div class="flex items-center rounded w-fit">
                             <button
-                                class="text-lg border border-gray-400 rounded-lg text-gray-500 cursor-pointer hover:bg-pink-100 hover:text-pink-600 px-3"
+                                :class="`text-lg border border-${productData.seller?.theme}-400 rounded-lg text-${productData.seller?.theme}-600 cursor-pointer hover:bg-${productData.seller?.theme}-100 px-3`"
                                 @click="quantity > 1 && quantity--" type="button">-</button>
                             <input disabled v-model.number="quantity" class="w-8 md:w-12 text-center bg-transparent" />
                             <button
-                                class="text-lg border border-gray-400 rounded-lg text-gray-500 cursor-pointer hover:bg-pink-100 hover:text-pink-600 px-3"
+                                :class="`text-lg border border-${productData.seller?.theme}-400 rounded-lg text-${productData.seller?.theme}-600 cursor-pointer hover:bg-${productData.seller?.theme}-100 px-3`"
                                 @click="quantity++" type="button">+</button>
                         </div>
                     </div>
                 </div>
-                <div class="flex flex-row gap-4 mx-2 md:mx-0 mb-20 md:mb-0 fixed md:static left-0 right-0 z-20 bottom-0 text-pink-700 dark:text-pink-400">
+                <div :class="`flex flex-row gap-4 mx-2 md:mx-0 mb-20 md:mb-0 fixed md:static left-0 right-0 z-20 bottom-0 text-${productData.seller?.theme}-600`">
                     <button
-                    @click="handleCartAction(auth.userMeta.cart_items.includes(productData.item?.id || 0) ? 'remove' : 'add')"
-                      class="flex items-center justify-center gap-2 px-4 py-2 md:px-6 rounded-xl text-sm md:text-base font-medium transition-all duration-300 shadow w-full sm:w-auto cursor-pointer backdrop-blur-md border hover:bg-pink-200 dark:hover:bg-pink-500 dark:hover:text-white"
+                      @click="handleCartAction(auth.userMeta.cart_items.includes(productData.item?.id || 0) ? 'remove' : 'add')"
+                      :class="`flex items-center justify-center gap-2 px-4 py-2 md:px-6 rounded-xl text-sm md:text-base font-medium transition-all duration-300 shadow w-full sm:w-auto cursor-pointer backdrop-blur-md border hover:bg-${productData.seller?.theme}-100`"
                     >
                     <i
                         :class="auth.userMeta.cart_items.includes(productData.item?.id || 0)
@@ -114,20 +114,23 @@
                         : 'mdi mdi-shopping-outline'"
                         class="text-lg md:text-xl"
                     ></i>
-                    <span class="truncate">
-                        {{
-                        auth.userMeta.cart_items.includes(productData.item?.id || 0)
-                            ? 'Added to Cart'
-                            : 'Add to Cart'
-                        }}
-                    </span>
+                      <span class="truncate">
+                          {{
+                          auth.userMeta.cart_items.includes(productData.item?.id || 0)
+                              ? 'Added to Cart'
+                              : 'Add to Cart'
+                          }}
+                      </span>
                     </button>
-                    <button
-                        class="w-full md:w-auto bg-pink-600 text-white px-6 py-2 rounded-xl font-semibold shadow hover:bg-pink-700 transition-colors flex items-center justify-center gap-3 cursor-pointer">
+                    <!-- <button
+                        :class="`w-full md:w-auto bg-${productData.seller?.theme}-400 dark:bg-${productData.seller?.theme}-600 text-white px-6 py-2 rounded-xl font-semibold shadow hover:bg-${productData.seller?.theme}-500 transition-colors flex items-center justify-center gap-3 cursor-pointer`">
                         <span class="mdi mdi-cart-arrow-right"></span>
                         Buy Now
-                    </button>
+                    </button> -->
                 </div>
+                <span class="text-xs text-gray-500 dark:text-gray-400">
+                  *  Add to cart to proceed with purchase
+                </span>
             </div>
         </div>
     </div>

@@ -24,10 +24,12 @@ class CartController extends Controller
                 'store_id' => $store->id,
                 'store_name' => $store->name,
                 'store_slug' => $store->slug,
+                'store_theme' => $store->storeTheme->name ?? 'neutral',
                 'items' => $items->map(function ($item) {
-                    $sale = $item->product->activeSale->first();
+                    $sale = $item->product->getActiveSale();
                     return [
                         'id' => $item->id,
+                        'parent_id' => $item->product->parent_id,
                         'product_id' => $item->product_id,
                         'quantity' => $item->quantity,
                         'stock' => $item->product->stock,
@@ -42,11 +44,8 @@ class CartController extends Controller
                             'value' => round($sale->discount_value, 2),
                             'bogo' => $sale->discount_type === 'bogo' ? json_decode($sale->rules) : null
                         ] : null,
-                        'discount_price' => $sale && $sale->discount_value > 0
-                            ? ($sale->discount_type === 'percentage'
-                                ? round($item->product->price * (1 - $sale->discount_value / 100), 2)
-                                : max(0, round($item->product->price - $sale->discount_value, 2)))
-                            : null,
+                        'discount_price' => $item->product->getDiscountedPrice() < $item->product->price
+                            ? $item->product->getDiscountedPrice() : null,
 
                     ];
                 })->values()

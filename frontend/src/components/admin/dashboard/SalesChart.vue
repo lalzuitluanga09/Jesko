@@ -5,42 +5,37 @@
     </div>
 </template>
 
-<script setup>
+<script setup lang="ts">
+import { useDashboard } from '@/stores/dashboard';
 import Chart from 'primevue/chart';
-import { ref, onMounted } from "vue";
+import { ref, onMounted, computed } from "vue";
+
+// const chartData = ref();
+const chartOptions = ref();
+
+const dashboard = useDashboard()
+
+const chartData = computed(() => setChartData(dashboard.filter));
 
 onMounted(() => {
-    chartData.value = setChartData();
     chartOptions.value = setChartOptions();
 });
 
-const chartData = ref();
-const chartOptions = ref();
-        
-const setChartData = () => {
-    const documentStyle = getComputedStyle(document.documentElement);
+const labelMap: Record<string, string> = {
+        today: 'Last 7 Days Sales',
+        last_7_days: 'Last 7 Days Sales',
+        this_month: 'This Month\'s Sales',
+        this_year: 'This Year\'s Sales',
+    };
 
+        
+const setChartData = (type: string = 'last_7_days') => {
     return {
-        labels: ['Sunday', 'Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday', 'Saturday'],
+        labels: dashboard.salesData.map(item => item.label),
         datasets: [
-            // {
-            //     label: 'First Dataset',
-            //     data: [65, 59, 80, 81, 56, 55, 40],
-            //     fill: false,
-            //     tension: 0.4,
-            //     borderColor: documentStyle.getPropertyValue('--p-cyan-500')
-            // },
-            // {
-            //     label: 'Second Dataset',
-            //     data: [28, 48, 40, 19, 86, 27, 90],
-            //     fill: false,
-            //     borderDash: [5, 5],
-            //     tension: 0.4,
-            //     borderColor: documentStyle.getPropertyValue('--p-orange-500')
-            // },
             {
-                label: 'Sales',
-                data: Array.from({ length: 7 }, () => Math.floor(Math.random() * (10000 - 1000 + 1)) + 1000),
+                label: labelMap[type],
+                data: dashboard.salesData.map(item => item.total_sales),
                 fill: true,
                 borderColor: 'rgba(0, 149, 255, 0.8)',
                 tension: 0.4,
@@ -49,6 +44,7 @@ const setChartData = () => {
         ]
     };
 };
+
 const setChartOptions = () => {
 
     return {
@@ -67,7 +63,7 @@ const setChartOptions = () => {
                     color: 'gray'
                 },
                 grid: {
-                    color: 'rgba(0, 0, 0, 0)',
+                    color: 'rgba(0, 0, 0, 0.0)',
                 }
             },
             y: {
@@ -81,4 +77,5 @@ const setChartOptions = () => {
         }
     };
 }
+
 </script>

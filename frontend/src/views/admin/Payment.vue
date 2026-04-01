@@ -36,8 +36,9 @@ import { useSetting } from '@/composables/useSetting';
 import DropdownBtn from '@/components/buttons/DropdownBtn.vue';
 import ClearBtn from '@/components/buttons/ClearBtn.vue';
 import VueDatePicker from '@vuepic/vue-datepicker';
-import { onMounted, ref } from 'vue';
+import { ref, watch } from 'vue';
 import PaymentTable from '@/components/admin/PaymentTable.vue';
+import { useAdmin } from '@/composables/useAdmin';
 
 const {
     filter,
@@ -48,6 +49,7 @@ const {
 } = usePayment()
 
 const { isDark } = useSetting()
+const { storeSlug } = useAdmin()
 
 const statusDropdownRef = ref()
 const modeDropdownRef = ref()
@@ -58,9 +60,13 @@ const clear = () => {
     modeDropdownRef.value.reset()
 }
 
-onMounted(() => {
-    getPayments()
-})
+watch(storeSlug, async (newSlug) => {
+    if(newSlug) {
+        await getPayments()
+    }
+},
+    { immediate: true }
+)
 
 
 </script>

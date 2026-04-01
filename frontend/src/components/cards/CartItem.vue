@@ -1,5 +1,5 @@
 <template>
-    <div class="flex items-center p-4 dark:bg-gray-700 hover:bg-amber-50 dark:hover:bg-gray-600 rounded-xl border border-gray-200 shadow-sm gap-3 cursor-pointer">
+    <div :class="`flex items-center p-4 hover:bg-${props.theme || 'gray'}-50 dark:hover:bg-gray-700 rounded-xl border border-${props.theme || 'gray'}-300 shadow-sm gap-3 cursor-pointer`">
         <img :src="item.product_image ? storageUrl(item.product_image) : '/images/product.png'"  alt="Product" class="w-20 h-20 object-cover rounded-lg border border-gray-100" @click="handleClick"/>
         <div class="flex-1 min-w-0" @click="handleClick">
             <h3 class="text-base font-semibold truncate"> {{ item.product_name }}</h3>
@@ -63,6 +63,7 @@ const {
 const props = defineProps<{
     item: CartItem,
     slug: string
+    theme?: string
 }>();
 
 const { getProductData } = useStore();
@@ -126,7 +127,7 @@ const emitUpdate = () => {
 const cart = useCartStore()
 
 const handleClick = () => {
-  getProductData(props.item.product_id)
+  getProductData(props.item.parent_id || props.item.product_id)
     router.push({
         name: 'product-detail',
         params: {

@@ -99,6 +99,10 @@
                         <span>Subtotal</span>
                         <span>₹{{ selectedOrder?.data.subtotal }}</span>
                     </div>
+                    <div class="flex justify-between text-green-600 dark:text-green-400">
+                        <span>Discount</span>
+                        <span> - ₹{{ (selectedOrder?.data.discount ?? 0) + (selectedOrder?.data.coupon_discount ?? 0) }}</span>
+                    </div>
                     <div class="flex justify-between">
                         <span>Shipping</span>
                         <span>₹50.00</span>

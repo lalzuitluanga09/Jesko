@@ -2,8 +2,9 @@
     <div v-if="loadStoreData">
         <StoreLoading :title="storeData.data?.name || 'Store'" content="Welcome"/>
     </div>
-    <div v-else class="flex flex-col md:gap-2">
+    <div v-else class="flex flex-col md:gap-1">
         <StoreHeader />
+        <StoreBanner v-if="storeData.data?.active_sale && !isMobile" :title="storeData.data?.active_sale" :theme="storeData.data?.theme || 'orange'" :type="storeData.data?.sale?.type" :value="storeData.data?.sale?.value"/>
         <div class="flex flex-col md:flex-row md:justify-between">
             <div v-if="!isMobile"  class="h-fit sticky top-2">
                 <StoreFilter />
@@ -24,6 +25,7 @@ import { useSetting } from '@/composables/useSetting';
 import { useStore } from '@/composables/useStore';
 import { onMounted } from 'vue';
 import { useRoute } from 'vue-router';
+import StoreBanner from '@/components/banner/StoreBanner.vue';
 
 const route = useRoute()
 

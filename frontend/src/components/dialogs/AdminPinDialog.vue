@@ -7,9 +7,9 @@
             class="fixed inset-0 flex items-center justify-center backdrop-blur-xs z-50 text-sm"
             @click.self="isPinDialogOpen = false">
             <div 
-                class="relative max-w-xs bg-white dark:bg-gray-800 text-black dark:text-white border border-gray-200 p-6 rounded-2xl shadow-md hover:shadow-xl transition-shadow duration-300">
+                :class="`relative max-w-xs bg-white dark:bg-gray-800 text-black dark:text-white border border-${item.theme}-300 p-6 rounded-2xl shadow-md hover:shadow-xl transition-shadow duration-300`">
                 <div class="flex justify-center mb-4">
-                    <img class="w-24 h-24 md:w-28 md:h-28 rounded-full object-cover border-4 border-white shadow-md"
+                    <img :class="`w-24 h-24 md:w-28 md:h-28 rounded-full object-cover border-4 border-${item.theme}-300 shadow-md`"
                         :src="item.logo ? storageUrl(item.logo) : '/images/logo.png'" alt="Store Logo" />
                 </div>
 
@@ -27,7 +27,7 @@
                         v-model="pin"
                         @input="pin = pin.replace(/\D/g, '')"
                         @keydown.enter.stop="handleSubmit"
-                        class="w-full px-4 py-2 pr-10 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-primary"
+                        :class="`w-full px-4 py-2 pr-10 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-${item.theme}-400`"
                         />
                         <button  @click="isPasswordVisible = !isPasswordVisible"
                             class="absolute inset-y-0 right-0 px-3 flex items-center text-gray-600 hover:text-black dark:hover:text-white">
@@ -36,7 +36,7 @@
                         </button>
                     </div>
                     <button @click="handleSubmit"
-                        class="w-full py-2 bg-primary text-white font-medium rounded-lg hover:bg-primary-hover transition-colors cursor-pointer"
+                        :class="`w-full py-2 bg-${item.theme}-500 text-white font-medium rounded-lg hover:bg-${item.theme}-600 transition-colors cursor-pointer`"
                     >
                     <Loading v-if="loading"/>
                     <span v-else>
@@ -56,19 +56,22 @@
 <script setup lang="ts">
 import { onMounted, onBeforeUnmount, ref, nextTick, watch } from 'vue'
 import { useStore } from '@/composables/useStore'
-import { useAuthStore } from '@/stores/auth'
 import { useAdmin } from '@/composables/useAdmin'
 import { useNotify } from '@/composables/useNotify'
 import Loading from '../others/Loading.vue'
 import router from '@/router';
 import { storageUrl } from '@/config'
+import { useDashboard } from '@/stores/dashboard'
+
+const dashboard = useDashboard()
 
 
 interface Store {
     id: number | null,
     name: string,
     slug: string,
-    logo: string
+    logo: string,
+    theme: string
 }
 
 const props = defineProps<{
@@ -104,6 +107,7 @@ const handleSubmit = async () => {
     loading.value = false
     if(isPinVerify.value) {
         isPinDialogOpen.value = false
+        dashboard.fetchData()
         router.push({
             name: 'dashboard',
             params: {

@@ -5,12 +5,13 @@ use App\Http\Controllers\AuthController;
 use App\Http\Controllers\CartController;
 use App\Http\Controllers\CategoryController;
 use App\Http\Controllers\CouponController;
+use App\Http\Controllers\CustomerController;
+use App\Http\Controllers\DashboardController;
 use App\Http\Controllers\MarketplaceController;
 use App\Http\Controllers\MetaController;
 use App\Http\Controllers\OrderController;
 use App\Http\Controllers\PaymentController;
 use App\Http\Controllers\ProductController;
-use App\Http\Controllers\RegisterController;
 use App\Http\Controllers\SaleController;
 use App\Http\Controllers\StoreController;
 use App\Http\Controllers\TagController;
@@ -22,7 +23,7 @@ Route::get('/sanctum/csrf-cookie', function () {
     return response('OK', 200);
 });
 
-Route::post('/register', [RegisterController::class, 'register'])->name('register');
+Route::post('/register', [AuthController::class, 'register'])->name('register');
 Route::post('/login', [AuthController::class, 'login'])->name('login');
 Route::post('/admin/check-pin', [AuthController::class, 'checkPin'])->name('check-pin');
 Route::get('/admin/forget-session', [AuthController::class, 'forgetSession'])->name('close-session');
@@ -65,10 +66,10 @@ Route::group([
     Route::put('/addresses/{addressId}/default', [AddressController::class, 'setDefault'])->name('addresses.set-default');
     Route::apiResource('/addresses', AddressController::class);
 
-    Route::post('/place_order', [OrderController::class, 'placeOrder'])->name('order.create');
+    Route::post('/place-order', [OrderController::class, 'placeOrder'])->name('order.create');
     Route::get('/orders', [OrderController::class, 'getOrders'])->name('order.getOrders');
 
-    Route::post('/checkout/apply-coupon', [CouponController::class, 'applyCoupon'])->name('coupon.apply');
+    Route::post('/checkout/check-coupon', [CouponController::class, 'checkCoupons'])->name('coupon.apply');
 
 
     //Admin Routes
@@ -81,8 +82,12 @@ Route::group([
             Route::apiResource('/tag', TagController::class);
             Route::apiResource('/orders', OrderController::class);
             Route::apiResource('/payments', PaymentController::class);
+            Route::put('/payments/{id}/mark-paid', [PaymentController::class, 'markPaid'])->name('payments.mark-paid');
+            Route::put('/payments/{id}/mark-unpaid', [PaymentController::class, 'markUnpaid'])->name('payments.mark-unpaid');
             Route::apiResource('/sales', SaleController::class);
             Route::apiResource('/coupons', CouponController::class);
             Route::post('/store-data/{storeId}', [StoreController::class, 'updateStoreData'])->name('update.store-data');
+            Route::apiResource('customers', CustomerController::class);
+            Route::apiResource('dashboard', DashboardController::class)->only(['index']);
         });
 });

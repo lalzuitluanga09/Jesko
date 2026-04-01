@@ -3,6 +3,8 @@
 namespace App\Http\Controllers;
 
 use App\Models\Address;
+use App\Models\Cart;
+use App\Models\CartItem;
 use App\Models\Coupon;
 use App\Models\CouponUser;
 use App\Models\Order;
@@ -98,11 +100,22 @@ class OrderController extends Controller
     public function update(Request $request, $storeSlug, $id)
     {
         $status = $request->status;
+
         $order = Order::findOrFail( $id);
+
+        if(in_array($order->status, ['delivered', 'cancelled', 'returned'])) {
+            return response()->json(['error' => 'Action not allowed'], 400);
+        }
 
         $order->update([
             'status' => $status
         ]);
+
+        if($status === 'cancelled') {
+            foreach ($order->orderItems as $item) {
+                Product::where('id', $item->product_id)->increment('stock', $item->paid_quantity);
+            }
+        }
 
         return response()->json(['status' => 'updated'], 200);
     }
@@ -119,43 +132,60 @@ class OrderController extends Controller
     public function placeOrder(Request $request)
     {
         return DB::transaction(function () use ($request) {
+
+            $user = $request->user();
+
             $items = $request->input('items');
             $paymentMode = $request->input('paymentMode');
-            $deliveryAddress = $request->input('deliveryAddress');
-            $appliedCoupons = $request->input('appliedCoupons');
+            $deliveryAddressId = $request->input('deliveryAddress');
+            $appliedCoupons = collect($request->input('appliedCoupons'))->keyBy('store_id');
+
+            $cart = Cart::where('user_id', $user->id)->first();
+
+            $shippingAddress = Address::find($deliveryAddressId);
+            $billingAddress = Address::where('user_id', $user->id)
+                ->where('is_default', true)
+                ->first();
 
             foreach ($items as $item) {
+
                 $order = Order::create([
-                    'user_id'       => $request->user()->id,
-                    'store_id'      => $item['store_id'],
-                    'order_number'  => 'ORD-' . strtoupper(uniqid()),
-                    'payment_mode'  => $paymentMode,
-                    'note'          => $request->input('note', ''),
-                    'placed_at'     => now(),
+                    'user_id'      => $user->id,
+                    'store_id'     => $item['store_id'],
+                    'order_number' => 'ORD-' . strtoupper(uniqid()),
+                    'payment_mode' => $paymentMode,
+                    'note'         => $request->input('note', ''),
+                    'placed_at'    => now(),
                 ]);
 
                 $productIds = collect($item['items'])->pluck('product_id');
+
+                if ($cart) {
+                    CartItem::where('cart_id', $cart->id)
+                        ->whereIn('product_id', $productIds)
+                        ->delete();
+                }
+
                 $products = Product::whereIn('id', $productIds)
-                                ->get(['id', 'store_id', 'name', 'price', 'sku', 'parent_id', 'type'])
-                                ->keyBy('id');
+                    ->get(['id','store_id','name','price','sku','parent_id','type'])
+                    ->keyBy('id');
+
 
                 $orderItems = [];
+
                 foreach ($item['items'] as $product) {
+
                     $originalItem = $products[$product['product_id']];
 
                     $paid_quantity = $product['quantity'];
                     $free_quantity = 0;
                     $final_price = 0;
 
-                    if (isset($product['bogoX']) && isset($product['bogoY'])) {
-                        $bogoX = $product['bogoX'] ?? 0;
-                        $bogoY = $product['bogoY'] ?? 0;
+                    if (!empty($product['bogoX']) && !empty($product['bogoY'])) {
 
-                        if ($bogoX > 0 && $bogoY > 0) {
-                            $sets = intdiv($paid_quantity, $bogoX);
-                            $free_quantity = $sets * $bogoY;
-                            $final_price = $paid_quantity * $originalItem->price;
-                        }
+                        $sets = intdiv($paid_quantity, $product['bogoX']);
+                        $free_quantity = $sets * $product['bogoY'];
+                        $final_price = $paid_quantity * $originalItem->price;
                     }
 
                     if ($final_price === 0) {
@@ -176,37 +206,39 @@ class OrderController extends Controller
                         'unit_price'        => $originalItem->price,
                         'discount_amount'   => $discountAmount,
                         'total_price'       => $final_price,
-                        'discount_snapshot' => $originalItem->getActiveSale() ? json_encode($originalItem->getActiveSale()) : null,
+                        'discount_snapshot' => $originalItem->getActiveSale()
+                            ? json_encode($originalItem->getActiveSale())
+                            : null,
                         'snapshot'          => $originalItem,
                     ];
+
+                    //Stock Update
+                    Product::where('id', $product['product_id'])->decrement('stock', $paid_quantity);
                 }
 
                 OrderItem::insert($orderItems);
 
+                $subtotal = collect($orderItems)->sum(fn ($i) => $i['unit_price'] * $i['quantity']);
+                $discount = collect($orderItems)->sum('discount_amount');
+
                 $coupon_discount = 0;
                 $appliedCoupon = null;
 
-                foreach ($appliedCoupons as $coupon) {
-                    if ($item['store_id'] === $coupon['store_id']) {
-                        $appliedCoupon = Coupon::findOrFail($coupon['id']);
-                        break;
-                    }
+                if ($appliedCoupons->has($item['store_id'])) {
+                    $couponData = $appliedCoupons[$item['store_id']];
+                    $appliedCoupon = Coupon::find($couponData['id']);
                 }
 
-                $subtotal = collect($orderItems)->sum(function ($item) {
-                    return $item['unit_price'] * $item['quantity'];
-                });
-
-                $discount = collect($orderItems)->sum('discount_amount');
-
                 if ($appliedCoupon) {
+
                     if ($appliedCoupon->discount_type === 'percentage') {
+
                         $coupon_discount = min(
                             $subtotal * ($appliedCoupon->discount_value / 100),
                             $appliedCoupon->max_discount_value ?? $subtotal
                         );
-                    } 
-                    else if ($appliedCoupon->discount_type === 'fixed') {
+                    } else {
+
                         $coupon_discount = min(
                             $appliedCoupon->discount_value,
                             $appliedCoupon->max_discount_value ?? $appliedCoupon->discount_value
@@ -222,7 +254,7 @@ class OrderController extends Controller
                     CouponUser::updateOrCreate(
                         [
                             'coupon_id' => $appliedCoupon->id,
-                            'user_id'   => $request->user()->id,
+                            'user_id'   => $user->id,
                         ],
                         [
                             'times_used' => DB::raw('times_used + 1'),
@@ -238,53 +270,44 @@ class OrderController extends Controller
                     'total'           => $total,
                     'coupon_id'       => $appliedCoupon?->id,
                     'coupon_discount' => $coupon_discount,
+                    'coupon_snapshot' => $appliedCoupon ? [
+                        'id'              => $appliedCoupon->id,
+                        'code'            => $appliedCoupon->code,
+                        'discount_type'   => $appliedCoupon->discount_type,
+                        'discount_value'  => $appliedCoupon->discount_value,
+                        'max_discount'    => $appliedCoupon->max_discount_value,
+                        'min_order_value' => $appliedCoupon->min_order_value,
+                    ] : null,
                 ]);
 
-                $address = Address::find($deliveryAddress);
-                $billingAddress = Address::where('user_id', $request->user()->id)
-                                        ->where('is_default', true)
-                                        ->first();
-
-                $addressesToInsert = [];
+                $addresses = [];
 
                 if ($billingAddress) {
-                    $addressesToInsert[] = [
-                        'order_id'    => $order->id,
-                        'type'        => 'billing',
-                        'label'       => $billingAddress->label,
-                        'name'        => $billingAddress->name,
-                        'phone'       => $billingAddress->phone,
-                        'address'     => $billingAddress->address,
-                        'landmark'    => $billingAddress->landmark,
-                        'postal_code' => $billingAddress->postal_code,
-                        'district'    => $billingAddress->district,
-                        'city'        => $billingAddress->city,
-                        'state'       => $billingAddress->state,
-                        'country'     => $billingAddress->country,
+                    $addresses[] = [
+                        'order_id' => $order->id,
+                        'type' => 'billing',
+                        ...$billingAddress->only([
+                            'label','name','phone','address','landmark',
+                            'postal_code','district','city','state','country'
+                        ])
                     ];
                 }
 
-                $addressesToInsert[] = [
-                    'order_id'    => $order->id,
-                    'type'        => 'shipping',
-                    'label'       => $address->label,
-                    'name'        => $address->name,
-                    'phone'       => $address->phone,
-                    'address'     => $address->address,
-                    'landmark'    => $address->landmark,
-                    'postal_code' => $address->postal_code,
-                    'district'    => $address->district,
-                    'city'        => $address->city,
-                    'state'       => $address->state,
-                    'country'     => $address->country,
+                $addresses[] = [
+                    'order_id' => $order->id,
+                    'type' => 'shipping',
+                    ...$shippingAddress->only([
+                        'label','name','phone','address','landmark',
+                        'postal_code','district','city','state','country'
+                    ])
                 ];
 
-                OrderAddress::insert($addressesToInsert);
+                OrderAddress::insert($addresses);
 
                 Payment::create([
-                    'order_id'      => $order->id,
-                    'payment_mode'  => $paymentMode,
-                    'amount'       => $order->total,
+                    'order_id'     => $order->id,
+                    'payment_mode' => $paymentMode,
+                    'amount'       => $total,
                     'status'       => 'pending',
                 ]);
             }
